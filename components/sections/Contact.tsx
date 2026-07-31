@@ -32,6 +32,7 @@ interface FormState {
 interface FormErrors {
   name?: string;
   email?: string;
+  company?: string;
   subject?: string;
   message?: string;
 }
@@ -63,6 +64,7 @@ export default function Contact() {
   // Field DOM references for auto-focusing the first invalid field
   const nameRef = useRef<HTMLInputElement>(null);
   const emailRef = useRef<HTMLInputElement>(null);
+  const companyRef = useRef<HTMLInputElement>(null);
   const subjectRef = useRef<HTMLInputElement>(null);
   const messageRef = useRef<HTMLTextAreaElement>(null);
 
@@ -100,6 +102,18 @@ export default function Contact() {
         return undefined;
       }
 
+      case "company": {
+        if (!trimmed) return "Company Name is required.";
+        if (trimmed.length < 2 || trimmed.length > 100) {
+          return "Please enter a valid company name (2-100 characters).";
+        }
+        const hasLetters = /[a-zA-Z]/.test(trimmed);
+        if (!hasLetters) {
+          return "Company name must contain valid letters.";
+        }
+        return undefined;
+      }
+
       case "subject": {
         if (!trimmed) return "Subject is required.";
         if (trimmed.length < 3) return "Subject must be at least 3 characters.";
@@ -126,11 +140,13 @@ export default function Contact() {
     const newErrors: FormErrors = {};
     const nameErr = validateField("name", form.name);
     const emailErr = validateField("email", form.email);
+    const companyErr = validateField("company", form.company);
     const subjectErr = validateField("subject", form.subject);
     const messageErr = validateField("message", form.message);
 
     if (nameErr) newErrors.name = nameErr;
     if (emailErr) newErrors.email = emailErr;
+    if (companyErr) newErrors.company = companyErr;
     if (subjectErr) newErrors.subject = subjectErr;
     if (messageErr) newErrors.message = messageErr;
 
@@ -167,6 +183,7 @@ export default function Contact() {
     setTouched({
       name: true,
       email: true,
+      company: true,
       subject: true,
       message: true,
     });
@@ -184,6 +201,9 @@ export default function Contact() {
       } else if (newErrors.email && emailRef.current) {
         emailRef.current.focus();
         emailRef.current.scrollIntoView({ behavior: "smooth", block: "center" });
+      } else if (newErrors.company && companyRef.current) {
+        companyRef.current.focus();
+        companyRef.current.scrollIntoView({ behavior: "smooth", block: "center" });
       } else if (newErrors.subject && subjectRef.current) {
         subjectRef.current.focus();
         subjectRef.current.scrollIntoView({ behavior: "smooth", block: "center" });
@@ -396,23 +416,45 @@ export default function Contact() {
                     )}
                   </div>
 
-                  {/* Company (Optional) */}
+                  {/* Company Name (Required) */}
                   <div className="group relative flex flex-col">
                     <label
                       htmlFor="contact-company"
-                      className="mb-2 block text-xs font-medium uppercase tracking-wider text-white/40"
+                      className="mb-2 block text-xs font-medium uppercase tracking-wider text-white/60"
                     >
-                      Company <span className="text-white/20">(Optional)</span>
+                      Company Name <span className="text-red-400">*</span>
                     </label>
-                    <input
-                      id="contact-company"
-                      type="text"
-                      name="company"
-                      value={form.company}
-                      onChange={handleChange}
-                      placeholder="[Business name]"
-                      className="w-full rounded-xl border border-white/10 bg-white/[0.03] px-4 py-3.5 text-sm text-white placeholder-white/25 outline-none transition-all duration-300 focus:border-electric-400/60 focus:bg-white/[0.05] focus:ring-2 focus:ring-electric-500/20"
-                    />
+                    <div className="relative">
+                      <input
+                        ref={companyRef}
+                        id="contact-company"
+                        type="text"
+                        name="company"
+                        value={form.company}
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                        placeholder="[Business name]"
+                        aria-invalid={!!errors.company}
+                        aria-describedby={errors.company ? "company-error" : undefined}
+                        className={cn(
+                          "w-full rounded-xl border bg-white/[0.03] px-4 py-3.5 text-sm text-white placeholder-white/25 outline-none transition-all duration-300",
+                          touched.company && errors.company
+                            ? "border-red-500/80 bg-red-500/5 ring-1 ring-red-500/30"
+                            : touched.company && !errors.company && form.company
+                            ? "border-emerald-500/60 bg-emerald-500/5 ring-1 ring-emerald-500/20"
+                            : "border-white/10 hover:border-white/20 focus:border-electric-400/60 focus:bg-white/[0.05] focus:ring-2 focus:ring-electric-500/20"
+                        )}
+                      />
+                      {touched.company && !errors.company && form.company && (
+                        <CheckCircle2 className="pointer-events-none absolute right-3.5 top-3.5 h-4 w-4 text-emerald-400" />
+                      )}
+                    </div>
+                    {touched.company && errors.company && (
+                      <span id="company-error" className="mt-1.5 flex items-center gap-1 text-xs font-medium text-red-400">
+                        <AlertCircle className="h-3.5 w-3.5 shrink-0" />
+                        {errors.company}
+                      </span>
+                    )}
                   </div>
                 </div>
 
