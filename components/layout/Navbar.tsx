@@ -39,17 +39,17 @@ export default function Navbar() {
   return (
     <>
       <motion.header
-        initial={{ y: -100, opacity: 0 }}
+        initial={{ y: -80, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
-        transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1], delay: 0.2 }}
+        transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1], delay: 0.15 }}
         className="fixed inset-x-0 top-0 z-[9000] flex justify-center px-4 pt-4"
       >
         <nav
           className={cn(
-            "flex w-full max-w-[1360px] items-center justify-between rounded-full px-4 py-2.5 transition-all duration-500 ease-premium sm:px-6",
+            "flex w-full max-w-[1360px] items-center justify-between rounded-full px-4 py-2 transition-all duration-500 ease-out sm:px-6",
             scrolled
-              ? "glass-strong shadow-glass border-white/15"
-              : "border border-transparent bg-transparent"
+              ? "bg-navy-950/80 backdrop-blur-2xl shadow-[0_8px_32px_rgba(0,0,0,0.5)] border border-white/12"
+              : "border border-white/5 bg-white/[0.02] backdrop-blur-md"
           )}
         >
           {/* Logo */}
@@ -59,27 +59,27 @@ export default function Navbar() {
             aria-label={`${site.name} home`}
           >
             <span className="relative flex h-8 w-8 items-center justify-center">
-              <span className="absolute inset-0 rounded-xl bg-gradient-to-br from-electric-500 via-purple-500 to-cyan-500 opacity-90 blur-[2px] transition-all duration-500 group-hover:blur-[6px]" />
-              <span className="relative flex h-8 w-8 items-center justify-center rounded-xl bg-navy-900 font-display text-sm font-bold text-white">
+              <span className="absolute inset-0 rounded-xl bg-gradient-to-br from-electric-500 via-purple-500 to-cyan-500 opacity-80 blur-[3px] transition-all duration-500 group-hover:opacity-100 group-hover:blur-[6px]" />
+              <span className="relative flex h-8 w-8 items-center justify-center rounded-xl bg-navy-900 font-display text-sm font-bold text-white shadow-inner">
                 L
               </span>
             </span>
             <div className="flex flex-col">
-              <span className="font-display text-lg font-bold tracking-tight text-white leading-none">
+              <span className="font-display text-base font-bold tracking-tight text-white leading-none group-hover:text-white/90 transition-colors">
                 Lumora
               </span>
-              <span className="text-[9px] font-mono tracking-widest text-cyan-300 uppercase opacity-80">
+              <span className="text-[9px] font-mono tracking-widest text-white/50 uppercase">
                 DIGITAL STUDIO
               </span>
             </div>
           </a>
 
           {/* Telemetry Badge (Middle) */}
-          <div className="hidden xl:flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.03] px-3.5 py-1 text-[11px] font-mono text-white/50">
-            <Activity className="h-3 w-3 text-cyan-400 animate-pulse" />
+          <div className="hidden xl:flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.03] px-3.5 py-1 text-[11px] font-mono text-white/50 backdrop-blur-md">
+            <Activity className="h-3 w-3 text-white/80 animate-pulse" />
             <span>60 FPS</span>
             <span className="text-white/20">|</span>
-            <span className="text-cyan-300">99 LIGHTHOUSE</span>
+            <span className="text-white/70 font-medium">99 LIGHTHOUSE</span>
           </div>
 
           {/* Desktop links */}
@@ -89,7 +89,7 @@ export default function Navbar() {
                 <a
                   href={link.href}
                   className={cn(
-                    "relative rounded-full px-4 py-2 text-sm font-medium transition-colors duration-300",
+                    "relative rounded-full px-4 py-2 text-sm font-medium transition-colors duration-200",
                     active === link.href
                       ? "text-white"
                       : "text-white/60 hover:text-white"
@@ -99,7 +99,7 @@ export default function Navbar() {
                     <motion.span
                       layoutId="nav-active"
                       className="absolute inset-0 rounded-full bg-white/[0.08] ring-1 ring-white/15"
-                      transition={{ type: "spring", stiffness: 380, damping: 30 }}
+                      transition={{ type: "spring", stiffness: 350, damping: 28 }}
                     />
                   )}
                   <span className="relative z-10">{link.label}</span>
@@ -112,14 +112,14 @@ export default function Navbar() {
           <div className="flex items-center gap-2">
             <a
               href="#contact"
-              className="group hidden items-center gap-1.5 rounded-full bg-white px-5 py-2.5 text-sm font-bold text-navy-950 transition-transform duration-300 hover:scale-[1.03] shadow-lg shadow-white/10 sm:inline-flex"
+              className="group hidden items-center gap-1.5 rounded-full bg-white px-5 py-2 text-sm font-semibold text-navy-950 transition-all duration-300 hover:scale-[1.02] hover:bg-neutral-100 shadow-[0_4px_20px_rgba(255,255,255,0.15)] sm:inline-flex"
             >
               Start a project
               <ArrowUpRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
             </a>
             <button
               onClick={() => setOpen((v) => !v)}
-              className="flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-white/5 text-white lg:hidden"
+              className="flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-white/5 text-white transition-colors hover:bg-white/10 lg:hidden"
               aria-label="Toggle menu"
             >
               {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
