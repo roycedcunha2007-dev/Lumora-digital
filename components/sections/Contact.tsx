@@ -55,6 +55,7 @@ export default function Contact() {
   const [errors, setErrors] = useState<FormErrors>({});
   const [touched, setTouched] = useState<Record<string, boolean>>({});
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+  const [isSuccess, setIsSuccess] = useState<boolean>(false);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [buttonShake, setButtonShake] = useState<boolean>(false);
   const [toast, setToast] = useState<ToastState | null>(null);
@@ -160,7 +161,7 @@ export default function Contact() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (isSubmitting) return;
+    if (isSubmitting || isSuccess) return;
 
     // Touch all fields to reveal validation status
     setTouched({
@@ -195,17 +196,23 @@ export default function Contact() {
       return;
     }
 
-    // Submit procedure: 1.4s sending phase -> open success modal
+    // Submit procedure: 1.4s sending phase -> open success modal & set isSuccess state
     setIsSubmitting(true);
 
     setTimeout(() => {
       setIsSubmitting(false);
+      setIsSuccess(true);
       setIsModalOpen(true);
 
       // Reset form fields & validation completely
       setForm(INITIAL_FORM);
       setErrors({});
       setTouched({});
+
+      // Reset isSuccess state after 3 seconds
+      setTimeout(() => {
+        setIsSuccess(false);
+      }, 3000);
     }, 1400);
   };
 
