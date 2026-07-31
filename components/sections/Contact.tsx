@@ -18,6 +18,7 @@ import SectionHeading from "@/components/ui/SectionHeading";
 import Reveal from "@/components/ui/Reveal";
 import { site } from "@/lib/site";
 import { cn } from "@/lib/utils";
+import ContactSuccessModal from "@/components/effects/ContactSuccessModal";
 
 interface FormState {
   name: string;
@@ -54,7 +55,7 @@ export default function Contact() {
   const [errors, setErrors] = useState<FormErrors>({});
   const [touched, setTouched] = useState<Record<string, boolean>>({});
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
-  const [isSuccess, setIsSuccess] = useState<boolean>(false);
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [buttonShake, setButtonShake] = useState<boolean>(false);
   const [toast, setToast] = useState<ToastState | null>(null);
 
@@ -81,7 +82,6 @@ export default function Contact() {
         if (trimmed.length < 2 || trimmed.length > 60) {
           return "Please enter a valid name (2-60 characters).";
         }
-        // Must contain letters, reject numbers-only or symbols-only
         const nameRegex = /^[a-zA-Z\s'-]{2,60}$/;
         const hasLetters = /[a-zA-Z].*[a-zA-Z]/.test(trimmed);
         if (!nameRegex.test(trimmed) || !hasLetters) {
@@ -92,7 +92,6 @@ export default function Contact() {
 
       case "email": {
         if (!trimmed) return "Please enter your email address.";
-        // Strict TLD + domain regex
         const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
         if (!emailRegex.test(trimmed)) {
           return "Please enter a valid email address.";
@@ -175,11 +174,9 @@ export default function Contact() {
     setErrors(newErrors);
 
     if (!isValid) {
-      // Trigger button shake animation
       setButtonShake(true);
       setTimeout(() => setButtonShake(false), 500);
 
-      // Focus and scroll to first invalid field
       if (newErrors.name && nameRef.current) {
         nameRef.current.focus();
         nameRef.current.scrollIntoView({ behavior: "smooth", block: "center" });
@@ -198,27 +195,27 @@ export default function Contact() {
       return;
     }
 
-    // Submit procedure
+    // Submit procedure: 1.4s sending phase -> open success modal
     setIsSubmitting(true);
 
     setTimeout(() => {
       setIsSubmitting(false);
-      setIsSuccess(true);
-      showToast("success", "Thank you! Your message has been sent successfully.");
+      setIsModalOpen(true);
 
-      // Reset Form
+      // Reset form fields & validation completely
       setForm(INITIAL_FORM);
       setErrors({});
       setTouched({});
-
-      setTimeout(() => {
-        setIsSuccess(false);
-      }, 4500);
-    }, 1200);
+    }, 1400);
   };
 
   return (
     <section id="contact" className="relative py-28 sm:py-36">
+      {/* Centered Success Modal */}
+      <ContactSuccessModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+      />
       {/* Toast Notification Container */}
       <AnimatePresence>
         {toast && (
