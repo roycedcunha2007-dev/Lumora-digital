@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, Sparkles } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -59,50 +59,95 @@ function playSuccessChime() {
 }
 
 export default function ContactSuccessModal({ isOpen, onClose }: Props) {
+  const closeBtnRef = useRef<HTMLButtonElement>(null);
+  const [isClosing, setIsClosing] = useState<boolean>(false);
+
+  const handleClose = () => {
+    if (isClosing) return;
+    setIsClosing(true);
+
+    // Smooth 350ms exit transition before calling onClose
+    setTimeout(() => {
+      setIsClosing(false);
+      // Ensure body overflow is restored
+      document.body.style.overflow = "auto";
+      onClose();
+    }, 350);
+  };
+
   useEffect(() => {
     if (isOpen) {
+      // Lock body scroll
+      document.body.style.overflow = "hidden";
       playSuccessChime();
 
+      // Focus close button for accessibility
+      const focusTimer = setTimeout(() => {
+        closeBtnRef.current?.focus();
+      }, 100);
+
+      // Auto-close after 5 seconds
+      const autoCloseTimer = setTimeout(() => {
+        handleClose();
+      }, 5000);
+
       const handleKeyDown = (e: KeyboardEvent) => {
-        if (e.key === "Escape") onClose();
+        if (e.key === "Escape") {
+          handleClose();
+        }
       };
+
       window.addEventListener("keydown", handleKeyDown);
-      return () => window.removeEventListener("keydown", handleKeyDown);
+
+      return () => {
+        clearTimeout(focusTimer);
+        clearTimeout(autoCloseTimer);
+        window.removeEventListener("keydown", handleKeyDown);
+        // Guarantee body scroll restoration
+        document.body.style.overflow = "auto";
+      };
+    } else {
+      document.body.style.overflow = "auto";
     }
-  }, [isOpen, onClose]);
+  }, [isOpen]);
 
   return (
     <AnimatePresence>
       {isOpen && (
         <div className="fixed inset-0 z-[10000] flex items-center justify-center p-4 sm:p-6">
-          {/* Blurred Backdrop */}
+          {/* 12px Blurred Backdrop Overlay — Click Outside to Close */}
           <motion.div
             initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
+            animate={{ opacity: isClosing ? 0 : 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.4 }}
-            onClick={onClose}
+            transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+            onClick={handleClose}
             className="absolute inset-0 bg-black/65 backdrop-blur-[12px]"
           />
 
-          {/* Modal Container (Scale: 0.8->1, Opacity: 0->100%, Blur: 10px->0px) */}
+          {/* Centered Modal Card */}
           <motion.div
             initial={{ opacity: 0, scale: 0.8, filter: "blur(10px)" }}
-            animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
-            exit={{ opacity: 0, scale: 0.85, filter: "blur(10px)" }}
-            transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-            className="relative w-full max-w-md overflow-hidden rounded-[2.25rem] border border-white/15 bg-navy-950/90 p-8 text-center shadow-[0_24px_80px_rgba(0,0,0,0.85)] backdrop-blur-2xl sm:p-10"
+            animate={{
+              opacity: isClosing ? 0 : 1,
+              scale: isClosing ? 0.9 : 1,
+              filter: isClosing ? "blur(10px)" : "blur(0px)",
+            }}
+            exit={{ opacity: 0, scale: 0.9, filter: "blur(10px)" }}
+            transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+            className="relative w-full max-w-md overflow-hidden rounded-[2.25rem] border border-white/15 bg-navy-950/95 p-8 text-center shadow-[0_24px_80px_rgba(0,0,0,0.85)] backdrop-blur-2xl sm:p-10"
           >
             {/* Ambient Background Glow */}
             <div className="pointer-events-none absolute -top-24 left-1/2 h-56 w-56 -translate-x-1/2 rounded-full bg-emerald-500/20 blur-3xl" />
 
-            {/* Close Button */}
+            {/* 40x40px Glassmorphism Close (X) Button */}
             <button
-              onClick={onClose}
-              className="absolute right-5 top-5 flex h-8 w-8 items-center justify-center rounded-full border border-white/10 bg-white/5 text-white/50 transition-colors hover:bg-white/10 hover:text-white"
-              aria-label="Close dialog"
+              ref={closeBtnRef}
+              onClick={handleClose}
+              className="group absolute right-4 top-4 z-20 flex h-10 w-10 items-center justify-center rounded-full border border-white/15 bg-white/10 text-white backdrop-blur-md transition-all duration-300 hover:scale-[1.08] hover:bg-white/20 sm:right-5 sm:top-5 cursor-pointer"
+              aria-label="Close success dialog"
             >
-              <X className="h-4 w-4" />
+              <X className="h-5 w-5 transition-transform duration-300 group-hover:rotate-90 text-white" />
             </button>
 
             {/* Central Success Icon & Confetti Burst */}
@@ -120,7 +165,7 @@ export default function ContactSuccessModal({ isOpen, onClose }: Props) {
                   }}
                   transition={{
                     duration: 1.1,
-                    delay: 0.35,
+                    delay: 0.25,
                     ease: [0.16, 1, 0.3, 1],
                   }}
                   style={{ backgroundColor: p.color }}
@@ -146,7 +191,7 @@ export default function ContactSuccessModal({ isOpen, onClose }: Props) {
                   strokeLinejoin="round"
                   initial={{ pathLength: 0 }}
                   animate={{ pathLength: 1 }}
-                  transition={{ delay: 0.45, duration: 0.4, ease: "easeOut" }}
+                  transition={{ delay: 0.35, duration: 0.4, ease: "easeOut" }}
                 />
               </svg>
 
@@ -154,7 +199,7 @@ export default function ContactSuccessModal({ isOpen, onClose }: Props) {
               <motion.div
                 initial={{ scale: 0, opacity: 0 }}
                 animate={{ scale: [0, 1.2, 1], opacity: 1 }}
-                transition={{ delay: 0.6, duration: 0.4 }}
+                transition={{ delay: 0.5, duration: 0.4 }}
                 className="absolute -right-1 -top-1"
               >
                 <Sparkles className="h-5 w-5 text-amber-300 fill-amber-300" />
@@ -165,7 +210,7 @@ export default function ContactSuccessModal({ isOpen, onClose }: Props) {
             <motion.h3
               initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.4, duration: 0.5 }}
+              transition={{ delay: 0.35, duration: 0.45 }}
               className="mt-6 font-display text-2xl font-bold tracking-tight text-white sm:text-3xl"
             >
               Message Sent Successfully!
@@ -175,7 +220,7 @@ export default function ContactSuccessModal({ isOpen, onClose }: Props) {
             <motion.p
               initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.5, duration: 0.5 }}
+              transition={{ delay: 0.45, duration: 0.45 }}
               className="mt-2 text-sm leading-relaxed text-white/65"
             >
               Thank you for contacting Lumora Digital. We&apos;ve received your message and will get back to you within 24 hours.
@@ -185,16 +230,24 @@ export default function ContactSuccessModal({ isOpen, onClose }: Props) {
             <motion.div
               initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.6, duration: 0.5 }}
+              transition={{ delay: 0.55, duration: 0.45 }}
               className="mt-8"
             >
               <button
-                onClick={onClose}
-                className="w-full rounded-full bg-white py-3.5 text-sm font-bold text-navy-950 transition-all duration-300 hover:scale-[1.02] hover:bg-neutral-100 shadow-[0_4px_20px_rgba(255,255,255,0.15)]"
+                onClick={handleClose}
+                className="w-full rounded-full bg-white py-3.5 text-sm font-bold text-navy-950 transition-all duration-300 hover:scale-[1.02] hover:bg-neutral-100 shadow-[0_4px_20px_rgba(255,255,255,0.15)] cursor-pointer"
               >
                 Continue Browsing
               </button>
             </motion.div>
+
+            {/* 5-Second Auto-Close Countdown Progress Bar */}
+            <motion.div
+              initial={{ scaleX: 1 }}
+              animate={{ scaleX: 0 }}
+              transition={{ duration: 5, ease: "linear" }}
+              className="absolute bottom-0 left-0 right-0 h-1 origin-left bg-gradient-to-r from-emerald-400 via-teal-400 to-cyan-400 opacity-60"
+            />
           </motion.div>
         </div>
       )}
