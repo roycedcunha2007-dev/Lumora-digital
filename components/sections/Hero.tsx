@@ -8,6 +8,7 @@ import Counter from "@/components/ui/Counter";
 import { SplineScene } from "@/components/ui/splite";
 import { Spotlight } from "@/components/ui/spotlight";
 import { heroStats } from "@/lib/site";
+import RobotAtmosphere from "@/components/effects/RobotAtmosphere";
 import ContinuousAIScanHeading from "@/components/effects/ContinuousAIScanHeading";
 import HeroStatsBar from "@/components/effects/HeroStatsBar";
 
@@ -127,10 +128,8 @@ export default function Hero() {
           transition={{ delay: 0.4, duration: 1.0, ease: [0.16, 1, 0.3, 1] }}
           className="relative flex h-[320px] w-full items-center justify-center sm:h-[380px] lg:h-[460px] xl:h-[500px]"
         >
-          {/* Soft ambient halo behind robot */}
-          <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
-            <div className="h-[55%] w-[55%] rounded-full bg-white/[0.04] blur-[120px]" />
-          </div>
+          {/* Breathing aura halo and floating micro light particles */}
+          <RobotAtmosphere />
 
           <SplineScene
             scene="https://prod.spline.design/kZDDjO5HuC9GJUM2/scene.splinecode"
