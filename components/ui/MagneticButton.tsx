@@ -19,7 +19,7 @@ export default function MagneticButton({
   onClick,
   variant = "primary",
   className,
-  strength = 0.4,
+  strength = 0.45,
 }: Props) {
   const ref = useRef<HTMLDivElement>(null);
   const [pos, setPos] = useState({ x: 0, y: 0 });
@@ -36,12 +36,12 @@ export default function MagneticButton({
   const reset = () => setPos({ x: 0, y: 0 });
 
   const base =
-    "group relative inline-flex items-center justify-center gap-2 rounded-full px-7 py-3.5 text-sm font-semibold tracking-tight transition-colors duration-300 will-change-transform";
+    "group relative overflow-hidden inline-flex items-center justify-center gap-2 rounded-full px-7 py-3.5 text-sm font-semibold tracking-tight transition-all duration-300 will-change-transform cursor-pointer";
 
   const variants: Record<string, string> = {
-    primary: "text-white shadow-glow",
-    outline: "text-white border border-white/15 hover:border-white/30",
-    ghost: "text-white/80 hover:text-white",
+    primary: "text-white shadow-[0_8px_32px_rgba(255,255,255,0.18)] hover:shadow-[0_12px_40px_rgba(255,255,255,0.3)]",
+    outline: "text-white border border-white/20 bg-white/[0.03] backdrop-blur-md hover:border-white/40 hover:bg-white/[0.08]",
+    ghost: "text-white/80 hover:text-white hover:bg-white/[0.06]",
   };
 
   const Inner = (
@@ -50,7 +50,9 @@ export default function MagneticButton({
       onMouseMove={handleMove}
       onMouseLeave={reset}
       animate={{ x: pos.x, y: pos.y }}
-      transition={{ type: "spring", stiffness: 200, damping: 15, mass: 0.4 }}
+      whileHover={{ scale: 1.03 }}
+      whileTap={{ scale: 0.97 }}
+      transition={{ type: "spring", stiffness: 240, damping: 16, mass: 0.4 }}
       className={cn(base, variants[variant], className)}
     >
       {variant === "primary" && (
@@ -59,10 +61,14 @@ export default function MagneticButton({
           <span className="absolute inset-[1.5px] rounded-full bg-navy-900/40 backdrop-blur-sm transition-opacity duration-300 group-hover:opacity-0" />
         </>
       )}
+
+      {/* Specular light sweep sheen */}
+      <span className="pointer-events-none absolute -inset-full top-0 block h-full w-1/2 -skew-x-12 bg-gradient-to-r from-transparent via-white/30 to-transparent opacity-0 transition-all duration-1000 group-hover:left-full group-hover:opacity-100" />
+
       <motion.span
         className="relative z-10 flex items-center gap-2"
         animate={{ x: pos.x * 0.25, y: pos.y * 0.25 }}
-        transition={{ type: "spring", stiffness: 200, damping: 15 }}
+        transition={{ type: "spring", stiffness: 220, damping: 16 }}
       >
         {children}
       </motion.span>

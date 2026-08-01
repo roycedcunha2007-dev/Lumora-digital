@@ -176,8 +176,10 @@ export default function ContinuousAIScanHeading() {
 
     waitFullLoad();
 
+    const scanner = scannerRef.current;
+    const lines = lineRefs.current;
     return () => {
-      gsap.killTweensOf([scannerRef.current, ...lineRefs.current]);
+      gsap.killTweensOf([scanner, ...lines]);
     };
   }, []);
 

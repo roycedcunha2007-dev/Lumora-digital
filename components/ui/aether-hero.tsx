@@ -208,6 +208,7 @@ export default function AetherHero({
       if (bufRef.current) gl.deleteBuffer(bufRef.current);
       if (programRef.current) gl.deleteProgram(programRef.current);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [fragmentSource, dprMax, clearColor]);
 
   const justify =

@@ -109,6 +109,7 @@ export default function ContactSuccessModal({ isOpen, onClose }: Props) {
     } else {
       document.body.style.overflow = "auto";
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOpen]);
 
   return (

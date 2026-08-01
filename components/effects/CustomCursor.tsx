@@ -5,17 +5,18 @@ import { motion, useMotionValue, useSpring } from "framer-motion";
 
 export default function CustomCursor() {
   const [enabled, setEnabled] = useState(false);
-  const [variant, setVariant] = useState<"default" | "hover" | "text">(
-    "default"
-  );
+  const [variant, setVariant] = useState<"default" | "hover" | "text">("default");
   const [label, setLabel] = useState<string>("");
 
   const x = useMotionValue(-100);
   const y = useMotionValue(-100);
-  const ringX = useSpring(x, { stiffness: 320, damping: 28, mass: 0.6 });
-  const ringY = useSpring(y, { stiffness: 320, damping: 28, mass: 0.6 });
-  const dotX = useSpring(x, { stiffness: 900, damping: 40 });
-  const dotY = useSpring(y, { stiffness: 900, damping: 40 });
+
+  const auraX = useSpring(x, { stiffness: 140, damping: 24, mass: 0.8 });
+  const auraY = useSpring(y, { stiffness: 140, damping: 24, mass: 0.8 });
+  const ringX = useSpring(x, { stiffness: 350, damping: 26, mass: 0.5 });
+  const ringY = useSpring(y, { stiffness: 350, damping: 26, mass: 0.5 });
+  const dotX = useSpring(x, { stiffness: 950, damping: 38 });
+  const dotY = useSpring(y, { stiffness: 950, damping: 38 });
 
   useEffect(() => {
     const fine = window.matchMedia("(pointer: fine)").matches;
@@ -60,33 +61,29 @@ export default function CustomCursor() {
 
   return (
     <>
-      {/* Trailing ring */}
+      {/* Ambient cursor light aura */}
       <motion.div
-        className="pointer-events-none fixed left-0 top-0 z-[9999] flex items-center justify-center rounded-full mix-blend-difference"
+        className="pointer-events-none fixed left-0 top-0 z-[9990] h-64 w-64 rounded-full bg-gradient-to-r from-electric-500/10 via-purple-500/10 to-cyan-500/10 blur-3xl opacity-60"
+        style={{ x: auraX, y: auraY, translateX: "-50%", translateY: "-50%" }}
+      />
+
+      {/* Trailing glass ring */}
+      <motion.div
+        className="pointer-events-none fixed left-0 top-0 z-[9999] flex items-center justify-center rounded-full border border-white/80 mix-blend-difference"
         style={{ x: ringX, y: ringY, translateX: "-50%", translateY: "-50%" }}
         animate={{
-          width: variant === "text" ? 76 : variant === "hover" ? 56 : 34,
-          height: variant === "text" ? 76 : variant === "hover" ? 56 : 34,
+          width: variant === "text" ? 82 : variant === "hover" ? 58 : 34,
+          height: variant === "text" ? 82 : variant === "hover" ? 58 : 34,
           backgroundColor:
             variant === "hover" || variant === "text"
-              ? "rgba(255,255,255,0.12)"
+              ? "rgba(255,255,255,0.15)"
               : "rgba(255,255,255,0)",
-          borderColor: "rgba(255,255,255,0.85)",
+          scale: variant === "hover" ? 1.15 : 1,
         }}
-        transition={{ type: "spring", stiffness: 260, damping: 22 }}
+        transition={{ type: "spring", stiffness: 300, damping: 22 }}
       >
-        <span
-          className="rounded-full border"
-          style={{
-            position: "absolute",
-            inset: 0,
-            borderColor: "inherit",
-            borderWidth: 1.5,
-            borderRadius: 999,
-          }}
-        />
         {label && (
-          <span className="text-[10px] font-semibold uppercase tracking-widest text-white">
+          <span className="text-[10px] font-bold uppercase tracking-widest text-white drop-shadow-md">
             {label}
           </span>
         )}

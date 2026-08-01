@@ -183,6 +183,7 @@ export default function CinematicDecryptHeading() {
         cancelAnimationFrame(animFrameRef.current);
       }
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (

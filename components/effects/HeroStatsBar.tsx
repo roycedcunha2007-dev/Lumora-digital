@@ -86,10 +86,11 @@ export default function HeroStatsBar() {
       });
     }, 8000);
 
+    const cards = cardRefs.current;
     return () => {
       observer.disconnect();
       clearInterval(sweepInterval);
-      gsap.killTweensOf(cardRefs.current);
+      gsap.killTweensOf(cards);
     };
   }, []);
 
