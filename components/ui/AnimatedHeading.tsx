@@ -22,12 +22,13 @@ const container: Variants = {
 };
 
 const item: Variants = {
-  hidden: { y: "110%", opacity: 0, rotateX: -40 },
+  hidden: { y: "110%", opacity: 0, rotateX: -35, filter: "blur(8px)" },
   show: {
     y: "0%",
     opacity: 1,
     rotateX: 0,
-    transition: { duration: 0.75, ease: [0.22, 1, 0.36, 1] },
+    filter: "blur(0px)",
+    transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] },
   },
 };
 

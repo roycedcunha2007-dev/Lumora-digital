@@ -30,8 +30,8 @@ export default function SectionHeading({
     >
       {eyebrow && (
         <Reveal direction="up">
-          <span className="eyebrow">
-            <span className="h-1.5 w-1.5 rounded-full bg-cyan-400 shadow-glow-cyan" />
+          <span className="eyebrow group">
+            <span className="h-1.5 w-1.5 rounded-full bg-cyan-400 shadow-[0_0_8px_#00f0ff] animate-pulse" />
             {eyebrow}
           </span>
         </Reveal>
@@ -40,7 +40,7 @@ export default function SectionHeading({
         text={title}
         by="word"
         className={cn(
-          "font-display font-semibold tracking-tightest text-white",
+          "font-display font-semibold tracking-tightest text-white drop-shadow-sm",
           "text-4xl leading-[1.05] sm:text-5xl lg:text-6xl",
           align === "center" ? "max-w-4xl" : "max-w-3xl"
         )}

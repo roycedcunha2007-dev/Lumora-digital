@@ -3,6 +3,7 @@ import LumoraPrism3D from "@/components/3d/LumoraPrism3D";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import WhatsAppButton from "@/components/effects/WhatsAppButton";
+import SectionDivider from "@/components/ui/SectionDivider";
 import Hero from "@/components/sections/Hero";
 import About from "@/components/sections/About";
 import WhyChooseUs from "@/components/sections/WhyChooseUs";
@@ -23,15 +24,23 @@ export default function Home() {
       <Navbar />
       <main className="relative">
         <Hero />
+        <SectionDivider />
         <About />
+        <SectionDivider />
         <WhyChooseUs />
+        <SectionDivider />
         <Services />
+        <SectionDivider />
         <Process />
         <MacBookReveal />
         <Stats />
+        <SectionDivider />
         <Pricing />
+        <SectionDivider />
         <Team />
+        <SectionDivider />
         <FAQ />
+        <SectionDivider />
         <Contact />
       </main>
       <Footer />
