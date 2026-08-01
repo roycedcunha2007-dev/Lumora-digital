@@ -25,10 +25,10 @@ export default function AuroraBackground() {
     const dpr = Math.min(window.devicePixelRatio || 1, 2);
 
     const orbs = [
-      { x: 0.2, y: 0.25, r: 0.42, hue: [220, 224, 232], t: 0, speed: 0.00022 },
-      { x: 0.8, y: 0.3, r: 0.38, hue: [190, 194, 202], t: 2, speed: 0.00018 },
-      { x: 0.6, y: 0.8, r: 0.5, hue: [170, 174, 184], t: 4, speed: 0.00016 },
-      { x: 0.35, y: 0.7, r: 0.32, hue: [150, 154, 164], t: 1, speed: 0.0002 },
+      { x: 0.2, y: 0.25, r: 0.45, hue: [0, 240, 255], t: 0, speed: 0.00018 }, // Aurora Cyan
+      { x: 0.8, y: 0.3, r: 0.4, hue: [139, 92, 246], t: 2, speed: 0.00015 },  // Royal Purple
+      { x: 0.6, y: 0.8, r: 0.52, hue: [37, 99, 235], t: 4, speed: 0.00014 },  // Electric Blue
+      { x: 0.35, y: 0.7, r: 0.36, hue: [14, 23, 42], t: 1, speed: 0.00016 },  // Deep Navy
     ];
 
     type P = { x: number; y: number; vx: number; vy: number; s: number };

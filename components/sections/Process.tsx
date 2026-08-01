@@ -54,16 +54,18 @@ export default function Process() {
                   key={item.step}
                   className="relative grid grid-cols-[auto_1fr] items-center gap-6 pl-0 lg:grid-cols-2 lg:gap-16"
                 >
-                  {/* node */}
+                  {/* Liquid Glass Sphere Node */}
                   <motion.div
                     initial={{ scale: 0 }}
                     whileInView={{ scale: 1 }}
                     viewport={{ once: true, amount: 0.8 }}
-                    transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-                    className="absolute left-[10px] z-10 flex h-5 w-5 items-center justify-center lg:left-1/2 lg:-translate-x-1/2"
+                    transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+                    className="absolute left-[7px] z-10 flex h-7 w-7 items-center justify-center lg:left-1/2 lg:-translate-x-1/2"
                   >
-                    <span className="absolute h-5 w-5 animate-ping rounded-full bg-electric-500/30" />
-                    <span className="relative h-3.5 w-3.5 rounded-full border-2 border-navy-950 bg-gradient-to-br from-electric-400 to-cyan-400" />
+                    <span className="absolute h-7 w-7 animate-ping rounded-full bg-cyan-400/30" />
+                    <span className="relative flex h-5 w-5 items-center justify-center rounded-full border border-white/40 bg-navy-950/80 shadow-[0_0_15px_#00f0ff] backdrop-blur-md">
+                      <span className="h-2.5 w-2.5 rounded-full bg-gradient-to-tr from-cyan-400 to-electric-300 shadow-[0_0_8px_#00f0ff]" />
+                    </span>
                   </motion.div>
 
                   {/* card */}
