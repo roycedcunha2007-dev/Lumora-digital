@@ -91,11 +91,11 @@ export default function Hero() {
               Start Your Transformation
               <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
             </MagneticButton>
-            <MagneticButton href="#services" variant="outline">
+            <MagneticButton href="#portfolio" variant="outline">
               <span className="flex h-5.5 w-5.5 items-center justify-center rounded-full bg-white/10 transition-colors group-hover:bg-white/20">
                 <Play className="h-2.5 w-2.5 fill-white text-white translate-x-0.5" />
               </span>
-              Explore Our Services
+              View Selected Work
             </MagneticButton>
           </motion.div>
 

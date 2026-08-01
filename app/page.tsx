@@ -7,6 +7,7 @@ import About from "@/components/sections/About";
 import WhyChooseUs from "@/components/sections/WhyChooseUs";
 import Services from "@/components/sections/Services";
 import Process from "@/components/sections/Process";
+import MacBookReveal from "@/components/ui/MacBookReveal";
 import Stats from "@/components/sections/Stats";
 import Pricing from "@/components/sections/Pricing";
 import Team from "@/components/sections/Team";
@@ -24,6 +25,7 @@ export default function Home() {
         <WhyChooseUs />
         <Services />
         <Process />
+        <MacBookReveal />
         <Stats />
         <Pricing />
         <Team />
