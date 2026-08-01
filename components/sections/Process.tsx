@@ -26,17 +26,23 @@ export default function Process() {
 
         <div ref={ref} className="relative mt-20">
           {/* center rail (desktop) */}
-          <div className="absolute left-1/2 top-0 hidden h-full w-px -translate-x-1/2 bg-white/10 lg:block" />
+          <div className="absolute left-1/2 top-0 hidden h-full w-[2px] -translate-x-1/2 bg-white/10 lg:block" />
           <motion.div
             style={{ height: progress }}
-            className="absolute left-1/2 top-0 hidden w-px -translate-x-1/2 bg-gradient-to-b from-electric-400 via-purple-500 to-cyan-400 lg:block"
+            className="absolute left-1/2 top-0 hidden w-[2px] -translate-x-1/2 bg-gradient-to-b from-cyan-400 via-purple-500 to-electric-400 shadow-[0_0_15px_#00f0ff] lg:block"
+          />
+          {/* Traveling Light Pulse Beam */}
+          <motion.div
+            animate={{ y: ["0%", "800%"] }}
+            transition={{ repeat: Infinity, duration: 4, ease: "linear" }}
+            className="absolute left-1/2 top-0 hidden h-16 w-[3px] -translate-x-1/2 bg-gradient-to-b from-transparent via-cyan-300 to-transparent shadow-[0_0_20px_#00f0ff] lg:block"
           />
 
           {/* left rail (mobile) */}
-          <div className="absolute left-[19px] top-0 h-full w-px bg-white/10 lg:hidden" />
+          <div className="absolute left-[19px] top-0 h-full w-[2px] bg-white/10 lg:hidden" />
           <motion.div
             style={{ height: progress }}
-            className="absolute left-[19px] top-0 w-px bg-gradient-to-b from-electric-400 via-purple-500 to-cyan-400 lg:hidden"
+            className="absolute left-[19px] top-0 w-[2px] bg-gradient-to-b from-cyan-400 via-purple-500 to-electric-400 shadow-[0_0_15px_#00f0ff] lg:hidden"
           />
 
           <div className="flex flex-col gap-10 lg:gap-4">
