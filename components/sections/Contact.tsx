@@ -289,7 +289,8 @@ export default function Contact() {
         <div className="mt-16 grid gap-6 lg:grid-cols-[0.55fr_0.45fr]">
           {/* Form */}
           <Reveal direction="right">
-            <div className="relative overflow-hidden rounded-[2rem] border border-white/10 bg-white/[0.02] p-8 sm:p-10">
+            <div className="relative overflow-hidden rounded-[2rem] border border-white/12 bg-white/[0.03] backdrop-blur-2xl shadow-[0_20px_50px_rgba(0,0,0,0.6)] p-8 sm:p-10">
+              <div className="pointer-events-none absolute inset-0 rounded-[inherit] shadow-[inset_0_1px_0_0_rgba(255,255,255,0.2)]" />
               <div className="pointer-events-none absolute -right-16 -top-16 h-48 w-48 rounded-full bg-electric-500/15 blur-3xl" />
               <form onSubmit={handleSubmit} noValidate className="relative flex flex-col gap-6">
                 <div className="grid gap-6 sm:grid-cols-2">

@@ -3,6 +3,7 @@
 import { useRef } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import SectionHeading from "@/components/ui/SectionHeading";
+import TiltCard from "@/components/ui/TiltCard";
 import { process } from "@/lib/site";
 import { getIcon } from "@/lib/icons";
 
@@ -71,32 +72,36 @@ export default function Process() {
                         : "lg:col-start-2 lg:pl-16"
                     }`}
                   >
-                    <div className="group relative inline-block w-full overflow-hidden rounded-3xl border border-white/10 bg-white/[0.03] p-6 transition-colors duration-500 hover:border-white/20">
-                      <div
-                        className={`flex items-center gap-4 ${
-                          isLeft ? "lg:flex-row-reverse" : ""
-                        }`}
-                      >
-                        <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-electric-500/20 to-purple-500/20 ring-1 ring-white/10">
-                          <Icon className="h-6 w-6 text-cyan-300" />
-                        </span>
-                        <div className={isLeft ? "lg:text-right" : ""}>
-                          <span className="font-display text-xs font-semibold tracking-widest text-white/40">
-                            STEP {item.step}
+                    <TiltCard intensity={6} className="group w-full">
+                      <div className="relative inline-block w-full overflow-hidden rounded-3xl border border-white/12 bg-white/[0.03] backdrop-blur-2xl p-6 transition-colors duration-500 hover:border-white/25">
+                        <div
+                          className={`flex items-center gap-4 ${
+                            isLeft ? "lg:flex-row-reverse" : ""
+                          }`}
+                          style={{ transform: "translateZ(30px)" }}
+                        >
+                          <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-electric-500/20 to-purple-500/20 ring-1 ring-white/10">
+                            <Icon className="h-6 w-6 text-cyan-300" />
                           </span>
-                          <h3 className="font-display text-xl font-semibold text-white">
-                            {item.title}
-                          </h3>
+                          <div className={isLeft ? "lg:text-right" : ""}>
+                            <span className="font-display text-xs font-semibold tracking-widest text-white/40">
+                              STEP {item.step}
+                            </span>
+                            <h3 className="font-display text-xl font-semibold text-white">
+                              {item.title}
+                            </h3>
+                          </div>
                         </div>
+                        <p
+                          className={`mt-3 text-sm leading-relaxed text-white/55 ${
+                            isLeft ? "lg:text-right" : ""
+                          }`}
+                          style={{ transform: "translateZ(20px)" }}
+                        >
+                          {item.body}
+                        </p>
                       </div>
-                      <p
-                        className={`mt-3 text-sm leading-relaxed text-white/55 ${
-                          isLeft ? "lg:text-right" : ""
-                        }`}
-                      >
-                        {item.body}
-                      </p>
-                    </div>
+                    </TiltCard>
                   </motion.div>
                 </div>
               );

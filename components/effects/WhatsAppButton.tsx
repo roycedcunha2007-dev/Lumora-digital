@@ -39,13 +39,15 @@ export default function WhatsAppButton() {
                 initial={{ opacity: 0, x: 10 }}
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: 10 }}
-                className="hidden items-center gap-2 rounded-full glass-strong px-4 py-2.5 text-sm text-white shadow-glass sm:flex"
+                className="relative hidden items-center gap-2.5 rounded-full border border-white/20 bg-navy-950/80 px-4 py-2.5 text-sm font-medium text-white shadow-[0_10px_35px_rgba(0,0,0,0.5)] backdrop-blur-2xl sm:flex"
               >
-                Chat with us
+                {/* Specular inner top highlight */}
+                <div className="pointer-events-none absolute inset-0 rounded-[inherit] shadow-[inset_0_1px_0_0_rgba(255,255,255,0.25)]" />
+                <span>Chat with us</span>
                 <button
                   onClick={() => setTip(false)}
                   aria-label="Dismiss"
-                  className="text-white/40 hover:text-white"
+                  className="text-white/40 hover:text-white transition-colors"
                 >
                   <X className="h-3.5 w-3.5" />
                 </button>
