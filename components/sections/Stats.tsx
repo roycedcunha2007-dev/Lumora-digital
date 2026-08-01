@@ -3,13 +3,14 @@
 import { motion } from "framer-motion";
 import Counter from "@/components/ui/Counter";
 import { Stagger, staggerItem } from "@/components/ui/Reveal";
+import TiltCard from "@/components/ui/TiltCard";
 import { stats } from "@/lib/site";
 
 export default function Stats() {
   return (
     <section className="relative py-20">
       <div className="container-px">
-        <div className="relative overflow-hidden rounded-[2.5rem] border border-white/10 bg-gradient-to-br from-white/[0.06] to-white/[0.01] p-10 sm:p-14">
+        <div className="relative overflow-hidden rounded-[2.5rem] border border-white/12 bg-gradient-to-br from-white/[0.07] via-white/[0.02] to-transparent p-10 backdrop-blur-2xl shadow-[0_24px_60px_-15px_rgba(0,0,0,0.6)] sm:p-14">
           {/* ambient glows */}
           <div className="pointer-events-none absolute -left-20 -top-20 h-64 w-64 rounded-full bg-electric-500/20 blur-3xl" />
           <div className="pointer-events-none absolute -bottom-24 -right-10 h-64 w-64 rounded-full bg-purple-500/20 blur-3xl" />
@@ -24,18 +25,26 @@ export default function Stats() {
 
           <Stagger
             gap={0.12}
-            className="relative mt-12 grid grid-cols-2 gap-8 lg:grid-cols-4"
+            className="relative mt-12 grid grid-cols-2 gap-6 lg:grid-cols-4"
           >
             {stats.map((s) => (
-              <motion.div
-                key={s.label}
-                variants={staggerItem}
-                className="flex flex-col items-center text-center"
-              >
-                <span className="font-display text-5xl font-semibold text-gradient sm:text-6xl">
-                  <Counter to={s.value} suffix={s.suffix} />
-                </span>
-                <span className="mt-2 text-sm text-white/50">{s.label}</span>
+              <motion.div key={s.label} variants={staggerItem}>
+                <TiltCard intensity={6} className="group h-full">
+                  <div className="flex flex-col items-center justify-center rounded-2xl border border-white/10 bg-white/[0.02] p-6 text-center transition-all duration-500 group-hover:border-white/20 group-hover:bg-white/[0.05]">
+                    <span
+                      className="font-display text-5xl font-semibold text-gradient sm:text-6xl"
+                      style={{ transform: "translateZ(25px)" }}
+                    >
+                      <Counter to={s.value} suffix={s.suffix} />
+                    </span>
+                    <span
+                      className="mt-2 text-sm text-white/60 group-hover:text-white/80 transition-colors"
+                      style={{ transform: "translateZ(15px)" }}
+                    >
+                      {s.label}
+                    </span>
+                  </div>
+                </TiltCard>
               </motion.div>
             ))}
           </Stagger>

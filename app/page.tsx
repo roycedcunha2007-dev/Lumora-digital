@@ -1,4 +1,5 @@
 import AuroraBackground from "@/components/effects/AuroraBackground";
+import LumoraPrism3D from "@/components/3d/LumoraPrism3D";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import WhatsAppButton from "@/components/effects/WhatsAppButton";
@@ -18,6 +19,7 @@ export default function Home() {
   return (
     <>
       <AuroraBackground />
+      <LumoraPrism3D />
       <Navbar />
       <main className="relative">
         <Hero />

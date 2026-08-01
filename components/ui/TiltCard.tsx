@@ -13,7 +13,7 @@ import { cn } from "@/lib/utils";
 export default function TiltCard({
   children,
   className,
-  intensity = 10,
+  intensity = 12,
   glare = true,
 }: {
   children: ReactNode;
@@ -25,19 +25,19 @@ export default function TiltCard({
   const x = useMotionValue(0);
   const y = useMotionValue(0);
 
-  const sx = useSpring(x, { stiffness: 220, damping: 18 });
-  const sy = useSpring(y, { stiffness: 220, damping: 18 });
+  const sx = useSpring(x, { stiffness: 280, damping: 22, mass: 0.5 });
+  const sy = useSpring(y, { stiffness: 280, damping: 22, mass: 0.5 });
 
   const rotateX = useTransform(sy, [-0.5, 0.5], [intensity, -intensity]);
   const rotateY = useTransform(sx, [-0.5, 0.5], [-intensity, intensity]);
 
-  const glareX = useTransform(sx, [-0.5, 0.5], ["0%", "100%"]) as MotionValue<string>;
-  const glareY = useTransform(sy, [-0.5, 0.5], ["0%", "100%"]) as MotionValue<string>;
+  const glareX = useTransform(sx, [-0.5, 0.5], ["10%", "90%"]) as MotionValue<string>;
+  const glareY = useTransform(sy, [-0.5, 0.5], ["10%", "90%"]) as MotionValue<string>;
 
   const glareBg = useTransform(
     [glareX, glareY],
     ([gx, gy]) =>
-      `radial-gradient(circle at ${gx} ${gy}, rgba(255,255,255,0.16), transparent 45%)`
+      `radial-gradient(circle at ${gx} ${gy}, rgba(255,255,255,0.22) 0%, rgba(255,255,255,0.06) 35%, transparent 65%)`
   );
 
   const handleMove = (e: React.MouseEvent) => {
@@ -59,12 +59,12 @@ export default function TiltCard({
       onMouseMove={handleMove}
       onMouseLeave={reset}
       style={{ rotateX, rotateY, transformStyle: "preserve-3d" }}
-      className={cn("relative [perspective:1000px]", className)}
+      className={cn("relative [perspective:1000px] will-change-transform", className)}
     >
       {children}
       {glare && (
         <motion.div
-          className="pointer-events-none absolute inset-0 rounded-[inherit] opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+          className="pointer-events-none absolute inset-0 rounded-[inherit] opacity-0 transition-opacity duration-300 group-hover:opacity-100 mix-blend-overlay"
           style={{ background: glareBg }}
         />
       )}

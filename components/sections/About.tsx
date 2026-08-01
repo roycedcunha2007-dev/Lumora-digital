@@ -5,6 +5,7 @@ import { motion, useScroll, useTransform } from "framer-motion";
 import { Compass, Eye, Target } from "lucide-react";
 import SectionHeading from "@/components/ui/SectionHeading";
 import Reveal, { Stagger, staggerItem } from "@/components/ui/Reveal";
+import TiltCard from "@/components/ui/TiltCard";
 import { coreValues, journey } from "@/lib/site";
 
 export default function About() {
@@ -48,22 +49,31 @@ export default function About() {
             },
           ].map((card, i) => (
             <Reveal key={card.title} direction="up" delay={i * 0.12}>
-              <div className="group relative h-full overflow-hidden rounded-3xl border border-white/10 bg-white/[0.02] p-7 transition-colors duration-500 hover:bg-white/[0.04]">
-                <div
-                  className={`absolute -right-10 -top-10 h-32 w-32 rounded-full bg-gradient-to-br ${card.accent} opacity-20 blur-2xl transition-opacity duration-500 group-hover:opacity-40`}
-                />
-                <span
-                  className={`inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br ${card.accent}`}
-                >
-                  <card.icon className="h-6 w-6 text-white" />
-                </span>
-                <h3 className="mt-5 font-display text-xl font-semibold text-white">
-                  {card.title}
-                </h3>
-                <p className="mt-2.5 text-sm leading-relaxed text-white/55">
-                  {card.body}
-                </p>
-              </div>
+              <TiltCard intensity={8} className="group h-full">
+                <div className="relative h-full overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-b from-white/[0.05] to-white/[0.01] p-7 transition-all duration-500 group-hover:border-white/20">
+                  <div
+                    className={`absolute -right-10 -top-10 h-32 w-32 rounded-full bg-gradient-to-br ${card.accent} opacity-20 blur-2xl transition-opacity duration-500 group-hover:opacity-40`}
+                  />
+                  <span
+                    className={`inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br ${card.accent} transition-transform duration-500 group-hover:scale-110`}
+                    style={{ transform: "translateZ(30px)" }}
+                  >
+                    <card.icon className="h-6 w-6 text-white" />
+                  </span>
+                  <h3
+                    className="mt-5 font-display text-xl font-semibold text-white"
+                    style={{ transform: "translateZ(20px)" }}
+                  >
+                    {card.title}
+                  </h3>
+                  <p
+                    className="mt-2.5 text-sm leading-relaxed text-white/55"
+                    style={{ transform: "translateZ(10px)" }}
+                  >
+                    {card.body}
+                  </p>
+                </div>
+              </TiltCard>
             </Reveal>
           ))}
         </div>
@@ -125,17 +135,23 @@ export default function About() {
           </Reveal>
           <Stagger gap={0.1} className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {coreValues.map((v) => (
-              <motion.div
-                key={v.title}
-                variants={staggerItem}
-                className="gradient-border rounded-3xl bg-white/[0.02] p-6"
-              >
-                <h4 className="font-display text-lg font-semibold text-white">
-                  {v.title}
-                </h4>
-                <p className="mt-2 text-sm leading-relaxed text-white/55">
-                  {v.body}
-                </p>
+              <motion.div key={v.title} variants={staggerItem}>
+                <TiltCard intensity={6} className="group h-full">
+                  <div className="gradient-border relative h-full rounded-3xl bg-gradient-to-b from-white/[0.03] to-white/[0.01] p-6 transition-all duration-500 group-hover:border-white/20">
+                    <h4
+                      className="font-display text-lg font-semibold text-white"
+                      style={{ transform: "translateZ(20px)" }}
+                    >
+                      {v.title}
+                    </h4>
+                    <p
+                      className="mt-2 text-sm leading-relaxed text-white/55"
+                      style={{ transform: "translateZ(10px)" }}
+                    >
+                      {v.body}
+                    </p>
+                  </div>
+                </TiltCard>
               </motion.div>
             ))}
           </Stagger>
