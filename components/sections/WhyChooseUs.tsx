@@ -1,11 +1,10 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { MousePointer2 } from "lucide-react";
 import SectionHeading from "@/components/ui/SectionHeading";
 import { Stagger, staggerItem } from "@/components/ui/Reveal";
 import TiltCard from "@/components/ui/TiltCard";
-import ChromeArtifact from "@/components/3d/ChromeArtifact";
+import PerformanceSimulator from "@/components/ui/PerformanceSimulator";
 import { whyChooseUs } from "@/lib/site";
 import { getIcon } from "@/lib/icons";
 
@@ -19,39 +18,9 @@ export default function WhyChooseUs() {
           description="It's not just how our work looks — it's how it performs, how it's built, and the measurable business lift we engineer into every launch."
         />
 
-        {/* Real-time chrome artifact — a demonstration of craft, not a claim */}
-        <div className="relative mt-14 overflow-hidden rounded-[2.5rem] border border-white/10 bg-gradient-to-b from-white/[0.05] to-white/[0.01] shadow-card">
-          {/* grounding light pool */}
-          <div className="pointer-events-none absolute left-1/2 top-1/2 h-[440px] w-[440px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-white/[0.05] blur-[130px]" />
-
-          <div className="relative grid items-center gap-8 p-8 sm:p-12 lg:grid-cols-[1fr_1.05fr] lg:gap-4">
-            <div className="flex flex-col items-start">
-              <span className="eyebrow">
-                <span className="h-1.5 w-1.5 rounded-full bg-white/70" />
-                Real-time WebGL
-              </span>
-
-              <h3 className="mt-6 font-display text-3xl font-semibold leading-[1.08] tracking-tightest text-white sm:text-4xl">
-                <span className="text-gradient">Rendered live</span>
-                <br />
-                in your browser.
-              </h3>
-
-              <p className="mt-5 max-w-md text-base leading-relaxed text-white/55">
-                This isn&apos;t a video or an image. It&apos;s a physically-lit
-                metal surface drawn on your GPU every frame, reflecting a real
-                environment map. The same obsession with material, light and
-                motion goes into every interface we ship.
-              </p>
-
-              <span className="mt-8 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.03] px-4 py-2 text-xs font-medium text-white/60">
-                <MousePointer2 className="h-3.5 w-3.5" />
-                Drag to rotate
-              </span>
-            </div>
-
-            <ChromeArtifact className="h-[340px] w-full sm:h-[420px] lg:h-[480px]" />
-          </div>
+        {/* Live Performance Simulator Widget */}
+        <div className="mt-14">
+          <PerformanceSimulator />
         </div>
 
         {/* 3D Tilt Advantage Cards */}

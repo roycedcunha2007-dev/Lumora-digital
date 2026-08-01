@@ -3,8 +3,8 @@
 import { useState } from "react";
 import { AnimatePresence, motion, LayoutGroup } from "framer-motion";
 import { ArrowUpRight } from "lucide-react";
-import SectionHeading from "@/components/ui/SectionHeading";
 import ProjectModal from "@/components/ui/ProjectModal";
+import MacBookReveal from "@/components/ui/MacBookReveal";
 import { projects, projectCategories, Project } from "@/lib/site";
 import { cn } from "@/lib/utils";
 
@@ -18,16 +18,20 @@ export default function Portfolio() {
       : projects.filter((p) => p.category === filter);
 
   return (
-    <section id="portfolio" className="relative py-28 sm:py-36">
-      <div className="container-px">
-        <SectionHeading
-          eyebrow="Selected work"
-          title="Work we're proud of"
-          description="A glimpse of the sites and experiences we've crafted. Every project is bespoke — click any project to view its full case study details."
-        />
+    <section id="portfolio" className="relative pb-28 sm:pb-36">
+      {/* Scroll-driven MacBook reveal — pins and drives the whole showcase */}
+      <MacBookReveal />
+
+      <div className="container-px pt-28 sm:pt-32">
+        <div className="mb-10 flex flex-col items-center text-center">
+          <span className="eyebrow">
+            <span className="h-1.5 w-1.5 rounded-full bg-white/70" />
+            Browse the archive
+          </span>
+        </div>
 
         {/* Filters */}
-        <div className="mt-12 flex flex-wrap justify-center gap-2.5">
+        <div className="flex flex-wrap justify-center gap-2.5">
           {projectCategories.map((cat) => (
             <button
               key={cat}
