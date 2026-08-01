@@ -34,7 +34,7 @@ export default function Pricing() {
                   className={cn(
                     "relative flex h-full flex-col overflow-hidden rounded-[2rem] p-8 transition-all duration-500",
                     plan.highlight
-                      ? "gradient-border bg-gradient-to-b from-white/[0.09] via-white/[0.03] to-transparent shadow-[0_20px_50px_rgba(0,0,0,0.5)] lg:-translate-y-4 lg:scale-[1.02]"
+                      ? "gradient-border-animated bg-gradient-to-b from-white/[0.09] via-white/[0.03] to-transparent shadow-[0_20px_50px_rgba(0,0,0,0.5)] lg:-translate-y-4 lg:scale-[1.02]"
                       : "border border-white/10 bg-white/[0.02] hover:border-white/20"
                   )}
                 >
