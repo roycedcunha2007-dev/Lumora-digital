@@ -154,30 +154,21 @@ export default function RobotSpeechPresenter({
   const words = SCRIPT_PARTS[currentPartIdx]?.split(" ") || [];
 
   return (
-    <div className={cn("relative z-20", className)}>
+    <div className={cn("pointer-events-none relative z-20", className)}>
       {/* Click Trigger Area overlay on the robot container */}
       {!isPlaying && (
-        <motion.button
-          onClick={startPresentation}
-          onMouseEnter={() => setIsHovered(true)}
-          onMouseLeave={() => setIsHovered(false)}
-          aria-label="Interact with AI Robot Presenter"
-          className="group absolute inset-0 flex items-center justify-center rounded-3xl cursor-pointer focus:outline-none"
-        >
-          <AnimatePresence>
-            {isHovered && (
-              <motion.div
-                initial={{ opacity: 0, y: 10, scale: 0.95 }}
-                animate={{ opacity: 1, y: 0, scale: 1 }}
-                exit={{ opacity: 0, y: 5, scale: 0.95 }}
-                className="pointer-events-none absolute top-6 flex items-center gap-2 rounded-full border border-white/20 bg-navy-950/80 px-4 py-2 text-xs font-medium text-white shadow-[0_10px_30px_rgba(0,0,0,0.5)] backdrop-blur-xl"
-              >
-                <Sparkles className="h-3.5 w-3.5 text-cyan-400 animate-pulse" />
-                <span>Click robot to speak</span>
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </motion.button>
+        <div className="absolute inset-0 flex items-start justify-center pt-4">
+          <motion.button
+            onClick={startPresentation}
+            onMouseEnter={() => setIsHovered(true)}
+            onMouseLeave={() => setIsHovered(false)}
+            aria-label="Interact with AI Robot Presenter"
+            className="pointer-events-auto group flex items-center gap-2 rounded-full border border-white/20 bg-navy-950/80 px-4 py-2 text-xs font-medium text-white shadow-[0_10px_30px_rgba(0,0,0,0.5)] backdrop-blur-xl transition-all duration-300 hover:scale-105 hover:border-white/40 focus:outline-none"
+          >
+            <Sparkles className="h-3.5 w-3.5 text-cyan-400 animate-pulse" />
+            <span>Click robot to speak</span>
+          </motion.button>
+        </div>
       )}
 
       {/* Floating Glass Speech Panel */}
@@ -188,7 +179,7 @@ export default function RobotSpeechPresenter({
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.9, y: 15 }}
             transition={{ type: "spring", stiffness: 280, damping: 22 }}
-            className="absolute -top-24 left-1/2 -translate-x-1/2 sm:-top-28 sm:left-auto sm:right-4 sm:translate-x-0 w-[90%] max-w-sm rounded-3xl border border-white/20 bg-navy-950/90 p-5 shadow-[0_20px_60px_rgba(0,0,0,0.7)] backdrop-blur-2xl"
+            className="pointer-events-auto absolute -top-24 left-1/2 -translate-x-1/2 sm:-top-28 sm:left-auto sm:right-4 sm:translate-x-0 w-[90%] max-w-sm rounded-3xl border border-white/20 bg-navy-950/90 p-5 shadow-[0_20px_60px_rgba(0,0,0,0.7)] backdrop-blur-2xl"
           >
             {/* Specular inner line */}
             <div className="pointer-events-none absolute inset-0 rounded-[inherit] shadow-[inset_0_1px_0_0_rgba(255,255,255,0.25)]" />
