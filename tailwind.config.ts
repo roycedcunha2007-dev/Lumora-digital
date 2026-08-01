@@ -95,10 +95,6 @@ const config: Config = {
         "spin-slow": {
           to: { transform: "rotate(360deg)" },
         },
-        marquee: {
-          from: { transform: "translateX(0)" },
-          to: { transform: "translateX(-50%)" },
-        },
         "pulse-ring": {
           "0%": { transform: "scale(0.9)", opacity: "0.7" },
           "70%": { transform: "scale(1.6)", opacity: "0" },
@@ -111,7 +107,6 @@ const config: Config = {
         shimmer: "shimmer 2.5s infinite",
         "gradient-x": "gradient-x 8s ease infinite",
         "spin-slow": "spin-slow 24s linear infinite",
-        marquee: "marquee 40s linear infinite",
         "pulse-ring": "pulse-ring 2.4s cubic-bezier(0.4,0,0.6,1) infinite",
       },
     },

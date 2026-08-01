@@ -7,9 +7,7 @@ import About from "@/components/sections/About";
 import WhyChooseUs from "@/components/sections/WhyChooseUs";
 import Services from "@/components/sections/Services";
 import Process from "@/components/sections/Process";
-import Portfolio from "@/components/sections/Portfolio";
 import Stats from "@/components/sections/Stats";
-import Testimonials from "@/components/sections/Testimonials";
 import Pricing from "@/components/sections/Pricing";
 import Team from "@/components/sections/Team";
 import FAQ from "@/components/sections/FAQ";
@@ -26,9 +24,7 @@ export default function Home() {
         <WhyChooseUs />
         <Services />
         <Process />
-        <Portfolio />
         <Stats />
-        <Testimonials />
         <Pricing />
         <Team />
         <FAQ />

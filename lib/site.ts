@@ -31,7 +31,6 @@ export const navLinks = [
   { label: "About", href: "#about" },
   { label: "Services", href: "#services" },
   { label: "Process", href: "#process" },
-  { label: "Work", href: "#portfolio" },
   { label: "Pricing", href: "#pricing" },
   { label: "Contact", href: "#contact" },
 ];
@@ -241,132 +240,7 @@ export const process = [
   },
 ];
 
-export type Project = {
-  id: string;
-  title: string;
-  category: string;
-  tags: string[];
-  year: string;
-  blurb: string;
-  gradient: string;
-  span: "tall" | "wide" | "normal";
-};
 
-export const projectCategories = [
-  "All",
-  "Web Design",
-  "Development",
-  "E-commerce",
-  "Branding",
-];
-
-export const projects: Project[] = [
-  {
-    id: "aurora",
-    title: "[Project Aurora]",
-    category: "Web Design",
-    tags: ["UI/UX", "Framer Motion"],
-    year: "[2024]",
-    blurb: "[Project Description] — a bold rebrand and site for a boutique studio.",
-    gradient: "from-electric-500/40 via-purple-500/30 to-cyan-500/40",
-    span: "tall",
-  },
-  {
-    id: "helio",
-    title: "[Project Helio]",
-    category: "E-commerce",
-    tags: ["Shopify", "CRO"],
-    year: "[2024]",
-    blurb: "[Project Description] — a storefront redesign that lifted conversions.",
-    gradient: "from-purple-500/40 via-electric-500/25 to-purple-600/40",
-    span: "wide",
-  },
-  {
-    id: "nimbus",
-    title: "[Project Nimbus]",
-    category: "Development",
-    tags: ["Next.js", "Headless"],
-    year: "[2023]",
-    blurb: "[Project Description] — a lightning-fast marketing platform.",
-    gradient: "from-cyan-500/40 via-electric-500/30 to-purple-500/30",
-    span: "normal",
-  },
-  {
-    id: "lumen",
-    title: "[Project Lumen]",
-    category: "Branding",
-    tags: ["Identity", "Web"],
-    year: "[2023]",
-    blurb: "[Project Description] — identity and site for a local restaurant group.",
-    gradient: "from-electric-400/40 via-cyan-500/25 to-electric-600/40",
-    span: "normal",
-  },
-  {
-    id: "vertex",
-    title: "[Project Vertex]",
-    category: "Web Design",
-    tags: ["SaaS", "Design System"],
-    year: "[2024]",
-    blurb: "[Project Description] — a scalable design system for a growing SaaS.",
-    gradient: "from-purple-400/40 via-purple-600/25 to-cyan-500/35",
-    span: "wide",
-  },
-  {
-    id: "orbit",
-    title: "[Project Orbit]",
-    category: "Development",
-    tags: ["Web App", "Realtime"],
-    year: "[2022]",
-    blurb: "[Project Description] — a realtime dashboard with delightful motion.",
-    gradient: "from-cyan-400/40 via-electric-500/25 to-purple-500/35",
-    span: "tall",
-  },
-];
-
-export const testimonials = [
-  {
-    name: "[Client Name]",
-    role: "[Founder, Company]",
-    quote:
-      "[Testimonial] — Lumora turned our vision into something far beyond what we imagined. The attention to detail is unreal.",
-    rating: 5,
-  },
-  {
-    name: "[Client Name]",
-    role: "[Owner, Local Business]",
-    quote:
-      "[Testimonial] — Our bookings doubled within two months of launch. Fast, beautiful and effortless to work with.",
-    rating: 5,
-  },
-  {
-    name: "[Client Name]",
-    role: "[Marketing Lead]",
-    quote:
-      "[Testimonial] — The most professional team we've hired. They cared about our results as much as we did.",
-    rating: 5,
-  },
-  {
-    name: "[Client Name]",
-    role: "[Director, Studio]",
-    quote:
-      "[Testimonial] — Every interaction feels premium. Clients constantly compliment the new site.",
-    rating: 5,
-  },
-  {
-    name: "[Client Name]",
-    role: "[CEO, Startup]",
-    quote:
-      "[Testimonial] — Worth every penny. They delivered on time and the animations are chef's kiss.",
-    rating: 5,
-  },
-  {
-    name: "[Client Name]",
-    role: "[Co-founder]",
-    quote:
-      "[Testimonial] — From strategy to launch, the process was smooth and genuinely enjoyable.",
-    rating: 5,
-  },
-];
 
 export const pricing = [
   {
