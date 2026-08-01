@@ -47,6 +47,12 @@ export default function TiltCard({
       `radial-gradient(circle at ${gx} ${gy}, rgba(255,255,255,0.25) 0%, rgba(255,255,255,0.08) 35%, transparent 70%)`
   );
 
+  const holoBg = useTransform(
+    [glareX, glareY],
+    ([gx, gy]) =>
+      `radial-gradient(circle at ${gx} ${gy}, rgba(0, 240, 255, 0.16) 0%, rgba(139, 92, 246, 0.12) 32%, rgba(37, 99, 235, 0.08) 60%, transparent 85%)`
+  );
+
   const handleMove = (e: React.MouseEvent) => {
     if (isTouch) return;
     const el = ref.current;
@@ -83,6 +89,12 @@ export default function TiltCard({
 
         {/* 12-Second Shimmer Reflection Light Sweep */}
         <span className="pointer-events-none absolute -inset-full top-0 block h-full w-1/2 -skew-x-12 bg-gradient-to-r from-transparent via-white/20 to-transparent opacity-0 transition-all duration-1000 group-hover:left-full group-hover:opacity-100" />
+
+        {/* Holographic Iridescent Cursor-Reactive Layer */}
+        <motion.div
+          className="pointer-events-none absolute inset-0 rounded-[inherit] opacity-0 transition-opacity duration-400 group-hover:opacity-100 mix-blend-color-dodge"
+          style={{ background: holoBg }}
+        />
 
         <div className="relative z-10">{children}</div>
 
