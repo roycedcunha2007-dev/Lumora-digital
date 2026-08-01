@@ -29,51 +29,8 @@ export default function LumoraPrism3D() {
     renderer.shadowMap.enabled = true;
     container.appendChild(renderer.domElement);
 
-    // Create Octahedron / Prism Geometry
-    const geometry = new THREE.OctahedronGeometry(1.8, 0);
-    
-    // Wireframe inner geometry
-    const wireframeGeo = new THREE.WireframeGeometry(geometry);
-    const wireframeMat = new THREE.LineBasicMaterial({
-      color: 0x00f0ff,
-      transparent: true,
-      opacity: 0.45,
-    });
-    const wireframeMesh = new THREE.LineSegments(wireframeGeo, wireframeMat);
-
-    // Outer Glass Refractive Material
-    const glassMat = new THREE.MeshPhysicalMaterial({
-      color: 0x0c122b,
-      metalness: 0.15,
-      roughness: 0.08,
-      transmission: 0.92,
-      ior: 1.55,
-      thickness: 1.4,
-      specularIntensity: 1,
-      clearcoat: 1,
-      clearcoatRoughness: 0.08,
-      transparent: true,
-      opacity: 0.88,
-    });
-
-    const prismMesh = new THREE.Mesh(geometry, glassMat);
-    prismMesh.add(wireframeMesh);
-    scene.add(prismMesh);
-
-    // Secondary Holographic 3D Ring
-    const ringGeo = new THREE.TorusGeometry(2.8, 0.03, 16, 100);
-    const ringMat = new THREE.MeshBasicMaterial({
-      color: 0x8b5cf6,
-      transparent: true,
-      opacity: 0.4,
-      wireframe: true,
-    });
-    const ringMesh = new THREE.Mesh(ringGeo, ringMat);
-    ringMesh.rotation.x = Math.PI / 3;
-    scene.add(ringMesh);
-
     // Floating 3D Star/Crystal Particles
-    const particleCount = 40;
+    const particleCount = 45;
     const particleGeo = new THREE.BufferGeometry();
     const particlePos = new Float32Array(particleCount * 3);
     for (let i = 0; i < particleCount * 3; i += 3) {
@@ -86,7 +43,7 @@ export default function LumoraPrism3D() {
       color: 0x00f0ff,
       size: 0.05,
       transparent: true,
-      opacity: 0.6,
+      opacity: 0.5,
     });
     const particleSystem = new THREE.Points(particleGeo, particleMat);
     scene.add(particleSystem);
@@ -143,23 +100,7 @@ export default function LumoraPrism3D() {
       mouse.y += (mouse.targetY - mouse.y) * 0.05;
 
       if (!reduced) {
-        // Base rotation
-        prismMesh.rotation.x = elapsedTime * 0.25 + mouse.y * 0.5;
-        prismMesh.rotation.y = elapsedTime * 0.35 + mouse.x * 0.5;
-
-        ringMesh.rotation.x = elapsedTime * -0.15 + mouse.y * 0.3;
-        ringMesh.rotation.y = elapsedTime * 0.2 + mouse.x * 0.3;
-
-        particleSystem.rotation.y = elapsedTime * 0.05;
-
-        // Scroll translation & rotation modulation
-        const scrollFactor = scrollY * 0.0012;
-        prismMesh.position.y = Math.sin(elapsedTime * 0.8) * 0.2 - scrollFactor * 0.5;
-        prismMesh.position.x = mouse.x * 0.4;
-        prismMesh.rotation.z = scrollFactor * 1.5;
-
-        ringMesh.position.y = prismMesh.position.y;
-        ringMesh.position.x = prismMesh.position.x;
+        particleSystem.rotation.y = elapsedTime * 0.04;
 
         // Animate lights
         cyanLight.position.x = Math.sin(elapsedTime * 0.5) * 5;
@@ -182,12 +123,6 @@ export default function LumoraPrism3D() {
       if (container.contains(renderer.domElement)) {
         container.removeChild(renderer.domElement);
       }
-      geometry.dispose();
-      wireframeGeo.dispose();
-      wireframeMat.dispose();
-      glassMat.dispose();
-      ringGeo.dispose();
-      ringMat.dispose();
       particleGeo.dispose();
       particleMat.dispose();
       renderer.dispose();
