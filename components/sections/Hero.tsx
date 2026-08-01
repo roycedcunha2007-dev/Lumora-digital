@@ -8,6 +8,7 @@ import Counter from "@/components/ui/Counter";
 import { SplineScene } from "@/components/ui/splite";
 import { Spotlight } from "@/components/ui/spotlight";
 import { heroStats } from "@/lib/site";
+import RobotSpeechPresenter from "@/components/ui/RobotSpeechPresenter";
 import RobotAtmosphere from "@/components/effects/RobotAtmosphere";
 import ContinuousAIScanHeading from "@/components/effects/ContinuousAIScanHeading";
 import HeroStatsBar from "@/components/effects/HeroStatsBar";
@@ -130,6 +131,7 @@ export default function Hero() {
         >
           {/* Breathing aura halo and floating micro light particles */}
           <RobotAtmosphere />
+          <RobotSpeechPresenter className="absolute inset-0" />
 
           <SplineScene
             scene="https://prod.spline.design/kZDDjO5HuC9GJUM2/scene.splinecode"
