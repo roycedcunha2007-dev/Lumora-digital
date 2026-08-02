@@ -39,9 +39,9 @@ export default function MagneticButton({
     "group relative overflow-hidden inline-flex items-center justify-center gap-2 rounded-full px-7 py-3.5 text-sm font-semibold tracking-tight transition-all duration-300 will-change-transform cursor-pointer";
 
   const variants: Record<string, string> = {
-    primary: "text-white shadow-[0_8px_32px_rgba(255,255,255,0.18)] hover:shadow-[0_12px_40px_rgba(255,255,255,0.3)]",
-    outline: "text-white border border-white/20 bg-white/[0.03] backdrop-blur-md hover:border-white/40 hover:bg-white/[0.08]",
-    ghost: "text-white/80 hover:text-white hover:bg-white/[0.06]",
+    primary: "text-white shadow-[0_8px_32px_rgba(255,255,255,0.18),inset_0_1px_0_rgba(255,255,255,0.35)] hover:shadow-[0_12px_45px_rgba(0,240,255,0.35),inset_0_1.5px_0_rgba(255,255,255,0.6)]",
+    outline: "text-white border border-white/20 bg-white/[0.04] backdrop-blur-xl shadow-[inset_0_1px_0_rgba(255,255,255,0.25)] hover:border-white/40 hover:bg-white/[0.1] hover:shadow-[0_10px_30px_rgba(0,240,255,0.2),inset_0_1px_0_rgba(255,255,255,0.4)]",
+    ghost: "text-white/80 hover:text-white hover:bg-white/[0.08] backdrop-blur-md",
   };
 
   const Inner = (
