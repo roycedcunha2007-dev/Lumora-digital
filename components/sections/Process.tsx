@@ -80,7 +80,7 @@ export default function Process() {
                         : "lg:col-start-2 lg:pl-16"
                     }`}
                   >
-                    <TiltCard intensity={6} className="group w-full">
+                    <TiltCard variant="ai-futuristic" intensity={6} className="group w-full">
                       <div className="relative inline-block w-full overflow-hidden rounded-3xl border border-white/12 bg-white/[0.03] backdrop-blur-2xl p-6 transition-colors duration-500 hover:border-white/25">
                         <div
                           className={`flex items-center gap-4 ${

@@ -29,20 +29,24 @@ export default function Pricing() {
         >
           {pricing.map((plan) => (
             <motion.div key={plan.id} variants={staggerItem}>
-              <TiltCard intensity={7} className="group h-full">
+              <TiltCard
+                variant={plan.highlight ? "gold-luxury" : "silver-cyan"}
+                intensity={plan.highlight ? 10 : 7}
+                className="group h-full"
+              >
                 <div
                   className={cn(
                     "relative flex h-full flex-col overflow-hidden rounded-[2rem] p-8 transition-all duration-500",
                     plan.highlight
-                      ? "gradient-border-animated bg-gradient-to-b from-white/[0.09] via-white/[0.03] to-transparent shadow-[0_20px_50px_rgba(0,0,0,0.5)] lg:-translate-y-4 lg:scale-[1.02]"
+                      ? "bg-gradient-to-b from-amber-500/[0.12] via-yellow-500/[0.04] to-transparent shadow-[0_22px_60px_rgba(212,175,55,0.25)] lg:-translate-y-4 lg:scale-[1.02]"
                       : "border border-white/10 bg-white/[0.02] hover:border-white/20"
                   )}
                 >
                   {plan.highlight && (
                     <>
-                      <div className="pointer-events-none absolute -top-24 left-1/2 h-48 w-48 -translate-x-1/2 rounded-full bg-purple-500/30 blur-3xl" />
-                      <span className="absolute right-6 top-6 inline-flex items-center gap-1.5 rounded-full bg-gradient-to-r from-electric-500 to-purple-500 px-3 py-1 text-[11px] font-semibold text-white shadow-glow">
-                        <Sparkles className="h-3 w-3" /> Most popular
+                      <div className="pointer-events-none absolute -top-24 left-1/2 h-52 w-52 -translate-x-1/2 rounded-full bg-amber-500/25 blur-3xl" />
+                      <span className="absolute right-6 top-6 inline-flex items-center gap-1.5 rounded-full bg-gradient-to-r from-amber-400 via-yellow-500 to-amber-600 px-3.5 py-1 text-[11px] font-bold text-black shadow-[0_0_20px_rgba(255,215,0,0.5)]">
+                        <Sparkles className="h-3 w-3 fill-black text-black" /> Most popular
                       </span>
                     </>
                   )}

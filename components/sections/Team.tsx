@@ -31,7 +31,7 @@ export default function Team() {
         >
           {team.map((member) => (
             <motion.div key={member.name} variants={staggerItem}>
-              <TiltCard intensity={9} className="group h-full">
+              <TiltCard variant="trust-blue" intensity={9} className="group h-full">
                 <div className="relative h-full overflow-hidden rounded-[2rem] border border-white/10 bg-white/[0.02] p-2">
                   {/* portrait placeholder */}
                   <div className="relative aspect-[4/5] overflow-hidden rounded-[1.6rem]">

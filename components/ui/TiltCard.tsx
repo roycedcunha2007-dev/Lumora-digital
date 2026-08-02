@@ -10,16 +10,26 @@ import {
 } from "framer-motion";
 import { cn } from "@/lib/utils";
 
+export type CardVariant =
+  | "default"
+  | "luxury"
+  | "ai-futuristic"
+  | "gold-luxury"
+  | "silver-cyan"
+  | "trust-blue";
+
 export default function TiltCard({
   children,
   className,
   intensity = 12,
   glare = true,
+  variant = "default",
 }: {
   children: ReactNode;
   className?: string;
   intensity?: number;
   glare?: boolean;
+  variant?: CardVariant;
 }) {
   const ref = useRef<HTMLDivElement>(null);
   const [isTouch, setIsTouch] = useState(false);
@@ -58,21 +68,80 @@ export default function TiltCard({
 
   const dynamicBoxShadow = useTransform(
     [shadowX, shadowY],
-    ([sxVal, syVal]) =>
-      `${sxVal}px ${syVal}px 55px rgba(0, 0, 0, 0.65), 0 0 35px rgba(97, 130, 255, 0.18)`
+    ([sxVal, syVal]) => {
+      const shadowColor =
+        variant === "gold-luxury"
+          ? "rgba(212, 175, 55, 0.22)"
+          : variant === "ai-futuristic"
+          ? "rgba(0, 240, 255, 0.25)"
+          : variant === "trust-blue"
+          ? "rgba(129, 140, 248, 0.22)"
+          : "rgba(97, 130, 255, 0.18)";
+      return `${sxVal}px ${syVal}px 55px rgba(0, 0, 0, 0.65), 0 0 35px ${shadowColor}`;
+    }
   );
 
   const glareBg = useTransform(
     [glareX, glareY],
-    ([gx, gy]) =>
-      `radial-gradient(circle 380px at ${gx} ${gy}, rgba(255,255,255,0.35) 0%, rgba(0,240,255,0.18) 30%, rgba(139,92,246,0.1) 60%, transparent 85%)`
+    ([gx, gy]) => {
+      if (variant === "ai-futuristic") {
+        return `radial-gradient(circle 380px at ${gx} ${gy}, rgba(255,255,255,0.4) 0%, rgba(0,240,255,0.25) 30%, rgba(97,130,255,0.12) 60%, transparent 85%)`;
+      }
+      if (variant === "gold-luxury") {
+        return `radial-gradient(circle 380px at ${gx} ${gy}, rgba(255,235,160,0.45) 0%, rgba(212,175,55,0.25) 30%, rgba(255,190,40,0.12) 60%, transparent 85%)`;
+      }
+      if (variant === "silver-cyan") {
+        return `radial-gradient(circle 380px at ${gx} ${gy}, rgba(255,255,255,0.42) 0%, rgba(0,240,255,0.16) 32%, rgba(220,225,235,0.1) 60%, transparent 85%)`;
+      }
+      if (variant === "trust-blue") {
+        return `radial-gradient(circle 380px at ${gx} ${gy}, rgba(255,255,255,0.38) 0%, rgba(129,140,248,0.22) 30%, rgba(99,102,241,0.1) 60%, transparent 85%)`;
+      }
+      return `radial-gradient(circle 380px at ${gx} ${gy}, rgba(255,255,255,0.35) 0%, rgba(0,240,255,0.18) 30%, rgba(139,92,246,0.1) 60%, transparent 85%)`;
+    }
   );
 
   const holoBg = useTransform(
     [glareX, glareY],
-    ([gx, gy]) =>
-      `radial-gradient(circle 340px at ${gx} ${gy}, rgba(0, 240, 255, 0.28) 0%, rgba(139, 92, 246, 0.22) 32%, rgba(236, 72, 153, 0.16) 62%, transparent 85%)`
+    ([gx, gy]) => {
+      if (variant === "ai-futuristic") {
+        return `radial-gradient(circle 340px at ${gx} ${gy}, rgba(0,240,255,0.35) 0%, rgba(97,130,255,0.25) 35%, rgba(0,240,255,0.15) 65%, transparent 85%)`;
+      }
+      if (variant === "gold-luxury") {
+        return `radial-gradient(circle 340px at ${gx} ${gy}, rgba(255,215,0,0.32) 0%, rgba(212,175,55,0.25) 35%, rgba(255,235,160,0.16) 65%, transparent 85%)`;
+      }
+      if (variant === "silver-cyan") {
+        return `radial-gradient(circle 340px at ${gx} ${gy}, rgba(255,255,255,0.34) 0%, rgba(0,240,255,0.2) 35%, rgba(200,215,240,0.12) 65%, transparent 85%)`;
+      }
+      if (variant === "trust-blue") {
+        return `radial-gradient(circle 340px at ${gx} ${gy}, rgba(129,140,248,0.3) 0%, rgba(99,102,241,0.22) 35%, rgba(168,85,247,0.14) 65%, transparent 85%)`;
+      }
+      return `radial-gradient(circle 340px at ${gx} ${gy}, rgba(0, 240, 255, 0.28) 0%, rgba(139, 92, 246, 0.22) 32%, rgba(236, 72, 153, 0.16) 62%, transparent 85%)`;
+    }
   );
+
+  const backglowMap: Record<CardVariant, string> = {
+    default: "from-electric-500/20 via-cyan-500/20 to-purple-500/25",
+    luxury: "from-purple-500/30 via-electric-500/20 to-cyan-500/25",
+    "ai-futuristic": "from-cyan-500/28 via-blue-500/22 to-electric-500/25",
+    "gold-luxury": "from-amber-500/35 via-yellow-500/25 to-amber-600/30",
+    "silver-cyan": "from-white/20 via-cyan-500/15 to-white/10",
+    "trust-blue": "from-purple-500/22 via-indigo-500/22 to-cyan-500/20",
+  };
+
+  const borderConicMap: Record<CardVariant, string> = {
+    default:
+      "bg-[conic-gradient(from_var(--border-angle,0deg),rgba(255,255,255,0.4),rgba(0,240,255,0.6)_25%,rgba(139,92,246,0.6)_50%,rgba(97,130,255,0.5)_75%,rgba(255,255,255,0.4)_100%)]",
+    luxury:
+      "bg-[conic-gradient(from_var(--border-angle,0deg),rgba(255,255,255,0.6),rgba(139,92,246,0.6)_35%,rgba(97,130,255,0.5)_70%,rgba(255,255,255,0.6)_100%)]",
+    "ai-futuristic":
+      "bg-[conic-gradient(from_var(--border-angle,0deg),rgba(255,255,255,0.5),rgba(0,240,255,0.85)_30%,rgba(97,130,255,0.65)_65%,rgba(255,255,255,0.5)_100%)]",
+    "gold-luxury":
+      "bg-[conic-gradient(from_var(--border-angle,0deg),rgba(255,223,128,0.8),rgba(212,175,55,0.6)_30%,rgba(255,215,0,0.7)_65%,rgba(255,223,128,0.8)_100%)]",
+    "silver-cyan":
+      "bg-[conic-gradient(from_var(--border-angle,0deg),rgba(255,255,255,0.55),rgba(220,225,235,0.35)_40%,rgba(0,240,255,0.45)_75%,rgba(255,255,255,0.55)_100%)]",
+    "trust-blue":
+      "bg-[conic-gradient(from_var(--border-angle,0deg),rgba(255,255,255,0.45),rgba(129,140,248,0.6)_35%,rgba(99,102,241,0.45)_70%,rgba(255,255,255,0.45)_100%)]",
+  };
 
   const handleMove = (e: React.MouseEvent) => {
     if (isTouch) return;
@@ -95,8 +164,13 @@ export default function TiltCard({
 
   return (
     <div className="relative group [perspective:1200px]">
-      {/* Soft Ambient Backglow behind the card (Electric Blue, Aurora Cyan, Soft Purple) */}
-      <div className="pointer-events-none absolute -inset-3 rounded-[2.8rem] bg-gradient-to-r from-electric-500/20 via-cyan-500/20 to-purple-500/25 opacity-30 blur-2xl transition-opacity duration-700 group-hover:opacity-100" />
+      {/* Soft Ambient Backglow behind the card (Variant Specific) */}
+      <div
+        className={cn(
+          "pointer-events-none absolute -inset-3 rounded-[2.8rem] bg-gradient-to-r opacity-30 blur-2xl transition-opacity duration-700 group-hover:opacity-100",
+          backglowMap[variant]
+        )}
+      />
 
       {/* Behind Card Ambient Light & Particle Sparkle Field */}
       <div className="pointer-events-none absolute -inset-1 rounded-[2.5rem] bg-[radial-gradient(circle_at_50%_50%,rgba(0,240,255,0.12),transparent_70%)] opacity-0 blur-xl transition-opacity duration-500 group-hover:opacity-100" />
@@ -131,7 +205,12 @@ export default function TiltCard({
         )}
       >
         {/* Animated Moving Gradient Border Sweep */}
-        <div className="pointer-events-none absolute -inset-[1px] rounded-[inherit] p-[1px] bg-[conic-gradient(from_var(--border-angle,0deg),rgba(255,255,255,0.4),rgba(0,240,255,0.6)_25%,rgba(139,92,246,0.6)_50%,rgba(97,130,255,0.5)_75%,rgba(255,255,255,0.4)_100%)] [mask:linear-gradient(#fff_0_0)_content-box,linear-gradient(#fff_0_0)] [mask-composite:exclude] opacity-40 transition-opacity duration-500 group-hover:opacity-100 animate-[rotate-border_8s_linear_infinite]" />
+        <div
+          className={cn(
+            "pointer-events-none absolute -inset-[1px] rounded-[inherit] p-[1px] [mask:linear-gradient(#fff_0_0)_content-box,linear-gradient(#fff_0_0)] [mask-composite:exclude] opacity-40 transition-opacity duration-500 group-hover:opacity-100 animate-[rotate-border_8s_linear_infinite]",
+            borderConicMap[variant]
+          )}
+        />
 
         {/* Specular Inner Edge Top & Left Highlight Lines (Apple Vision Pro Liquid Glass Rim) */}
         <div className="pointer-events-none absolute inset-0 rounded-[inherit] shadow-[inset_0_1.5px_0_0_rgba(255,255,255,0.35),inset_0_-1px_0_0_rgba(255,255,255,0.1),inset_0_0_20px_rgba(255,255,255,0.03)]" />

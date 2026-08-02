@@ -44,7 +44,7 @@ export default function Services() {
             const isOpen = expanded === service.id;
             return (
               <motion.div key={service.id} variants={staggerItem} layout>
-                <TiltCard intensity={7} className="group h-full">
+                <TiltCard variant="silver-cyan" intensity={7} className="group h-full">
                   <div
                     className={cn(
                       "relative h-full overflow-hidden rounded-3xl border p-7 transition-all duration-500 cursor-pointer",
@@ -55,7 +55,22 @@ export default function Services() {
                     onClick={() => setExpanded(isOpen ? null : service.id)}
                     data-cursor={isOpen ? "Close" : "Expand"}
                   >
-                    <div className="pointer-events-none absolute -right-12 -top-12 h-40 w-40 rounded-full bg-electric-500/15 blur-3xl opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
+                    <div
+                      className={cn(
+                        "pointer-events-none absolute -right-12 -top-12 h-40 w-40 rounded-full blur-3xl opacity-0 transition-opacity duration-500 group-hover:opacity-100",
+                        service.id === "design"
+                          ? "bg-electric-500/25"
+                          : service.id === "development"
+                          ? "bg-cyan-500/25"
+                          : service.id === "responsive"
+                          ? "bg-purple-500/25"
+                          : service.id === "uiux"
+                          ? "bg-emerald-500/25"
+                          : service.id === "maintenance"
+                          ? "bg-amber-500/25"
+                          : "bg-indigo-500/25"
+                      )}
+                    />
 
                     <div className="flex items-start justify-between" style={{ transform: "translateZ(35px)" }}>
                       <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-electric-500/20 to-purple-500/20 p-3 ring-1 ring-white/15 transition-transform duration-500 group-hover:scale-110">
