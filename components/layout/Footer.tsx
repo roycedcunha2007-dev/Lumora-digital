@@ -21,7 +21,7 @@ export default function Footer() {
       <div className="container-px relative">
         {/* CTA band */}
         <Reveal>
-          <div className="mb-20 flex flex-col items-center gap-6 rounded-[2.5rem] border border-white/10 bg-gradient-to-br from-white/[0.06] to-white/[0.01] px-8 py-14 text-center">
+          <div className="relative mb-20 flex flex-col items-center gap-6 rounded-[2.5rem] border border-white/15 bg-gradient-to-br from-white/[0.08] via-white/[0.02] to-white/[0.04] backdrop-blur-3xl shadow-[0_24px_60px_-15px_rgba(0,0,0,0.65),inset_0_1.5px_0_0_rgba(255,255,255,0.3)] px-8 py-14 text-center">
             <h2 className="max-w-3xl font-display text-3xl font-semibold leading-tight text-white sm:text-5xl">
               Ready to make your business{" "}
               <span className="text-gradient">unforgettable?</span>
