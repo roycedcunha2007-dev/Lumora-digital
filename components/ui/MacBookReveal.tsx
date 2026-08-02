@@ -39,6 +39,14 @@ const STARS = [
   [29, 6, 0.14], [57, 11, 0.10], [88, 8, 0.12], [4, 47, 0.11], [96, 26, 0.13],
 ] as const;
 
+/* Short, faint constellation lines — kept to the outer margins so they never
+   cross the machine. */
+const CONSTELLATION = [
+  [79, 61, 85, 33], [85, 33, 90, 75], [90, 75, 94, 49],
+  [7, 22, 16, 64], [16, 64, 4, 47],
+  [24, 36, 33, 79], [73, 17, 79, 61],
+] as const;
+
 /* ==================================================================
    LIVE SITE — real DOM inside the panel
    ================================================================== */
@@ -162,12 +170,12 @@ function Keyboard({ led }: { led: MotionValue<number> }) {
     // Sits in the upper half of the deck, like a real MacBook.
     <div className="absolute left-1/2 top-[7%] h-[45%] w-[86%] -translate-x-1/2">
       {/* recessed black well the keys drop into */}
-      <div className="absolute -inset-[1.5%] rounded-[6px] bg-[#0b0b0d] shadow-[inset_0_2px_5px_rgba(0,0,0,0.95),inset_0_-1px_0_rgba(255,255,255,0.05)]" />
+      <div className="absolute -inset-[1.5%] rounded-[6px] bg-[#08080a] shadow-[inset_0_2px_6px_rgba(0,0,0,0.98),inset_0_-1px_0_rgba(255,255,255,0.06)]" />
 
-      {/* one soft backlight pool escaping the well */}
+      {/* backlight escaping the well — kept low so the keys stay dark */}
       <motion.div
         style={{ opacity: led }}
-        className="pointer-events-none absolute -inset-[7%] rounded-[10px] bg-[radial-gradient(ellipse_at_center,rgba(228,238,255,0.22),rgba(228,238,255,0.07)_52%,transparent_76%)] blur-[6px]"
+        className="pointer-events-none absolute -inset-[6%] rounded-[10px] bg-[radial-gradient(ellipse_at_center,rgba(214,228,255,0.10),rgba(214,228,255,0.03)_52%,transparent_76%)] blur-[7px]"
       />
 
       <div className="relative flex h-full flex-col gap-[1.6%]">
@@ -177,17 +185,32 @@ function Keyboard({ led }: { led: MotionValue<number> }) {
               <div
                 key={c}
                 style={{ flex }}
-                className="relative rounded-[2px] bg-[linear-gradient(180deg,#232328_0%,#17171b_55%,#101013_100%)] shadow-[inset_0_0.5px_0_rgba(255,255,255,0.10),0_1px_1.5px_rgba(0,0,0,0.9)]"
+                /* Dark keycaps, as in the reference — the legibility comes from
+                   light catching the top chamfer of each cap, not from a light
+                   key face. */
+                className="relative rounded-[2px] bg-[linear-gradient(180deg,#232329_0%,#17171c_45%,#0f0f13_100%)] shadow-[inset_0_0.8px_0_rgba(255,255,255,0.30),inset_0_-0.5px_0_rgba(0,0,0,0.85),0_1px_2px_rgba(0,0,0,0.95)]"
               >
+                {/* light leaking around the keycap edge only — never across
+                    the cap face, which must stay dark */}
                 <motion.span
                   style={{ opacity: led }}
-                  className="pointer-events-none absolute -inset-[0.5px] rounded-[2.5px] bg-[rgba(228,238,255,0.18)] blur-[1.3px]"
+                  className="pointer-events-none absolute -inset-[0.5px] rounded-[2.5px] bg-[rgba(214,228,255,0.085)] blur-[1.4px]"
                 />
               </div>
             ))}
           </div>
         ))}
       </div>
+
+      {/* Whisper-thin raking sheen. Anything stronger washes the dark caps out
+          — the reference keyboard is markedly darker than the palm rest. */}
+      <div
+        className="pointer-events-none absolute inset-0 rounded-[4px]"
+        style={{
+          background:
+            "linear-gradient(102deg, rgba(255,255,255,0.055) 0%, rgba(255,255,255,0.018) 18%, transparent 40%)",
+        }}
+      />
     </div>
   );
 }
@@ -247,6 +270,14 @@ export default function MacBookReveal() {
   const openedMv = useTransform(sp, (v) => (v >= P_CONTENT ? 1 : 0));
   useMotionValueEvent(openedMv, "change", (v) => setIsOpen(v === 1));
 
+  /* ---- intro copy: visible while shut, fades away as the lid comes up ----
+     It is an overlay, not a flex child, so it costs the laptop no height —
+     that's what lets the machine stay large and a fixed size throughout. */
+  const textOpacity = useTransform(sp, [0.15, 0.31], [1, 0], { clamp: true });
+  const textY = useTransform(sp, [0.15, 0.31], [0, -34], { clamp: true });
+  const textBlurN = useTransform(sp, [0.15, 0.31], [0, 9], { clamp: true });
+  const textFilter = useTransform(textBlurN, (b) => `blur(${b}px)`);
+
   return (
     <div ref={trackRef} className="relative h-[620vh]">
       <style>{`
@@ -262,16 +293,41 @@ export default function MacBookReveal() {
         }
       `}</style>
 
-      <div className="sticky top-0 h-[100svh] overflow-hidden bg-[#050507]">
-        {/* ================= ambient — deliberately restrained ================= */}
+      <div className="sticky top-0 h-[100svh] overflow-hidden bg-[#04050a]">
+        {/* ================= ambient / studio lighting ================= */}
         <div className="pointer-events-none absolute inset-0">
-          {/* soft blue pool behind the machine */}
+          {/* deep navy base wash */}
           <div
-            className="absolute left-1/2 top-[56%] h-[52vh] w-[62vw] -translate-x-1/2 -translate-y-1/2 rounded-full blur-[90px]"
+            className="absolute inset-0"
             style={{
-              background: `radial-gradient(ellipse at center, ${BLUE}1c, ${BLUE}08 45%, transparent 72%)`,
+              background:
+                "radial-gradient(ellipse 90% 70% at 50% 52%, #0a1020 0%, #070a14 45%, #04050a 100%)",
             }}
           />
+
+          {/* two blue rim lights flanking the machine — the thing that makes
+              the reference read as a lit studio rather than a flat page */}
+          <div
+            className="absolute left-[6%] top-1/2 h-[62vh] w-[34vw] -translate-y-1/2 rounded-full blur-[110px]"
+            style={{
+              background: `radial-gradient(ellipse at center, ${BLUE}3d, ${BLUE}14 45%, transparent 72%)`,
+            }}
+          />
+          <div
+            className="absolute right-[6%] top-1/2 h-[62vh] w-[34vw] -translate-y-1/2 rounded-full blur-[110px]"
+            style={{
+              background: `radial-gradient(ellipse at center, ${BLUE}3d, ${BLUE}14 45%, transparent 72%)`,
+            }}
+          />
+
+          {/* soft pool directly behind the laptop */}
+          <div
+            className="absolute left-1/2 top-[54%] h-[46vh] w-[54vw] -translate-x-1/2 -translate-y-1/2 rounded-full blur-[100px]"
+            style={{
+              background: `radial-gradient(ellipse at center, ${BLUE}2b, ${BLUE}0d 48%, transparent 74%)`,
+            }}
+          />
+
           {/* very faint grid */}
           <div
             className="absolute inset-0 opacity-30"
@@ -283,6 +339,26 @@ export default function MacBookReveal() {
               WebkitMaskImage: "radial-gradient(ellipse at center, #000 8%, transparent 62%)",
             }}
           />
+
+          {/* faint constellation lines */}
+          <svg
+            className="absolute inset-0 h-full w-full"
+            preserveAspectRatio="none"
+            aria-hidden="true"
+          >
+            {CONSTELLATION.map(([x1, y1, x2, y2], i) => (
+              <line
+                key={i}
+                x1={`${x1}%`}
+                y1={`${y1}%`}
+                x2={`${x2}%`}
+                y2={`${y2}%`}
+                stroke="rgba(190,205,255,0.09)"
+                strokeWidth="1"
+              />
+            ))}
+          </svg>
+
           {/* tiny dim stars */}
           {STARS.map(([x, y, o], i) => (
             <span
@@ -291,6 +367,15 @@ export default function MacBookReveal() {
               style={{ left: `${x}%`, top: `${y}%`, width: 1.5, height: 1.5, opacity: o }}
             />
           ))}
+
+          {/* vignette so the corners fall off like the reference */}
+          <div
+            className="absolute inset-0"
+            style={{
+              background:
+                "radial-gradient(ellipse 78% 68% at 50% 50%, transparent 42%, rgba(0,0,0,0.55) 100%)",
+            }}
+          />
         </div>
 
         {/* ================= left rail ================= */}
@@ -318,40 +403,54 @@ export default function MacBookReveal() {
           })}
         </div>
 
-        {/* ================= composition ================= */}
-        <div
-          className="relative z-10 flex h-full flex-col items-center justify-between px-6"
-          style={{ paddingTop: "clamp(84px, 8.5vh, 116px)", paddingBottom: "1.8vh" }}
+        {/* ================= intro copy (overlay, fades on open) ================= */}
+        <motion.div
+          style={{ opacity: textOpacity, y: textY, filter: textFilter }}
+          className="pointer-events-none absolute inset-x-0 top-[13%] z-30 flex flex-col items-center px-6 text-center"
         >
-          {/* ---- heading ---- */}
-          <div className="flex shrink-0 flex-col items-center text-center">
-            <span
-              className="font-mono text-[11px] font-medium uppercase tracking-[0.42em]"
-              style={{ color: BLUE }}
-            >
-              Our Work
-            </span>
-            <h3 className="mt-3.5 font-display text-[clamp(1.75rem,3.1vw,3.1rem)] font-bold leading-[1.05] tracking-tightest text-white">
-              Crafted Experiences
-            </h3>
-            <p
-              className="mt-3.5 text-[clamp(0.8rem,0.95vw,0.98rem)] leading-relaxed text-white/45"
-              style={{ maxWidth: "31rem" }}
-            >
-              A selection of digital products we&apos;ve designed and developed
-              for forward-thinking brands.
-            </p>
-          </div>
+          <span
+            className="font-mono text-[11px] font-medium uppercase tracking-[0.42em]"
+            style={{ color: BLUE }}
+          >
+            Our Work
+          </span>
+          <h3 className="mt-3.5 font-display text-[clamp(1.9rem,3.4vw,3.4rem)] font-bold leading-[1.05] tracking-tightest text-white">
+            Crafted Experiences
+          </h3>
+          <p
+            className="mt-3.5 text-[clamp(0.82rem,1vw,1.02rem)] leading-relaxed text-white/45"
+            style={{ maxWidth: "31rem" }}
+          >
+            A selection of digital products we&apos;ve designed and developed
+            for forward-thinking brands.
+          </p>
+        </motion.div>
 
-          {/* ---- the machine ---- */}
+        {/* ================= the machine — constant size, never scales =================
+             Centred in the area above the indicators. Sized against viewport
+             height (the copy is an overlay and costs no layout), so it stays
+             large and identical from closed to fully open. */}
+        <div className="absolute inset-x-0 top-[92px] bottom-[13vh] z-10 flex items-center justify-center">
           <div
-            className="relative shrink-0"
-            /* laptop height ≈ 0.77 × width (lid 0.60 + body 0.17) */
-            style={{ width: "min(70vw, calc((100svh - 21rem) / 0.70), 1220px)" }}
+            className="relative"
+            style={{
+              /* One source of truth for the body width. The height budget is
+                 the viewport minus the fixed navbar (92px) and the indicator
+                 row (11vh), so the lid can never rise behind the navbar when
+                 it reaches vertical. 0.76 = lid 0.575 + deck 0.125 + front
+                 wall/shadow headroom. */
+              ["--mbw" as string]: "min(74vw, calc((87svh - 7rem) / 0.775), 1360px)",
+              width: "var(--mbw)",
+            }}
           >
             <div
               className="relative w-full"
-              style={{ perspective: "2900px", perspectiveOrigin: "50% 34%" }}
+              /* Perspective scales with the body so the trapezoid spread stays
+                 constant (~1.28×) at any viewport size. */
+              style={{
+                perspective: "calc(var(--mbw) * 2.45)",
+                perspectiveOrigin: "50% 34%",
+              }}
             >
               {/* ============ LID ============ */}
               <motion.div
@@ -382,13 +481,23 @@ export default function MacBookReveal() {
                   style={{
                     transformStyle: "preserve-3d",
                     background:
-                      "linear-gradient(180deg,#3a3a41 0%,#24242a 3%,#17171b 34%,#121215 100%)",
+                      "linear-gradient(180deg,#46464e 0%,#2b2b32 1.6%,#1b1b20 28%,#141418 100%)",
                     boxShadow:
-                      "0 0 0 1px rgba(255,255,255,0.09), inset 0 1px 0 rgba(255,255,255,0.22)",
+                      // outer contour + diamond-cut chamfer + cool rim from the ambient
+                      "0 0 0 1px rgba(255,255,255,0.16), inset 0 1.5px 0 rgba(255,255,255,0.62), inset 1px 0 0 rgba(255,255,255,0.24), inset -1px 0 0 rgba(255,255,255,0.24), 0 0 70px rgba(97,130,255,0.16)",
                   }}
                 >
                   {/* bright chamfer along the very edge */}
-                  <span className="pointer-events-none absolute inset-0 rounded-t-[0.85rem] rounded-b-[3px] shadow-[inset_0_0_0_0.5px_rgba(255,255,255,0.26)]" />
+                  <span className="pointer-events-none absolute inset-0 rounded-t-[0.85rem] rounded-b-[3px] shadow-[inset_0_0_0_0.5px_rgba(255,255,255,0.28)]" />
+
+                  {/* key light raking the aluminium frame from upper-left */}
+                  <span
+                    className="pointer-events-none absolute inset-0 rounded-t-[0.85rem] rounded-b-[3px]"
+                    style={{
+                      background:
+                        "radial-gradient(130% 90% at 16% -12%, rgba(255,255,255,0.15), rgba(255,255,255,0.04) 38%, transparent 62%)",
+                    }}
+                  />
 
                   {/* panel */}
                   <div
@@ -424,8 +533,31 @@ export default function MacBookReveal() {
                       <span className="h-[3px] w-[3px] rounded-full bg-[#17171c] ring-[0.5px] ring-white/10" />
                     </div>
 
-                    {/* glass sheen */}
-                    <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(116deg,rgba(255,255,255,0.055)_0%,rgba(255,255,255,0.014)_18%,transparent_42%)]" />
+                    {/* ---- glass: layered environment reflection ---- */}
+                    {/* broad specular sweep across the panel */}
+                    <div
+                      className="pointer-events-none absolute inset-0 z-20"
+                      style={{
+                        background:
+                          "linear-gradient(118deg, rgba(255,255,255,0.09) 0%, rgba(255,255,255,0.035) 11%, rgba(255,255,255,0) 33%, rgba(255,255,255,0) 68%, rgba(255,255,255,0.025) 89%, rgba(255,255,255,0.055) 100%)",
+                      }}
+                    />
+                    {/* soft room light pooling at the top of the glass */}
+                    <div
+                      className="pointer-events-none absolute inset-x-0 top-0 z-20 h-[26%]"
+                      style={{
+                        background:
+                          "linear-gradient(180deg, rgba(255,255,255,0.055), transparent)",
+                      }}
+                    />
+                    {/* corner falloff so the glass never looks flat */}
+                    <div
+                      className="pointer-events-none absolute inset-0 z-20"
+                      style={{
+                        background:
+                          "radial-gradient(115% 85% at 50% 42%, transparent 58%, rgba(0,0,0,0.34) 100%)",
+                      }}
+                    />
                   </div>
 
                   <motion.div
@@ -451,14 +583,14 @@ export default function MacBookReveal() {
                   rendering as a plain 2D rectangle. */}
               <div
                 className="relative z-10 w-full"
-                style={{ paddingBottom: "12.5%", transformStyle: "preserve-3d" }}
+                style={{ paddingBottom: "10.5%", transformStyle: "preserve-3d" }}
               >
                 <div
                   className="absolute inset-x-0 top-0"
                   style={{
-                    paddingBottom: "68%",
+                    paddingBottom: "52%",
                     transformOrigin: "50% 0%",
-                    transform: "rotateX(88.2deg)",
+                    transform: "rotateX(88.92deg)",
                     transformStyle: "preserve-3d",
                   }}
                 >
@@ -467,9 +599,9 @@ export default function MacBookReveal() {
                     className="absolute inset-0 rounded-[10px]"
                     style={{
                       background:
-                        "linear-gradient(168deg,#4c4c55 0%,#3f3f47 12%,#35353c 38%,#2c2c32 68%,#25252a 100%)",
+                        "linear-gradient(168deg,#8b8b99 0%,#6a6a78 7%,#50505b 26%,#3e3e47 58%,#33333b 82%,#2b2b32 100%)",
                       boxShadow:
-                        "inset 0 1px 0 rgba(255,255,255,0.28), inset 1px 0 0 rgba(255,255,255,0.10), inset -1px 0 0 rgba(255,255,255,0.10), 0 0 0 1px rgba(0,0,0,0.6)",
+                        "inset 0 1.5px 0 rgba(255,255,255,0.55), inset 1.5px 0 0 rgba(255,255,255,0.30), inset -1.5px 0 0 rgba(255,255,255,0.30), 0 0 0 1px rgba(0,0,0,0.65)",
                     }}
                   >
                     {/* brushed grain */}
@@ -480,12 +612,20 @@ export default function MacBookReveal() {
                           "repeating-linear-gradient(90deg, rgba(255,255,255,0.035) 0px, rgba(255,255,255,0.035) 1px, transparent 1px, transparent 3px)",
                       }}
                     />
-                    {/* soft key light falling across the palm rest */}
+                    {/* key light raking across the palm rest from upper-left */}
                     <div
                       className="absolute inset-0 rounded-[10px]"
                       style={{
                         background:
-                          "radial-gradient(ellipse 70% 55% at 28% 12%, rgba(255,255,255,0.10), transparent 60%)",
+                          "radial-gradient(ellipse 82% 62% at 22% -4%, rgba(255,255,255,0.16), rgba(255,255,255,0.05) 42%, transparent 68%)",
+                      }}
+                    />
+                    {/* cool bounce from the ambient, catching the right side */}
+                    <div
+                      className="absolute inset-0 rounded-[10px]"
+                      style={{
+                        background:
+                          "radial-gradient(ellipse 55% 70% at 96% 40%, rgba(150,178,255,0.09), transparent 62%)",
                       }}
                     />
 
@@ -535,18 +675,19 @@ export default function MacBookReveal() {
                   <div
                     className="absolute inset-x-0 top-full"
                     style={{
-                      height: "3.8%",
+                      height: "3.1%",
                       transformOrigin: "50% 0%",
-                      transform: "rotateX(-88.2deg)",
+                      transform: "rotateX(-88.92deg)",
                     }}
                   >
                     <div
                       className="h-full w-full rounded-b-[9px]"
                       style={{
                         background:
-                          "linear-gradient(180deg,#54545e 0%,#3a3a42 18%,#26262b 62%,#151518 100%)",
+                          "linear-gradient(180deg,#5c5c68 0%,#43434d 18%,#303037 50%,#1f1f24 78%,#141418 100%)",
                         boxShadow:
-                          "inset 0 1px 0 rgba(255,255,255,0.42), 0 0 0 1px rgba(0,0,0,0.55)",
+                          // a fine machined highlight, not a blown-out bar
+                          "inset 0 1px 0 rgba(255,255,255,0.40), inset 1px 0 0 rgba(255,255,255,0.14), inset -1px 0 0 rgba(255,255,255,0.14), 0 0 0 1px rgba(0,0,0,0.55)",
                       }}
                     >
                       {/* finger groove */}
@@ -556,25 +697,56 @@ export default function MacBookReveal() {
                 </div>
               </div>
 
-              {/* contact shadow */}
-              <div className="pointer-events-none absolute -bottom-[4%] left-1/2 h-[7%] w-[92%] -translate-x-1/2 rounded-[50%] bg-black/80 blur-[28px]" />
+              {/* contact shadow — tight core under the body + wide ambient falloff */}
+              <div className="pointer-events-none absolute -bottom-[2%] left-1/2 h-[4%] w-[74%] -translate-x-1/2 rounded-[50%] bg-black blur-[14px]" />
+              <div className="pointer-events-none absolute -bottom-[5%] left-1/2 h-[9%] w-[104%] -translate-x-1/2 rounded-[50%] bg-black/70 blur-[40px]" />
             </div>
 
-            {/* floor reflection */}
-            <div
-              className="pointer-events-none absolute inset-x-[8%] top-full h-[18%] opacity-[0.13]"
-              style={{
-                background:
-                  "linear-gradient(180deg, rgba(180,196,232,0.32), transparent 56%)",
-                maskImage: "linear-gradient(180deg, #000, transparent 68%)",
-                WebkitMaskImage: "linear-gradient(180deg, #000, transparent 68%)",
-                filter: "blur(9px)",
-              }}
-            />
+            {/* ---------- reflection on the surface below ----------
+                 Radial gradients only — a linear gradient across a full-width
+                 box renders as a visible lit rectangle, which is exactly the
+                 artefact this replaces. Everything fades to transparent on all
+                 sides so there is never a hard edge. */}
+            <div className="pointer-events-none absolute inset-x-[-6%] top-full h-[34%]">
+              {/* the machine mirrored: brightest just under the front lip,
+                  dissolving as it recedes */}
+              <div
+                className="absolute left-1/2 top-0 h-[62%] w-[72%] -translate-x-1/2"
+                style={{
+                  background:
+                    "radial-gradient(ellipse 100% 100% at 50% 0%, rgba(150,168,212,0.20) 0%, rgba(110,128,170,0.07) 38%, transparent 72%)",
+                  filter: "blur(14px)",
+                }}
+              />
+              {/* a tighter, brighter core directly beneath the body */}
+              <div
+                className="absolute left-1/2 top-0 h-[26%] w-[52%] -translate-x-1/2"
+                style={{
+                  background:
+                    "radial-gradient(ellipse 100% 100% at 50% 0%, rgba(190,205,240,0.22) 0%, transparent 68%)",
+                  filter: "blur(9px)",
+                }}
+              />
+              {/* the lit display bleeding onto the surface once it powers on */}
+              <motion.div
+                style={{ opacity: bloom }}
+                className="absolute left-1/2 top-0 h-[40%] w-[40%] -translate-x-1/2"
+              >
+                <div
+                  className="h-full w-full"
+                  style={{
+                    background:
+                      "radial-gradient(ellipse 100% 100% at 50% 0%, rgba(165,192,255,0.20) 0%, transparent 70%)",
+                    filter: "blur(20px)",
+                  }}
+                />
+              </motion.div>
+            </div>
           </div>
+        </div>
 
-          {/* ---- bottom indicators ---- */}
-          <div className="flex shrink-0 flex-col items-center gap-2.5">
+        {/* ================= bottom indicators ================= */}
+        <div className="absolute inset-x-0 bottom-[3vh] z-20 flex flex-col items-center gap-2.5">
             <div className="flex items-center gap-3">
               <span className="font-mono text-[11px] tabular-nums text-white/45">01</span>
               <div className="flex items-center gap-2.5">
@@ -601,10 +773,9 @@ export default function MacBookReveal() {
 
             <span className="text-[11px] text-white/40">Scroll to explore</span>
 
-            <span className="mt-0.5 flex h-[21px] w-[13px] items-start justify-center rounded-full border border-white/20 pt-[3px]">
-              <span className="h-[4px] w-[1.5px] rounded-full bg-white/45" />
-            </span>
-          </div>
+          <span className="mt-0.5 flex h-[21px] w-[13px] items-start justify-center rounded-full border border-white/20 pt-[3px]">
+            <span className="h-[4px] w-[1.5px] rounded-full bg-white/45" />
+          </span>
         </div>
       </div>
     </div>
