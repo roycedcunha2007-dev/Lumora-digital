@@ -7,6 +7,7 @@ import TiltCard from "@/components/ui/TiltCard";
 import PerformanceSimulator from "@/components/ui/PerformanceSimulator";
 import { whyChooseUs } from "@/lib/site";
 import { getIcon } from "@/lib/icons";
+import { cn } from "@/lib/utils";
 
 export default function WhyChooseUs() {
   return (
@@ -28,22 +29,31 @@ export default function WhyChooseUs() {
           gap={0.09}
           className="mt-16 grid gap-5 sm:grid-cols-2 lg:grid-cols-3"
         >
-          {whyChooseUs.map((item) => {
+          {whyChooseUs.map((item, idx) => {
             const Icon = getIcon(item.icon);
+            const iconColors = [
+              "text-cyan-300",
+              "text-electric-300",
+              "text-purple-300",
+              "text-emerald-300",
+              "text-amber-300",
+              "text-indigo-300",
+            ];
+            const iconColor = iconColors[idx % iconColors.length];
             return (
               <motion.div key={item.title} variants={staggerItem}>
-                <TiltCard intensity={8} className="group h-full">
+                <TiltCard variant="trust-blue" intensity={8} className="group h-full">
                   <div className="relative h-full overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-b from-white/[0.05] to-white/[0.01] p-8 transition-all duration-500 group-hover:border-white/20">
                     {/* Hover Glow */}
                     <div className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100">
-                      <div className="absolute -left-16 -top-16 h-40 w-40 rounded-full bg-electric-500/25 blur-3xl" />
+                      <div className="absolute -left-16 -top-16 h-40 w-40 rounded-full bg-indigo-500/25 blur-3xl" />
                     </div>
 
                     <div
                       className="relative flex h-14 w-14 items-center justify-center rounded-2xl bg-white/[0.04] ring-1 ring-white/10"
                       style={{ transform: "translateZ(40px)" }}
                     >
-                      <Icon className="h-7 w-7 text-cyan-300 transition-transform duration-500 group-hover:scale-110" />
+                      <Icon className={cn("h-7 w-7 transition-transform duration-500 group-hover:scale-110", iconColor)} />
                     </div>
 
                     <h3

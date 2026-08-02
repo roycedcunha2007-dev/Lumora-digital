@@ -42,7 +42,7 @@ export default function About() {
             },
           ].map((card, i) => (
             <Reveal key={card.title} direction="up" delay={i * 0.12}>
-              <TiltCard intensity={8} className="group h-full">
+              <TiltCard variant="trust-blue" intensity={8} className="group h-full">
                 <div className="relative h-full overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-b from-white/[0.05] to-white/[0.01] p-7 transition-all duration-500 group-hover:border-white/20">
                   <div
                     className={`absolute -right-10 -top-10 h-32 w-32 rounded-full bg-gradient-to-br ${card.accent} opacity-20 blur-2xl transition-opacity duration-500 group-hover:opacity-40`}

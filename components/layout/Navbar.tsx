@@ -46,10 +46,10 @@ export default function Navbar() {
       >
         <nav
           className={cn(
-            "flex w-full max-w-[1360px] items-center justify-between rounded-full px-4 py-2 transition-all duration-500 ease-out sm:px-6",
+            "flex w-full max-w-[1360px] items-center justify-between rounded-full px-4 py-2.5 transition-all duration-500 ease-out sm:px-6",
             scrolled
-              ? "bg-navy-950/80 backdrop-blur-2xl shadow-[0_8px_32px_rgba(0,0,0,0.5)] border border-white/12"
-              : "border border-white/5 bg-white/[0.02] backdrop-blur-md"
+              ? "bg-black/70 backdrop-blur-3xl shadow-[0_16px_45px_rgba(0,0,0,0.7),inset_0_1.5px_0_0_rgba(255,255,255,0.28),inset_0_-1px_0_0_rgba(255,255,255,0.08)] border border-white/20"
+              : "border border-white/10 bg-white/[0.03] backdrop-blur-2xl shadow-[inset_0_1px_0_0_rgba(255,255,255,0.18)]"
           )}
         >
           {/* Logo */}
