@@ -39,7 +39,7 @@ export default function Loader() {
         >
           {/* ambient glow */}
           <div className="pointer-events-none absolute inset-0 overflow-hidden">
-            <div className="absolute left-1/2 top-1/2 h-[520px] w-[520px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-electric-500/20 blur-[120px]" />
+            <div className="absolute left-1/2 top-1/2 h-[520px] w-[520px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-blue-500/15 blur-[120px]" />
           </div>
 
           <motion.div
@@ -50,22 +50,18 @@ export default function Loader() {
           >
             <div className="flex items-center gap-3">
               <span className="relative flex h-3 w-3">
-                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-cyan-400 opacity-75" />
-                <span className="relative inline-flex h-3 w-3 rounded-full bg-cyan-400" />
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-blue-400 opacity-75" />
+                <span className="relative inline-flex h-3 w-3 rounded-full bg-blue-400" />
               </span>
               <span className="font-display text-2xl font-semibold tracking-tight text-white">
-                Lumora<span className="text-electric-400"> Digital</span>
+                Lumora<span className="text-blue-400"> Digital</span>
               </span>
             </div>
 
             {/* progress bar */}
             <div className="relative h-[2px] w-64 overflow-hidden rounded-full bg-white/10">
               <motion.div
-                className="absolute inset-y-0 left-0 rounded-full"
-                style={{
-                  background:
-                    "linear-gradient(90deg,#4f8dff,#8b5cf6,#22d3ee)",
-                }}
+                className="absolute inset-y-0 left-0 rounded-full bg-gradient-to-r from-blue-600 via-blue-400 to-blue-600"
                 animate={{ width: `${count}%` }}
                 transition={{ ease: "linear", duration: 0.15 }}
               />

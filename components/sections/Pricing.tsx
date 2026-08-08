@@ -30,23 +30,22 @@ export default function Pricing() {
           {pricing.map((plan) => (
             <motion.div key={plan.id} variants={staggerItem}>
               <TiltCard
-                variant={plan.highlight ? "gold-luxury" : "silver-cyan"}
-                intensity={plan.highlight ? 10 : 7}
+                intensity={plan.highlight ? 1.8 : 1.5}
                 className="group h-full"
               >
                 <div
                   className={cn(
                     "relative flex h-full flex-col overflow-hidden rounded-[2rem] p-8 transition-all duration-500",
                     plan.highlight
-                      ? "bg-gradient-to-b from-amber-500/[0.12] via-yellow-500/[0.04] to-transparent shadow-[0_22px_60px_rgba(212,175,55,0.25)] lg:-translate-y-4 lg:scale-[1.02]"
-                      : "border border-white/10 bg-white/[0.02] hover:border-white/20"
+                      ? "border-blue-500/35 bg-gradient-to-b from-blue-500/[0.08] via-white/[0.02] to-transparent shadow-[0_22px_60px_-15px_rgba(0,0,0,0.75),0_0_30px_-5px_rgba(59,130,246,0.18)] lg:-translate-y-2"
+                      : "border-white/[0.08] bg-transparent hover:border-blue-500/25 hover:bg-white/[0.02]"
                   )}
                 >
                   {plan.highlight && (
                     <>
-                      <div className="pointer-events-none absolute -top-24 left-1/2 h-52 w-52 -translate-x-1/2 rounded-full bg-amber-500/25 blur-3xl" />
-                      <span className="absolute right-6 top-6 inline-flex items-center gap-1.5 rounded-full bg-gradient-to-r from-amber-400 via-yellow-500 to-amber-600 px-3.5 py-1 text-[11px] font-bold text-black shadow-[0_0_20px_rgba(255,215,0,0.5)]">
-                        <Sparkles className="h-3 w-3 fill-black text-black" /> Most popular
+                      <div className="pointer-events-none absolute -top-24 left-1/2 h-52 w-52 -translate-x-1/2 rounded-full bg-blue-500/15 blur-3xl" />
+                      <span className="absolute right-6 top-6 inline-flex items-center gap-1.5 rounded-full border border-blue-400/30 bg-blue-500/15 px-3 py-1 text-[11px] font-semibold text-blue-300 shadow-[0_0_15px_rgba(59,130,246,0.25)]">
+                        <Sparkles className="h-3 w-3 text-blue-300" /> Most popular
                       </span>
                     </>
                   )}
@@ -88,11 +87,11 @@ export default function Pricing() {
                           className={cn(
                             "flex h-5 w-5 shrink-0 items-center justify-center rounded-full",
                             plan.highlight
-                              ? "bg-gradient-to-br from-electric-500 to-purple-500"
-                              : "bg-white/10"
+                              ? "bg-blue-500/20 text-blue-400"
+                              : "bg-white/[0.08] text-white/70"
                           )}
                         >
-                          <Check className="h-3 w-3 text-white" />
+                          <Check className="h-3 w-3" />
                         </span>
                         {f}
                       </li>
@@ -108,7 +107,7 @@ export default function Pricing() {
                     ) : (
                       <a
                         href="#contact"
-                        className="flex w-full items-center justify-center gap-2 rounded-full border border-white/15 py-3.5 text-sm font-semibold text-white transition-colors hover:bg-white/5"
+                        className="flex w-full items-center justify-center gap-2 rounded-full border border-white/15 py-3.5 text-sm font-semibold text-white transition-all duration-300 hover:border-blue-500/40 hover:bg-white/[0.05]"
                       >
                         Choose {plan.name}
                         <ArrowRight className="h-4 w-4" />
@@ -125,7 +124,7 @@ export default function Pricing() {
         <div className="mt-14 text-center">
           <button
             onClick={() => setShowTable((v) => !v)}
-            className="text-sm font-medium text-cyan-300 transition-colors hover:text-cyan-200"
+            className="text-sm font-medium text-blue-400 transition-colors hover:text-blue-300 cursor-pointer"
           >
             {showTable ? "Hide" : "Compare"} full feature breakdown
           </button>
@@ -141,16 +140,16 @@ export default function Pricing() {
           className="overflow-hidden"
         >
           <Reveal className="mt-8 overflow-x-auto">
-            <table className="w-full min-w-[640px] border-separate border-spacing-0 overflow-hidden rounded-3xl border border-white/10">
+            <table className="w-full min-w-[640px] border-separate border-spacing-0 overflow-hidden rounded-3xl border border-white/10 bg-[#08080c]/80 backdrop-blur-xl">
               <thead>
                 <tr>
-                  <th className="bg-white/[0.03] p-5 text-left text-sm font-medium text-white/50">
+                  <th className="bg-white/[0.02] p-5 text-left text-sm font-medium text-white/50">
                     Features
                   </th>
                   {comparison.plans.map((p) => (
                     <th
                       key={p.name}
-                      className="bg-white/[0.03] p-5 text-center font-display text-base font-semibold text-white"
+                      className="bg-white/[0.02] p-5 text-center font-display text-base font-semibold text-white"
                     >
                       {p.name}
                     </th>
@@ -171,7 +170,7 @@ export default function Pricing() {
                           className="border-t border-white/10 p-5 text-center text-sm text-white/70"
                         >
                           {val === true ? (
-                            <Check className="mx-auto h-4 w-4 text-cyan-400" />
+                            <Check className="mx-auto h-4 w-4 text-blue-400" />
                           ) : val === false ? (
                             <X className="mx-auto h-4 w-4 text-white/20" />
                           ) : (

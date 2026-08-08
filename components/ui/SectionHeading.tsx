@@ -31,7 +31,7 @@ export default function SectionHeading({
       {eyebrow && (
         <Reveal direction="up">
           <span className="eyebrow group">
-            <span className="h-1.5 w-1.5 rounded-full bg-cyan-400 shadow-[0_0_8px_#00f0ff] animate-pulse" />
+            <span className="h-1.5 w-1.5 rounded-full bg-blue-400 shadow-[0_0_8px_rgba(59,130,246,0.8)] animate-pulse" />
             {eyebrow}
           </span>
         </Reveal>

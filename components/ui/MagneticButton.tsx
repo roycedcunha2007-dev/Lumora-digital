@@ -39,8 +39,10 @@ export default function MagneticButton({
     "group relative overflow-hidden inline-flex items-center justify-center gap-2 rounded-full px-7 py-3.5 text-sm font-semibold tracking-tight transition-all duration-300 will-change-transform cursor-pointer";
 
   const variants: Record<string, string> = {
-    primary: "text-white shadow-[0_8px_32px_rgba(255,255,255,0.18),inset_0_1px_0_rgba(255,255,255,0.35)] hover:shadow-[0_12px_45px_rgba(0,240,255,0.35),inset_0_1.5px_0_rgba(255,255,255,0.6)]",
-    outline: "text-white border border-white/20 bg-white/[0.04] backdrop-blur-xl shadow-[inset_0_1px_0_rgba(255,255,255,0.25)] hover:border-white/40 hover:bg-white/[0.1] hover:shadow-[0_10px_30px_rgba(0,240,255,0.2),inset_0_1px_0_rgba(255,255,255,0.4)]",
+    primary:
+      "text-white shadow-[0_8px_24px_rgba(59,130,246,0.25),inset_0_1px_0_rgba(255,255,255,0.35)] hover:shadow-[0_12px_32px_rgba(59,130,246,0.4),inset_0_1.5px_0_rgba(255,255,255,0.5)]",
+    outline:
+      "text-white border border-white/20 bg-white/[0.04] backdrop-blur-xl shadow-[inset_0_1px_0_rgba(255,255,255,0.25)] hover:border-blue-400/40 hover:bg-white/[0.08] hover:shadow-[0_10px_30px_rgba(59,130,246,0.15),inset_0_1px_0_rgba(255,255,255,0.35)]",
     ghost: "text-white/80 hover:text-white hover:bg-white/[0.08] backdrop-blur-md",
   };
 
@@ -57,8 +59,8 @@ export default function MagneticButton({
     >
       {variant === "primary" && (
         <>
-          <span className="absolute inset-0 rounded-full bg-gradient-to-r from-electric-500 via-purple-500 to-cyan-500 bg-[length:200%_100%] animate-gradient-x" />
-          <span className="absolute inset-[1.5px] rounded-full bg-navy-900/40 backdrop-blur-sm transition-opacity duration-300 group-hover:opacity-0" />
+          <span className="absolute inset-0 rounded-full bg-gradient-to-r from-blue-600 via-blue-500 to-blue-600 bg-[length:200%_100%]" />
+          <span className="absolute inset-[1.5px] rounded-full bg-[#0a0a10]/20 backdrop-blur-sm transition-opacity duration-300 group-hover:opacity-0" />
         </>
       )}
 

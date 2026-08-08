@@ -3,14 +3,13 @@
 import { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, Sparkles } from "lucide-react";
-import { cn } from "@/lib/utils";
 
 interface Props {
   isOpen: boolean;
   onClose: () => void;
 }
 
-// Confetti particle configuration
+// Confetti particle configuration - Electric Blue & White
 const CONFETTI_PARTICLES = Array.from({ length: 26 }).map((_, i) => {
   const angle = (i / 26) * Math.PI * 2 + (Math.random() - 0.5) * 0.4;
   const distance = 90 + Math.random() * 80;
@@ -19,7 +18,7 @@ const CONFETTI_PARTICLES = Array.from({ length: 26 }).map((_, i) => {
     x: Math.cos(angle) * distance,
     y: Math.sin(angle) * distance - 20,
     scale: Math.random() * 0.6 + 0.4,
-    color: i % 3 === 0 ? "#FFFFFF" : i % 3 === 1 ? "#C084FC" : "#38BDF8", // White, Light Purple, Soft Blue
+    color: i % 3 === 0 ? "#FFFFFF" : i % 3 === 1 ? "#93C5FD" : "#3B82F6", // White, Light Blue, Electric Blue
   };
 });
 
@@ -123,7 +122,7 @@ export default function ContactSuccessModal({ isOpen, onClose }: Props) {
             exit={{ opacity: 0 }}
             transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
             onClick={handleClose}
-            className="absolute inset-0 bg-black/65 backdrop-blur-[12px]"
+            className="absolute inset-0 bg-black/75 backdrop-blur-[16px]"
           />
 
           {/* Centered Modal Card */}
@@ -136,10 +135,10 @@ export default function ContactSuccessModal({ isOpen, onClose }: Props) {
             }}
             exit={{ opacity: 0, scale: 0.9, filter: "blur(10px)" }}
             transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
-            className="relative w-full max-w-md overflow-hidden rounded-[2.25rem] border border-white/15 bg-navy-950/95 p-8 text-center shadow-[0_24px_80px_rgba(0,0,0,0.85)] backdrop-blur-2xl sm:p-10"
+            className="relative w-full max-w-md overflow-hidden rounded-[2.25rem] border border-white/[0.08] bg-[#08080c]/95 p-8 text-center shadow-[0_24px_80px_rgba(0,0,0,0.85)] backdrop-blur-2xl sm:p-10"
           >
             {/* Ambient Background Glow */}
-            <div className="pointer-events-none absolute -top-24 left-1/2 h-56 w-56 -translate-x-1/2 rounded-full bg-emerald-500/20 blur-3xl" />
+            <div className="pointer-events-none absolute -top-24 left-1/2 h-56 w-56 -translate-x-1/2 rounded-full bg-blue-500/15 blur-3xl" />
 
             {/* 40x40px Glassmorphism Close (X) Button */}
             <button
@@ -174,16 +173,16 @@ export default function ContactSuccessModal({ isOpen, onClose }: Props) {
                 />
               ))}
 
-              {/* Expanding Emerald/Cyan Gradient Circle */}
+              {/* Expanding Electric Blue Gradient Circle */}
               <motion.div
                 initial={{ scale: 0, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
                 transition={{ delay: 0.15, duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
-                className="absolute inset-0 rounded-full bg-gradient-to-br from-emerald-400 via-teal-500 to-cyan-500 shadow-[0_0_30px_rgba(16,185,129,0.4)]"
+                className="absolute inset-0 rounded-full bg-gradient-to-br from-blue-500 via-blue-600 to-blue-700 shadow-[0_0_30px_rgba(59,130,246,0.4)]"
               />
 
               {/* Animated SVG Checkmark */}
-              <svg className="relative z-10 h-12 w-12 text-navy-950" viewBox="0 0 24 24" fill="none">
+              <svg className="relative z-10 h-12 w-12 text-white" viewBox="0 0 24 24" fill="none">
                 <motion.path
                   d="M5 13l4 4L19 7"
                   stroke="currentColor"
@@ -203,7 +202,7 @@ export default function ContactSuccessModal({ isOpen, onClose }: Props) {
                 transition={{ delay: 0.5, duration: 0.4 }}
                 className="absolute -right-1 -top-1"
               >
-                <Sparkles className="h-5 w-5 text-amber-300 fill-amber-300" />
+                <Sparkles className="h-5 w-5 text-blue-200 fill-blue-200" />
               </motion.div>
             </div>
 
@@ -247,7 +246,7 @@ export default function ContactSuccessModal({ isOpen, onClose }: Props) {
               initial={{ scaleX: 1 }}
               animate={{ scaleX: 0 }}
               transition={{ duration: 5, ease: "linear" }}
-              className="absolute bottom-0 left-0 right-0 h-1 origin-left bg-gradient-to-r from-emerald-400 via-teal-400 to-cyan-400 opacity-60"
+              className="absolute bottom-0 left-0 right-0 h-1 origin-left bg-gradient-to-r from-blue-400 via-blue-500 to-blue-600 opacity-60"
             />
           </motion.div>
         </div>

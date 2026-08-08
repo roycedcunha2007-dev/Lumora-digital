@@ -259,7 +259,7 @@ export const projects: Project[] = [
     tags: ["UI/UX", "Framer Motion"],
     year: "[2024]",
     blurb: "[Project Description] — a bold rebrand and site for a boutique studio.",
-    gradient: "from-electric-500/40 via-purple-500/30 to-cyan-500/40",
+    gradient: "from-blue-600/30 via-blue-500/15 to-transparent",
     span: "tall",
   },
   {
@@ -269,7 +269,7 @@ export const projects: Project[] = [
     tags: ["Shopify", "CRO"],
     year: "[2024]",
     blurb: "[Project Description] — a storefront redesign that lifted conversions.",
-    gradient: "from-purple-500/40 via-electric-500/25 to-purple-600/40",
+    gradient: "from-blue-500/25 via-white/[0.04] to-transparent",
     span: "wide",
   },
   {
@@ -279,7 +279,7 @@ export const projects: Project[] = [
     tags: ["Next.js", "Headless"],
     year: "[2023]",
     blurb: "[Project Description] — a lightning-fast marketing platform.",
-    gradient: "from-cyan-500/40 via-electric-500/30 to-purple-500/30",
+    gradient: "from-blue-600/25 via-blue-400/15 to-transparent",
     span: "normal",
   },
   {
@@ -289,7 +289,7 @@ export const projects: Project[] = [
     tags: ["Identity", "Web"],
     year: "[2023]",
     blurb: "[Project Description] — identity and site for a local restaurant group.",
-    gradient: "from-electric-400/40 via-cyan-500/25 to-electric-600/40",
+    gradient: "from-blue-500/30 via-white/[0.03] to-transparent",
     span: "normal",
   },
   {
@@ -299,7 +299,7 @@ export const projects: Project[] = [
     tags: ["SaaS", "Design System"],
     year: "[2024]",
     blurb: "[Project Description] — a scalable design system for a growing SaaS.",
-    gradient: "from-purple-400/40 via-purple-600/25 to-cyan-500/35",
+    gradient: "from-blue-600/30 via-blue-500/20 to-transparent",
     span: "wide",
   },
   {
@@ -309,7 +309,7 @@ export const projects: Project[] = [
     tags: ["Web App", "Realtime"],
     year: "[2022]",
     blurb: "[Project Description] — a realtime dashboard with delightful motion.",
-    gradient: "from-cyan-400/40 via-electric-500/25 to-purple-500/35",
+    gradient: "from-blue-500/25 via-blue-600/15 to-transparent",
     span: "tall",
   },
 ];
@@ -420,7 +420,7 @@ export const team = [
     role: "Founder & Creative Director",
     bio: "[Bio] — Sets the vision and guards the craft across every project.",
     initials: "FN",
-    accent: "from-electric-500 to-purple-500",
+    accent: "from-blue-600/30 to-blue-900/40",
     socials: ["LinkedIn", "Dribbble", "X"],
   },
   {
@@ -428,7 +428,7 @@ export const team = [
     role: "Lead Developer",
     bio: "[Bio] — Turns beautiful designs into fast, resilient, clean code.",
     initials: "DN",
-    accent: "from-cyan-500 to-electric-500",
+    accent: "from-blue-500/30 to-blue-800/40",
     socials: ["GitHub", "LinkedIn", "X"],
   },
   {
@@ -436,7 +436,7 @@ export const team = [
     role: "Product Designer",
     bio: "[Bio] — Crafts the interactions and details that make it all feel alive.",
     initials: "DS",
-    accent: "from-purple-500 to-cyan-500",
+    accent: "from-blue-600/30 to-blue-950/40",
     socials: ["Dribbble", "Instagram", "LinkedIn"],
   },
 ];

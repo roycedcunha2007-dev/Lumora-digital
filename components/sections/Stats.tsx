@@ -10,11 +10,10 @@ export default function Stats() {
   return (
     <section className="relative py-20">
       <div className="container-px">
-        <div className="relative overflow-hidden rounded-[2.5rem] border border-white/12 bg-gradient-to-br from-white/[0.07] via-white/[0.02] to-transparent p-10 backdrop-blur-2xl shadow-[0_24px_60px_-15px_rgba(0,0,0,0.6)] sm:p-14">
-          {/* ambient glows */}
-          <div className="pointer-events-none absolute -left-20 -top-20 h-64 w-64 rounded-full bg-electric-500/20 blur-3xl" />
-          <div className="pointer-events-none absolute -bottom-24 -right-10 h-64 w-64 rounded-full bg-purple-500/20 blur-3xl" />
-          <div className="pointer-events-none absolute inset-0 bg-grid opacity-40 mask-fade-y" />
+        <div className="relative overflow-hidden rounded-[2.5rem] border border-white/[0.08] bg-[#07080d]/80 p-10 backdrop-blur-[24px] shadow-[0_24px_60px_-15px_rgba(0,0,0,0.7)] sm:p-14">
+          {/* Subtle Ambient Electric Blue Glow */}
+          <div className="pointer-events-none absolute -left-20 -top-20 h-64 w-64 rounded-full bg-blue-500/10 blur-3xl" />
+          <div className="pointer-events-none absolute inset-0 bg-grid opacity-30 mask-fade-y" />
 
           <div className="relative flex flex-col items-center gap-3 text-center">
             <span className="eyebrow">By the numbers</span>
@@ -29,16 +28,16 @@ export default function Stats() {
           >
             {stats.map((s) => (
               <motion.div key={s.label} variants={staggerItem}>
-                <TiltCard intensity={6} className="group h-full">
-                  <div className="flex flex-col items-center justify-center rounded-2xl border border-white/10 bg-white/[0.02] p-6 text-center transition-all duration-500 group-hover:border-white/20 group-hover:bg-white/[0.05]">
+                <TiltCard intensity={1.8} className="group h-full">
+                  <div className="flex flex-col items-center justify-center rounded-2xl border border-white/[0.08] bg-transparent p-6 text-center transition-all duration-500 group-hover:border-blue-500/30">
                     <span
-                      className="font-display text-5xl font-semibold text-gradient sm:text-6xl"
+                      className="font-display text-5xl font-semibold text-white sm:text-6xl"
                       style={{ transform: "translateZ(25px)" }}
                     >
                       <Counter to={s.value} suffix={s.suffix} />
                     </span>
                     <span
-                      className="mt-2 text-sm text-white/60 group-hover:text-white/80 transition-colors"
+                      className="mt-2 text-sm text-white/55 transition-colors group-hover:text-white/80"
                       style={{ transform: "translateZ(15px)" }}
                     >
                       {s.label}

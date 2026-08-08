@@ -199,9 +199,9 @@ export default function ContinuousAIScanHeading() {
         className="pointer-events-none absolute left-0 right-0 z-30 h-8 -translate-y-1/2"
       >
         {/* Soft 2.5px light line with subtle blue tint */}
-        <div className="h-[2.5px] w-full rounded-full bg-gradient-to-r from-transparent via-[rgba(240,246,255,0.95)] to-transparent shadow-[0_0_16px_rgba(200,225,255,0.35),0_0_32px_rgba(180,210,255,0.15)]" />
+        <div className="h-[2.5px] w-full rounded-full bg-gradient-to-r from-transparent via-[rgba(235,245,255,0.95)] to-transparent shadow-[0_0_16px_rgba(59,130,246,0.35),0_0_32px_rgba(59,130,246,0.15)]" />
         {/* Feathered ambient light aura */}
-        <div className="h-8 w-full bg-gradient-to-b from-[rgba(220,235,255,0.15)] via-[rgba(220,235,255,0.05)] to-transparent blur-sm" />
+        <div className="h-8 w-full bg-gradient-to-b from-[rgba(59,130,246,0.12)] via-[rgba(59,130,246,0.04)] to-transparent blur-sm" />
       </div>
 
       {/* Heading Lines — Permanent after first scan reveal */}

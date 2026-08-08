@@ -48,8 +48,8 @@ export default function Navbar() {
           className={cn(
             "flex w-full max-w-[1360px] items-center justify-between rounded-full px-4 py-2.5 transition-all duration-500 ease-out sm:px-6",
             scrolled
-              ? "bg-black/70 backdrop-blur-3xl shadow-[0_16px_45px_rgba(0,0,0,0.7),inset_0_1.5px_0_0_rgba(255,255,255,0.28),inset_0_-1px_0_0_rgba(255,255,255,0.08)] border border-white/20"
-              : "border border-white/10 bg-white/[0.03] backdrop-blur-2xl shadow-[inset_0_1px_0_0_rgba(255,255,255,0.18)]"
+              ? "bg-[#06070a]/80 backdrop-blur-3xl shadow-[0_16px_45px_rgba(0,0,0,0.7),inset_0_1px_0_0_rgba(255,255,255,0.18)] border border-white/15"
+              : "border border-white/10 bg-[#08080c]/40 backdrop-blur-2xl shadow-[inset_0_1px_0_0_rgba(255,255,255,0.12)]"
           )}
         >
           {/* Logo */}
@@ -59,8 +59,8 @@ export default function Navbar() {
             aria-label={`${site.name} home`}
           >
             <span className="relative flex h-8 w-8 items-center justify-center">
-              <span className="absolute inset-0 rounded-xl bg-gradient-to-br from-electric-500 via-purple-500 to-cyan-500 opacity-80 blur-[3px] transition-all duration-500 group-hover:opacity-100 group-hover:blur-[6px]" />
-              <span className="relative flex h-8 w-8 items-center justify-center rounded-xl bg-navy-900 font-display text-sm font-bold text-white shadow-inner">
+              <span className="absolute inset-0 rounded-xl bg-blue-500 opacity-60 blur-[3px] transition-all duration-500 group-hover:opacity-90 group-hover:blur-[5px]" />
+              <span className="relative flex h-8 w-8 items-center justify-center rounded-xl bg-blue-600 font-display text-sm font-bold text-white shadow-inner">
                 L
               </span>
             </span>
@@ -76,7 +76,7 @@ export default function Navbar() {
 
           {/* Telemetry Badge (Middle) */}
           <div className="hidden xl:flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.03] px-3.5 py-1 text-[11px] font-mono text-white/50 backdrop-blur-md">
-            <Activity className="h-3 w-3 text-white/80 animate-pulse" />
+            <Activity className="h-3 w-3 text-blue-400 animate-pulse" />
             <span>60 FPS</span>
             <span className="text-white/20">|</span>
             <span className="text-white/70 font-medium">99 LIGHTHOUSE</span>
@@ -119,7 +119,7 @@ export default function Navbar() {
             </a>
             <button
               onClick={() => setOpen((v) => !v)}
-              className="flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-white/5 text-white transition-colors hover:bg-white/10 lg:hidden"
+              className="flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-white/5 text-white transition-colors hover:bg-white/10 lg:hidden cursor-pointer"
               aria-label="Toggle menu"
             >
               {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
@@ -138,7 +138,7 @@ export default function Navbar() {
             className="fixed inset-0 z-[8999] lg:hidden"
           >
             <div
-              className="absolute inset-0 bg-navy-950/80 backdrop-blur-xl"
+              className="absolute inset-0 bg-black/80 backdrop-blur-xl"
               onClick={() => setOpen(false)}
             />
             <motion.nav
@@ -146,7 +146,7 @@ export default function Navbar() {
               animate={{ y: 0, opacity: 1 }}
               exit={{ y: -20, opacity: 0 }}
               transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-              className="absolute inset-x-4 top-24 rounded-3xl glass-strong p-6 shadow-glass"
+              className="absolute inset-x-4 top-24 rounded-3xl border border-white/15 bg-[#08080c]/95 p-6 shadow-2xl backdrop-blur-2xl"
             >
               <ul className="flex flex-col gap-1">
                 {navLinks.map((link, i) => (
@@ -170,7 +170,7 @@ export default function Navbar() {
               <a
                 href="#contact"
                 onClick={() => setOpen(false)}
-                className="mt-4 flex items-center justify-center gap-2 rounded-full bg-gradient-to-r from-electric-500 to-purple-500 px-5 py-3.5 text-sm font-bold text-white"
+                className="mt-4 flex items-center justify-center gap-2 rounded-full bg-blue-600 px-5 py-3.5 text-sm font-bold text-white shadow-lg shadow-blue-500/30 hover:bg-blue-500"
               >
                 Start a project
                 <ArrowUpRight className="h-4 w-4" />

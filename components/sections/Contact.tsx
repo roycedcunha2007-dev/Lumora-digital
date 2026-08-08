@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, ReactNode } from "react";
+import { useState, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Mail,
@@ -257,14 +257,14 @@ export default function Contact() {
               className={cn(
                 "flex items-center gap-3 rounded-2xl border px-5 py-3.5 shadow-2xl backdrop-blur-2xl text-sm font-medium",
                 toast.type === "error"
-                  ? "border-red-500/30 bg-navy-950/90 text-red-300 shadow-red-950/40"
-                  : "border-emerald-500/30 bg-navy-950/90 text-emerald-300 shadow-emerald-950/40"
+                  ? "border-red-500/30 bg-[#0a0a0f]/95 text-red-300 shadow-red-950/40"
+                  : "border-blue-500/30 bg-[#0a0a0f]/95 text-blue-300 shadow-blue-950/40"
               )}
             >
               {toast.type === "error" ? (
                 <AlertCircle className="h-5 w-5 shrink-0 text-red-400" />
               ) : (
-                <CheckCircle2 className="h-5 w-5 shrink-0 text-emerald-400" />
+                <CheckCircle2 className="h-5 w-5 shrink-0 text-blue-400" />
               )}
               <span>{toast.message}</span>
               <button
@@ -289,9 +289,9 @@ export default function Contact() {
         <div className="mt-16 grid gap-6 lg:grid-cols-[0.55fr_0.45fr]">
           {/* Form */}
           <Reveal direction="right">
-            <div className="relative overflow-hidden rounded-[2.2rem] border border-white/15 bg-white/[0.035] backdrop-blur-3xl shadow-[0_25px_60px_rgba(0,0,0,0.65)] p-8 sm:p-10">
-              <div className="pointer-events-none absolute inset-0 rounded-[inherit] shadow-[inset_0_1.5px_0_0_rgba(255,255,255,0.32),inset_0_-1px_0_0_rgba(255,255,255,0.1)]" />
-              <div className="pointer-events-none absolute -right-16 -top-16 h-48 w-48 rounded-full bg-electric-500/15 blur-3xl" />
+            <div className="relative overflow-hidden rounded-[2.2rem] border border-white/[0.08] bg-[#08080c]/90 backdrop-blur-3xl shadow-[0_25px_60px_rgba(0,0,0,0.75)] p-8 sm:p-10">
+              <div className="pointer-events-none absolute inset-0 rounded-[inherit] shadow-[inset_0_1px_0_0_rgba(255,255,255,0.18),inset_0_-1px_0_0_rgba(255,255,255,0.02)]" />
+              <div className="pointer-events-none absolute -right-16 -top-16 h-48 w-48 rounded-full bg-blue-500/10 blur-3xl" />
               <form onSubmit={handleSubmit} noValidate className="relative flex flex-col gap-6">
                 <div className="grid gap-6 sm:grid-cols-2">
                   {/* Full Name */}
@@ -300,7 +300,7 @@ export default function Contact() {
                       htmlFor="contact-name"
                       className="mb-2 block text-xs font-medium uppercase tracking-wider text-white/60"
                     >
-                      Full Name <span className="text-red-400">*</span>
+                      Full Name <span className="text-blue-400">*</span>
                     </label>
                     <div className="relative">
                       <input
@@ -315,16 +315,16 @@ export default function Contact() {
                         aria-invalid={!!errors.name}
                         aria-describedby={errors.name ? "name-error" : undefined}
                         className={cn(
-                          "w-full rounded-xl border bg-white/[0.03] px-4 py-3.5 text-sm text-white placeholder-white/25 outline-none transition-all duration-300",
+                          "w-full rounded-xl border bg-white/[0.025] px-4 py-3.5 text-sm text-white placeholder-white/25 outline-none transition-all duration-300",
                           touched.name && errors.name
                             ? "border-red-500/80 bg-red-500/5 ring-1 ring-red-500/30"
                             : touched.name && !errors.name && form.name
-                            ? "border-emerald-500/60 bg-emerald-500/5 ring-1 ring-emerald-500/20"
-                            : "border-white/10 hover:border-white/20 focus:border-electric-400/60 focus:bg-white/[0.05] focus:ring-2 focus:ring-electric-500/20"
+                            ? "border-blue-500/60 bg-blue-500/5 ring-1 ring-blue-500/20"
+                            : "border-white/[0.08] hover:border-white/20 focus:border-blue-400 focus:bg-white/[0.04] focus:ring-2 focus:ring-blue-500/20"
                         )}
                       />
                       {touched.name && !errors.name && form.name && (
-                        <CheckCircle2 className="pointer-events-none absolute right-3.5 top-3.5 h-4 w-4 text-emerald-400" />
+                        <CheckCircle2 className="pointer-events-none absolute right-3.5 top-3.5 h-4 w-4 text-blue-400" />
                       )}
                     </div>
                     {touched.name && errors.name && (
@@ -341,7 +341,7 @@ export default function Contact() {
                       htmlFor="contact-email"
                       className="mb-2 block text-xs font-medium uppercase tracking-wider text-white/60"
                     >
-                      Email Address <span className="text-red-400">*</span>
+                      Email Address <span className="text-blue-400">*</span>
                     </label>
                     <div className="relative">
                       <input
@@ -356,16 +356,16 @@ export default function Contact() {
                         aria-invalid={!!errors.email}
                         aria-describedby={errors.email ? "email-error" : undefined}
                         className={cn(
-                          "w-full rounded-xl border bg-white/[0.03] px-4 py-3.5 text-sm text-white placeholder-white/25 outline-none transition-all duration-300",
+                          "w-full rounded-xl border bg-white/[0.025] px-4 py-3.5 text-sm text-white placeholder-white/25 outline-none transition-all duration-300",
                           touched.email && errors.email
                             ? "border-red-500/80 bg-red-500/5 ring-1 ring-red-500/30"
                             : touched.email && !errors.email && form.email
-                            ? "border-emerald-500/60 bg-emerald-500/5 ring-1 ring-emerald-500/20"
-                            : "border-white/10 hover:border-white/20 focus:border-electric-400/60 focus:bg-white/[0.05] focus:ring-2 focus:ring-electric-500/20"
+                            ? "border-blue-500/60 bg-blue-500/5 ring-1 ring-blue-500/20"
+                            : "border-white/[0.08] hover:border-white/20 focus:border-blue-400 focus:bg-white/[0.04] focus:ring-2 focus:ring-blue-500/20"
                         )}
                       />
                       {touched.email && !errors.email && form.email && (
-                        <CheckCircle2 className="pointer-events-none absolute right-3.5 top-3.5 h-4 w-4 text-emerald-400" />
+                        <CheckCircle2 className="pointer-events-none absolute right-3.5 top-3.5 h-4 w-4 text-blue-400" />
                       )}
                     </div>
                     {touched.email && errors.email && (
@@ -382,7 +382,7 @@ export default function Contact() {
                       htmlFor="contact-subject"
                       className="mb-2 block text-xs font-medium uppercase tracking-wider text-white/60"
                     >
-                      Subject <span className="text-red-400">*</span>
+                      Subject <span className="text-blue-400">*</span>
                     </label>
                     <div className="relative">
                       <input
@@ -397,16 +397,16 @@ export default function Contact() {
                         aria-invalid={!!errors.subject}
                         aria-describedby={errors.subject ? "subject-error" : undefined}
                         className={cn(
-                          "w-full rounded-xl border bg-white/[0.03] px-4 py-3.5 text-sm text-white placeholder-white/25 outline-none transition-all duration-300",
+                          "w-full rounded-xl border bg-white/[0.025] px-4 py-3.5 text-sm text-white placeholder-white/25 outline-none transition-all duration-300",
                           touched.subject && errors.subject
                             ? "border-red-500/80 bg-red-500/5 ring-1 ring-red-500/30"
                             : touched.subject && !errors.subject && form.subject
-                            ? "border-emerald-500/60 bg-emerald-500/5 ring-1 ring-emerald-500/20"
-                            : "border-white/10 hover:border-white/20 focus:border-electric-400/60 focus:bg-white/[0.05] focus:ring-2 focus:ring-electric-500/20"
+                            ? "border-blue-500/60 bg-blue-500/5 ring-1 ring-blue-500/20"
+                            : "border-white/[0.08] hover:border-white/20 focus:border-blue-400 focus:bg-white/[0.04] focus:ring-2 focus:ring-blue-500/20"
                         )}
                       />
                       {touched.subject && !errors.subject && form.subject && (
-                        <CheckCircle2 className="pointer-events-none absolute right-3.5 top-3.5 h-4 w-4 text-emerald-400" />
+                        <CheckCircle2 className="pointer-events-none absolute right-3.5 top-3.5 h-4 w-4 text-blue-400" />
                       )}
                     </div>
                     {touched.subject && errors.subject && (
@@ -417,13 +417,13 @@ export default function Contact() {
                     )}
                   </div>
 
-                  {/* Company Name (Required) */}
+                  {/* Company Name */}
                   <div className="group relative flex flex-col">
                     <label
                       htmlFor="contact-company"
                       className="mb-2 block text-xs font-medium uppercase tracking-wider text-white/60"
                     >
-                      Company Name <span className="text-red-400">*</span>
+                      Company Name <span className="text-blue-400">*</span>
                     </label>
                     <div className="relative">
                       <input
@@ -438,16 +438,16 @@ export default function Contact() {
                         aria-invalid={!!errors.company}
                         aria-describedby={errors.company ? "company-error" : undefined}
                         className={cn(
-                          "w-full rounded-xl border bg-white/[0.03] px-4 py-3.5 text-sm text-white placeholder-white/25 outline-none transition-all duration-300",
+                          "w-full rounded-xl border bg-white/[0.025] px-4 py-3.5 text-sm text-white placeholder-white/25 outline-none transition-all duration-300",
                           touched.company && errors.company
                             ? "border-red-500/80 bg-red-500/5 ring-1 ring-red-500/30"
                             : touched.company && !errors.company && form.company
-                            ? "border-emerald-500/60 bg-emerald-500/5 ring-1 ring-emerald-500/20"
-                            : "border-white/10 hover:border-white/20 focus:border-electric-400/60 focus:bg-white/[0.05] focus:ring-2 focus:ring-electric-500/20"
+                            ? "border-blue-500/60 bg-blue-500/5 ring-1 ring-blue-500/20"
+                            : "border-white/[0.08] hover:border-white/20 focus:border-blue-400 focus:bg-white/[0.04] focus:ring-2 focus:ring-blue-500/20"
                         )}
                       />
                       {touched.company && !errors.company && form.company && (
-                        <CheckCircle2 className="pointer-events-none absolute right-3.5 top-3.5 h-4 w-4 text-emerald-400" />
+                        <CheckCircle2 className="pointer-events-none absolute right-3.5 top-3.5 h-4 w-4 text-blue-400" />
                       )}
                     </div>
                     {touched.company && errors.company && (
@@ -466,9 +466,8 @@ export default function Contact() {
                       htmlFor="contact-message"
                       className="block text-xs font-medium uppercase tracking-wider text-white/60"
                     >
-                      Message <span className="text-red-400">*</span>
+                      Message <span className="text-blue-400">*</span>
                     </label>
-                    {/* Live Character Counter */}
                     <span
                       className={cn(
                         "font-mono text-xs transition-colors",
@@ -495,12 +494,12 @@ export default function Contact() {
                       aria-invalid={!!errors.message}
                       aria-describedby={errors.message ? "message-error" : undefined}
                       className={cn(
-                        "w-full resize-none rounded-xl border bg-white/[0.03] px-4 py-3.5 text-sm text-white placeholder-white/25 outline-none transition-all duration-300",
+                        "w-full resize-none rounded-xl border bg-white/[0.025] px-4 py-3.5 text-sm text-white placeholder-white/25 outline-none transition-all duration-300",
                         touched.message && errors.message
                           ? "border-red-500/80 bg-red-500/5 ring-1 ring-red-500/30"
                           : touched.message && !errors.message && form.message
-                          ? "border-emerald-500/60 bg-emerald-500/5 ring-1 ring-emerald-500/20"
-                          : "border-white/10 hover:border-white/20 focus:border-electric-400/60 focus:bg-white/[0.05] focus:ring-2 focus:ring-electric-500/20"
+                          ? "border-blue-500/60 bg-blue-500/5 ring-1 ring-blue-500/20"
+                          : "border-white/[0.08] hover:border-white/20 focus:border-blue-400 focus:bg-white/[0.04] focus:ring-2 focus:ring-blue-500/20"
                       )}
                     />
                   </div>
@@ -519,18 +518,14 @@ export default function Contact() {
                   animate={buttonShake ? { x: [0, -8, 8, -6, 6, -3, 3, 0] } : {}}
                   transition={{ duration: 0.45 }}
                   className={cn(
-                    "group relative flex items-center justify-center gap-2 overflow-hidden rounded-full px-8 py-4 text-sm font-semibold transition-all duration-300 shadow-lg",
+                    "group relative flex items-center justify-center gap-2 overflow-hidden rounded-full px-8 py-4 text-sm font-semibold transition-all duration-300 shadow-lg cursor-pointer",
                     isSuccess
-                      ? "bg-emerald-500 text-white shadow-emerald-500/30"
+                      ? "bg-blue-600 text-white shadow-blue-500/30"
                       : isSubmitting
                       ? "bg-white/20 text-white cursor-not-allowed"
-                      : "text-white"
+                      : "bg-blue-600 text-white shadow-[0_8px_25px_rgba(59,130,246,0.3)] hover:bg-blue-500 hover:shadow-[0_12px_35px_rgba(59,130,246,0.45)]"
                   )}
                 >
-                  {!isSuccess && !isSubmitting && (
-                    <span className="absolute inset-0 bg-gradient-to-r from-electric-500 via-purple-500 to-cyan-500 bg-[length:200%_100%] transition-all duration-500 group-hover:bg-[position:100%_0]" />
-                  )}
-
                   <span className="relative flex items-center gap-2">
                     {isSubmitting ? (
                       <>
@@ -565,10 +560,10 @@ export default function Contact() {
                 <a
                   key={item.label}
                   href={item.href}
-                  className="group flex items-center gap-4 rounded-2xl border border-white/10 bg-white/[0.02] p-5 transition-colors duration-400 hover:border-white/20 hover:bg-white/[0.04]"
+                  className="group flex items-center gap-4 rounded-2xl border border-white/[0.08] bg-[#07080c]/60 p-5 transition-all duration-300 hover:border-blue-500/30 hover:bg-[#08080c]/80"
                 >
-                  <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-electric-500/20 to-purple-500/20 ring-1 ring-white/10">
-                    <item.icon className="h-5 w-5 text-cyan-300" />
+                  <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-white/10 bg-white/[0.03] text-blue-400 ring-1 ring-white/5 transition-all duration-300 group-hover:border-blue-500/30 group-hover:bg-blue-500/10">
+                    <item.icon className="h-5 w-5" />
                   </span>
                   <div>
                     <div className="text-xs uppercase tracking-wider text-white/40">
@@ -580,7 +575,7 @@ export default function Contact() {
               ))}
 
               {/* Business hours */}
-              <div className="rounded-2xl border border-white/10 bg-white/[0.02] p-5">
+              <div className="rounded-2xl border border-white/[0.08] bg-[#07080c]/60 p-5">
                 <div className="flex items-center gap-2 text-xs uppercase tracking-wider text-white/40">
                   <Clock className="h-4 w-4" /> Business hours
                 </div>
@@ -598,14 +593,14 @@ export default function Contact() {
               </div>
 
               {/* Studio location frame */}
-              <div className="relative flex-1 overflow-hidden rounded-2xl border border-white/10 bg-navy-800/40">
-                <div className="absolute inset-0 bg-grid opacity-40" />
-                <div className="absolute inset-0 bg-gradient-to-br from-electric-500/10 to-purple-500/10" />
+              <div className="relative flex-1 overflow-hidden rounded-2xl border border-white/[0.08] bg-navy-900/40">
+                <div className="absolute inset-0 bg-grid opacity-30" />
+                <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-transparent" />
                 <div className="relative flex h-full min-h-[160px] items-center justify-center">
                   <div className="flex flex-col items-center gap-2 text-center">
                     <span className="relative flex h-10 w-10 items-center justify-center">
-                      <span className="absolute h-10 w-10 animate-pulse-ring rounded-full bg-cyan-500/40" />
-                      <MapPin className="relative h-6 w-6 text-cyan-300" />
+                      <span className="absolute h-10 w-10 animate-pulse-ring rounded-full bg-blue-500/30" />
+                      <MapPin className="relative h-6 w-6 text-blue-400" />
                     </span>
                     <span className="text-xs text-white/40">{site.address}</span>
                   </div>

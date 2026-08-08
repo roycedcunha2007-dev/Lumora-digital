@@ -3,18 +3,19 @@
 @tailwind utilities;
 
 /* ============================================================
-   LUMORA DIGITAL — Global Design System
+   LUMORA DIGITAL — Luxury Obsidian & Electric Blue Design System
    ============================================================ */
 
 :root {
   --bg: #000000;
-  --bg-soft: #060608;
+  --bg-soft: #050508;
   --fg: #eef2ff;
-  --muted: #9aa6c4;
-  --electric: #d4d7de;
-  --purple: #d0d3da;
-  --cyan: #dfe2e8;
-  --ring: rgba(222, 226, 234, 0.35);
+  --muted: #94a3b8;
+  --electric: #3b82f6;
+  --electric-glow: rgba(59, 130, 246, 0.15);
+  --purple: #3b82f6;
+  --cyan: #60a5fa;
+  --ring: rgba(59, 130, 246, 0.35);
   --border-glass: rgba(255, 255, 255, 0.08);
 }
 
@@ -25,7 +26,7 @@
 }
 
 * {
-  border-color: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.07);
 }
 
 html {
@@ -50,7 +51,7 @@ body {
 }
 
 ::selection {
-  background: rgba(255, 255, 255, 0.18);
+  background: rgba(59, 130, 246, 0.3);
   color: #fff;
 }
 
@@ -62,7 +63,7 @@ body {
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: linear-gradient(180deg, #d4d7de, #6b7280);
+  background: linear-gradient(180deg, #3b82f6, #1e293b);
   border-radius: 999px;
   border: 2px solid var(--bg);
 }
@@ -84,78 +85,66 @@ html.lenis body {
     @apply mx-auto w-full max-w-[1360px] px-6 sm:px-8 lg:px-12;
   }
 
-  /* Ultra-refined Awwwards Glassmorphism panel */
+  /* Ultra-refined Luxury Glassmorphism panel */
   .glass {
-    background: linear-gradient(
-      135deg,
-      rgba(255, 255, 255, 0.06),
-      rgba(255, 255, 255, 0.015)
-    );
-    backdrop-filter: blur(20px) saturate(180%);
-    -webkit-backdrop-filter: blur(20px) saturate(180%);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    box-shadow: 0 16px 40px -12px rgba(0, 0, 0, 0.5), inset 0 1px 0 0 rgba(255, 255, 255, 0.12);
+    background: rgba(8, 9, 14, 0.85);
+    backdrop-filter: blur(24px) saturate(180%);
+    -webkit-backdrop-filter: blur(24px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 16px 40px -12px rgba(0, 0, 0, 0.65), inset 0 1px 0 0 rgba(255, 255, 255, 0.14);
   }
 
   .glass-strong {
-    background: linear-gradient(
-      135deg,
-      rgba(15, 20, 36, 0.88),
-      rgba(6, 8, 16, 0.75)
-    );
-    backdrop-filter: blur(24px) saturate(160%);
-    -webkit-backdrop-filter: blur(24px) saturate(160%);
-    border: 1px solid rgba(255, 255, 255, 0.12);
-    box-shadow: 0 20px 50px -15px rgba(0, 0, 0, 0.7), inset 0 1px 0 0 rgba(255, 255, 255, 0.15);
+    background: rgba(6, 7, 12, 0.92);
+    backdrop-filter: blur(28px) saturate(180%);
+    -webkit-backdrop-filter: blur(28px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.10);
+    box-shadow: 0 20px 50px -15px rgba(0, 0, 0, 0.75), inset 0 1px 0 0 rgba(255, 255, 255, 0.18);
   }
 
-  /* Apple Vision Pro / iOS Liquid Glass Design System Token */
+  /* Apple Pro / iOS Liquid Glass Design System Token */
   .liquid-glass {
     background: linear-gradient(
       135deg,
-      rgba(255, 255, 255, 0.07) 0%,
-      rgba(255, 255, 255, 0.02) 50%,
-      rgba(255, 255, 255, 0.05) 100%
+      rgba(255, 255, 255, 0.04) 0%,
+      rgba(255, 255, 255, 0.01) 50%,
+      rgba(59, 130, 246, 0.02) 100%
     );
-    backdrop-filter: blur(32px) saturate(200%);
-    -webkit-backdrop-filter: blur(32px) saturate(200%);
-    border: 1px solid rgba(255, 255, 255, 0.14);
-    box-shadow: 0 24px 60px -15px rgba(0, 0, 0, 0.65),
-                inset 0 1px 0 0 rgba(255, 255, 255, 0.25),
-                inset 0 -1px 0 0 rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(24px) saturate(180%);
+    -webkit-backdrop-filter: blur(24px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.09);
+    box-shadow: 0 24px 60px -15px rgba(0, 0, 0, 0.70),
+                inset 0 1px 0 0 rgba(255, 255, 255, 0.20),
+                inset 0 -1px 0 0 rgba(255, 255, 255, 0.04);
   }
 
   .glass-interactive {
     @apply glass transition-all duration-500 ease-out;
   }
   .glass-interactive:hover {
-    background: linear-gradient(
-      135deg,
-      rgba(255, 255, 255, 0.09),
-      rgba(255, 255, 255, 0.03)
-    );
-    border-color: rgba(255, 255, 255, 0.22);
-    box-shadow: 0 24px 60px -15px rgba(0, 0, 0, 0.65), 0 0 30px -5px rgba(255, 255, 255, 0.08), inset 0 1px 0 0 rgba(255, 255, 255, 0.25);
+    background: rgba(10, 12, 18, 0.9);
+    border-color: rgba(59, 130, 246, 0.3);
+    box-shadow: 0 24px 60px -15px rgba(0, 0, 0, 0.75), 0 0 25px -5px rgba(59, 130, 246, 0.12), inset 0 1px 0 0 rgba(255, 255, 255, 0.22);
     transform: translateY(-3px);
   }
 
-  /* Gradient text — refined white → silver (matches chrome-on-black vibe) */
+  /* Gradient text — refined white → soft silver */
   .text-gradient {
     @apply bg-clip-text text-transparent;
     background-image: linear-gradient(
       110deg,
       #ffffff 0%,
-      #cfd6e4 50%,
-      #9aa3b5 100%
+      #e2e8f0 50%,
+      #94a3b8 100%
     );
   }
 
   .text-gradient-electric {
     @apply bg-clip-text text-transparent;
-    background-image: linear-gradient(110deg, #ffffff, #c9ccd4 55%, #9aa0ab);
+    background-image: linear-gradient(110deg, #ffffff, #93c5fd 55%, #3b82f6);
   }
 
-  /* Animated gradient border card */
+  /* Animated gradient border card with electric blue accent */
   .gradient-border {
     position: relative;
     border-radius: inherit;
@@ -168,22 +157,22 @@ html.lenis body {
     padding: 1px;
     background: linear-gradient(
       130deg,
-      rgba(230, 233, 240, 0.45),
-      rgba(190, 195, 205, 0.1) 40%,
-      rgba(210, 214, 222, 0.4)
+      rgba(255, 255, 255, 0.35),
+      rgba(59, 130, 246, 0.25) 40%,
+      rgba(255, 255, 255, 0.10)
     );
     -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
     -webkit-mask-composite: xor;
     mask-composite: exclude;
     pointer-events: none;
-    opacity: 0.7;
+    opacity: 0.6;
     transition: opacity 0.4s ease;
   }
   .gradient-border:hover::before {
     opacity: 1;
   }
 
-  /* Animated rotating gradient border */
+  /* Animated rotating gradient border with single electric-blue sweep */
   .gradient-border-animated {
     position: relative;
     border-radius: inherit;
@@ -196,18 +185,18 @@ html.lenis body {
     padding: 1px;
     background: conic-gradient(
       from var(--border-angle, 0deg),
-      rgba(255, 255, 255, 0.4),
-      rgba(212, 215, 222, 0.1) 25%,
-      rgba(139, 92, 246, 0.5) 50%,
-      rgba(0, 240, 255, 0.4) 75%,
-      rgba(255, 255, 255, 0.4) 100%
+      rgba(255, 255, 255, 0.35),
+      rgba(59, 130, 246, 0.45) 30%,
+      rgba(255, 255, 255, 0.06) 60%,
+      rgba(59, 130, 246, 0.35) 85%,
+      rgba(255, 255, 255, 0.35) 100%
     );
     -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
     -webkit-mask-composite: xor;
     mask-composite: exclude;
     pointer-events: none;
-    opacity: 0.6;
-    animation: rotate-border 8s linear infinite;
+    opacity: 0.5;
+    animation: rotate-border 10s linear infinite;
   }
 
   /* Animated highlight text fill */
@@ -216,9 +205,9 @@ html.lenis body {
     background-image: linear-gradient(
       120deg,
       #ffffff 0%,
-      #a7acb8 25%,
-      #00f0ff 50%,
-      #c6cad4 75%,
+      #cbd5e1 25%,
+      #60a5fa 50%,
+      #93c5fd 75%,
       #ffffff 100%
     );
     background-size: 200% auto;
@@ -226,7 +215,7 @@ html.lenis body {
   }
 
   .eyebrow {
-    @apply inline-flex items-center gap-2 rounded-full border border-white/[0.12] bg-white/[0.04] px-4 py-1.5 text-xs font-medium uppercase tracking-[0.22em] text-white/70 backdrop-blur-md transition-colors duration-300 hover:border-white/20 hover:bg-white/[0.07];
+    @apply inline-flex items-center gap-2 rounded-full border border-white/[0.12] bg-white/[0.03] px-4 py-1.5 text-xs font-medium uppercase tracking-[0.22em] text-white/70 backdrop-blur-md transition-colors duration-300 hover:border-blue-500/30 hover:bg-white/[0.06];
   }
 }
 
@@ -283,10 +272,10 @@ html.lenis body {
   }
   .bg-grid {
     background-image: linear-gradient(
-        rgba(255, 255, 255, 0.035) 1px,
+        rgba(255, 255, 255, 0.03) 1px,
         transparent 1px
       ),
-      linear-gradient(90deg, rgba(255, 255, 255, 0.035) 1px, transparent 1px);
+      linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
     background-size: 64px 64px;
   }
   .bg-dots {
@@ -308,7 +297,7 @@ html.lenis body {
   border-radius: 50%;
   border: 3px solid rgba(255, 255, 255, 0.1);
   border-top-color: var(--electric);
-  border-right-color: var(--purple);
+  border-right-color: rgba(59, 130, 246, 0.4);
   animation: loader-spin 0.8s linear infinite;
 }
 @keyframes loader-spin {

@@ -31,21 +31,19 @@ export default function Team() {
         >
           {team.map((member) => (
             <motion.div key={member.name} variants={staggerItem}>
-              <TiltCard variant="trust-blue" intensity={9} className="group h-full">
-                <div className="relative h-full overflow-hidden rounded-[2rem] border border-white/10 bg-white/[0.02] p-2">
-                  {/* portrait placeholder */}
-                  <div className="relative aspect-[4/5] overflow-hidden rounded-[1.6rem]">
-                    <div
-                      className={`absolute inset-0 bg-gradient-to-br ${member.accent} opacity-90`}
-                    />
+              <TiltCard intensity={1.8} className="group h-full">
+                <div className="relative h-full overflow-hidden rounded-[2rem] border border-white/[0.08] bg-transparent p-2.5 transition-all duration-500 group-hover:border-blue-500/30">
+                  {/* portrait container */}
+                  <div className="relative aspect-[4/5] overflow-hidden rounded-[1.6rem] border border-white/10 bg-gradient-to-br from-[#131520] via-[#0b0c14] to-[#06070a]">
                     <div className="absolute inset-0 bg-dots opacity-30 mix-blend-overlay" />
+                    <div className="absolute -top-10 -right-10 h-32 w-32 rounded-full bg-blue-500/10 blur-2xl" />
                     <div className="absolute inset-0 flex items-center justify-center">
-                      <span className="font-display text-6xl font-bold text-white/90">
+                      <span className="font-display text-6xl font-bold text-white/80">
                         {member.initials}
                       </span>
                     </div>
-                    <div className="absolute inset-0 bg-gradient-to-t from-navy-950/90 via-transparent to-transparent" />
-                    <span className="absolute left-4 top-4 rounded-full border border-white/20 bg-navy-950/40 px-3 py-1 text-[10px] font-medium uppercase tracking-widest text-white/80 backdrop-blur-sm">
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent" />
+                    <span className="absolute left-4 top-4 rounded-full border border-white/15 bg-black/60 px-3 py-1 text-[10px] font-medium uppercase tracking-widest text-white/70 backdrop-blur-md">
                       [Portfolio Image]
                     </span>
 
@@ -58,7 +56,7 @@ export default function Team() {
                             key={s}
                             href="#"
                             aria-label={s}
-                            className="flex h-9 w-9 items-center justify-center rounded-full border border-white/20 bg-white/10 text-white backdrop-blur-sm transition-colors hover:bg-white hover:text-navy-950"
+                            className="flex h-9 w-9 items-center justify-center rounded-full border border-white/20 bg-black/60 text-white backdrop-blur-md transition-all duration-300 hover:border-blue-400/50 hover:bg-blue-600 hover:text-white"
                           >
                             <Icon className="h-4 w-4" />
                           </a>
@@ -71,8 +69,8 @@ export default function Team() {
                     <h3 className="font-display text-lg font-semibold text-white">
                       {member.name}
                     </h3>
-                    <p className="text-sm text-cyan-300">{member.role}</p>
-                    <p className="mt-2 text-sm leading-relaxed text-white/50">
+                    <p className="text-sm font-medium text-blue-400">{member.role}</p>
+                    <p className="mt-2 text-sm leading-relaxed text-white/55">
                       {member.bio}
                     </p>
                   </div>

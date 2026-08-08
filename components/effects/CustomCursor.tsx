@@ -63,7 +63,7 @@ export default function CustomCursor() {
     <>
       {/* Ambient cursor light aura */}
       <motion.div
-        className="pointer-events-none fixed left-0 top-0 z-[9990] h-64 w-64 rounded-full bg-gradient-to-r from-electric-500/10 via-purple-500/10 to-cyan-500/10 blur-3xl opacity-60"
+        className="pointer-events-none fixed left-0 top-0 z-[9990] h-64 w-64 rounded-full bg-blue-500/10 blur-3xl opacity-50"
         style={{ x: auraX, y: auraY, translateX: "-50%", translateY: "-50%" }}
       />
 

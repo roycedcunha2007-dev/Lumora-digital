@@ -5,7 +5,7 @@ import { useEffect, useRef } from "react";
 /**
  * A GPU-friendly animated backdrop: slow-drifting gradient orbs painted on a
  * canvas + a faint interactive particle field that leans toward the cursor.
- * Falls back to a static gradient when reduced-motion is requested.
+ * Uses Deep Obsidian, single Electric Blue accent, and soft white highlights.
  */
 export default function AuroraBackground() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -25,10 +25,10 @@ export default function AuroraBackground() {
     const dpr = Math.min(window.devicePixelRatio || 1, 2);
 
     const orbs = [
-      { x: 0.2, y: 0.25, r: 0.45, hue: [0, 240, 255], t: 0, speed: 0.00018 }, // Aurora Cyan
-      { x: 0.8, y: 0.3, r: 0.4, hue: [139, 92, 246], t: 2, speed: 0.00015 },  // Royal Purple
-      { x: 0.6, y: 0.8, r: 0.52, hue: [37, 99, 235], t: 4, speed: 0.00014 },  // Electric Blue
-      { x: 0.35, y: 0.7, r: 0.36, hue: [14, 23, 42], t: 1, speed: 0.00016 },  // Deep Navy
+      { x: 0.2, y: 0.25, r: 0.45, hue: [59, 130, 246], t: 0, speed: 0.00018 },  // Electric Blue
+      { x: 0.8, y: 0.3, r: 0.38, hue: [215, 228, 250], t: 2, speed: 0.00015 },  // Soft White
+      { x: 0.6, y: 0.8, r: 0.50, hue: [37, 99, 235], t: 4, speed: 0.00014 },   // Deep Electric Blue
+      { x: 0.35, y: 0.7, r: 0.36, hue: [8, 12, 24], t: 1, speed: 0.00016 },    // Deep Obsidian
     ];
 
     type P = { x: number; y: number; vx: number; vy: number; s: number };
@@ -43,13 +43,13 @@ export default function AuroraBackground() {
       canvas.height = h * dpr;
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
-      const count = Math.min(70, Math.floor((w * h) / 26000));
+      const count = Math.min(60, Math.floor((w * h) / 28000));
       particles = Array.from({ length: count }, () => ({
         x: Math.random() * w,
         y: Math.random() * h,
-        vx: (Math.random() - 0.5) * 0.15,
-        vy: (Math.random() - 0.5) * 0.15,
-        s: Math.random() * 1.6 + 0.4,
+        vx: (Math.random() - 0.5) * 0.12,
+        vy: (Math.random() - 0.5) * 0.12,
+        s: Math.random() * 1.5 + 0.4,
       }));
     };
 
@@ -76,8 +76,8 @@ export default function AuroraBackground() {
         const radius = o.r * Math.max(w, h);
         const g = ctx.createRadialGradient(cx, cy, 0, cx, cy, radius);
         const [r, gr, b] = o.hue;
-        g.addColorStop(0, `rgba(${r},${gr},${b},0.14)`);
-        g.addColorStop(0.4, `rgba(${r},${gr},${b},0.05)`);
+        g.addColorStop(0, `rgba(${r},${gr},${b},0.12)`);
+        g.addColorStop(0.4, `rgba(${r},${gr},${b},0.04)`);
         g.addColorStop(1, "rgba(0,0,0,0)");
         ctx.fillStyle = g;
         ctx.beginPath();
@@ -100,9 +100,9 @@ export default function AuroraBackground() {
         const dx = mx - p.x;
         const dy = my - p.y;
         const dist = Math.hypot(dx, dy);
-        if (dist < 220) {
-          p.x += (dx / dist) * 0.12;
-          p.y += (dy / dist) * 0.12;
+        if (dist < 200) {
+          p.x += (dx / dist) * 0.10;
+          p.y += (dy / dist) * 0.10;
         }
         if (p.x < 0) p.x = w;
         if (p.x > w) p.x = 0;
@@ -111,7 +111,7 @@ export default function AuroraBackground() {
 
         ctx.beginPath();
         ctx.arc(p.x, p.y, p.s, 0, Math.PI * 2);
-        ctx.fillStyle = "rgba(215,219,227,0.35)";
+        ctx.fillStyle = "rgba(215,225,245,0.30)";
         ctx.fill();
       }
 
@@ -121,9 +121,9 @@ export default function AuroraBackground() {
           const a = particles[i];
           const b = particles[j];
           const d = Math.hypot(a.x - b.x, a.y - b.y);
-          if (d < 120) {
-            ctx.strokeStyle = `rgba(180,185,196,${(1 - d / 120) * 0.14})`;
-            ctx.lineWidth = 0.6;
+          if (d < 110) {
+            ctx.strokeStyle = `rgba(180,205,245,${(1 - d / 110) * 0.10})`;
+            ctx.lineWidth = 0.5;
             ctx.beginPath();
             ctx.moveTo(a.x, a.y);
             ctx.lineTo(b.x, b.y);
@@ -157,15 +157,15 @@ export default function AuroraBackground() {
   return (
     <div className="pointer-events-none fixed inset-0 -z-10 overflow-hidden bg-navy-950">
       {/* deep base gradient */}
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_rgba(12,16,34,0.75),_rgba(0,0,0,1)_58%)]" />
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_rgba(10,14,28,0.75),_rgba(0,0,0,1)_60%)]" />
       <canvas ref={canvasRef} className="absolute inset-0 h-full w-full" />
       {/* animated grid overlay */}
-      <div className="absolute inset-0 bg-grid opacity-[0.6] mask-fade-y" />
+      <div className="absolute inset-0 bg-grid opacity-[0.5] mask-fade-y" />
       {/* vignette */}
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_transparent_42%,_rgba(0,0,0,0.92)_100%)]" />
       {/* film grain */}
       <div
-        className="absolute inset-0 opacity-[0.035] mix-blend-overlay"
+        className="absolute inset-0 opacity-[0.03] mix-blend-overlay"
         style={{
           backgroundImage:
             "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E\")",

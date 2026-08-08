@@ -29,7 +29,7 @@ export default function LumoraPrism3D() {
     renderer.shadowMap.enabled = true;
     container.appendChild(renderer.domElement);
 
-    // Floating 3D Star/Crystal Particles
+    // Floating 3D Star/Crystal Particles - Electric Blue & Soft White
     const particleCount = 45;
     const particleGeo = new THREE.BufferGeometry();
     const particlePos = new Float32Array(particleCount * 3);
@@ -40,29 +40,29 @@ export default function LumoraPrism3D() {
     }
     particleGeo.setAttribute("position", new THREE.BufferAttribute(particlePos, 3));
     const particleMat = new THREE.PointsMaterial({
-      color: 0x00f0ff,
-      size: 0.05,
+      color: 0x60a5fa,
+      size: 0.045,
       transparent: true,
-      opacity: 0.5,
+      opacity: 0.45,
     });
     const particleSystem = new THREE.Points(particleGeo, particleMat);
     scene.add(particleSystem);
 
-    // Ambient & Point Lights for Refraction Beams
+    // Ambient & Point Lights - Single Electric Blue accent with soft white highlights
     const ambientLight = new THREE.AmbientLight(0xffffff, 0.7);
     scene.add(ambientLight);
 
-    const cyanLight = new THREE.PointLight(0x00f0ff, 4.5, 22);
-    cyanLight.position.set(4, 4, 4);
-    scene.add(cyanLight);
+    const electricBlueLight = new THREE.PointLight(0x3b82f6, 4.0, 22);
+    electricBlueLight.position.set(4, 4, 4);
+    scene.add(electricBlueLight);
 
-    const purpleLight = new THREE.PointLight(0x8b5cf6, 4.5, 22);
-    purpleLight.position.set(-4, -4, 4);
-    scene.add(purpleLight);
+    const softWhiteLight = new THREE.PointLight(0xdbeafe, 3.0, 22);
+    softWhiteLight.position.set(-4, -4, 4);
+    scene.add(softWhiteLight);
 
-    const blueLight = new THREE.PointLight(0x2563eb, 3.5, 22);
-    blueLight.position.set(0, 5, -2);
-    scene.add(blueLight);
+    const deepBlueLight = new THREE.PointLight(0x1d4ed8, 2.5, 22);
+    deepBlueLight.position.set(0, 5, -2);
+    scene.add(deepBlueLight);
 
     // Mouse & Scroll interaction state
     const mouse = { x: 0, y: 0, targetX: 0, targetY: 0 };
@@ -102,11 +102,11 @@ export default function LumoraPrism3D() {
       if (!reduced) {
         particleSystem.rotation.y = elapsedTime * 0.04;
 
-        // Animate lights
-        cyanLight.position.x = Math.sin(elapsedTime * 0.5) * 5;
-        cyanLight.position.y = Math.cos(elapsedTime * 0.5) * 5;
-        purpleLight.position.x = -Math.sin(elapsedTime * 0.4) * 5;
-        purpleLight.position.y = -Math.cos(elapsedTime * 0.4) * 5;
+        // Animate lights smoothly
+        electricBlueLight.position.x = Math.sin(elapsedTime * 0.5) * 5;
+        electricBlueLight.position.y = Math.cos(elapsedTime * 0.5) * 5;
+        softWhiteLight.position.x = -Math.sin(elapsedTime * 0.4) * 5;
+        softWhiteLight.position.y = -Math.cos(elapsedTime * 0.4) * 5;
       }
 
       renderer.render(scene, camera);
@@ -132,7 +132,7 @@ export default function LumoraPrism3D() {
   return (
     <div
       ref={containerRef}
-      className="pointer-events-none fixed inset-0 z-0 h-full w-full opacity-60 mix-blend-screen"
+      className="pointer-events-none fixed inset-0 z-0 h-full w-full opacity-50 mix-blend-screen"
       aria-hidden="true"
     />
   );

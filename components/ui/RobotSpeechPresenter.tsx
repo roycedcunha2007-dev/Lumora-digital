@@ -21,7 +21,6 @@ export default function RobotSpeechPresenter({
   const [currentPartIdx, setCurrentPartIdx] = useState(0);
   const [currentWordIdx, setCurrentWordIdx] = useState(-1);
   const [displayedText, setDisplayedText] = useState("");
-  const [isHovered, setIsHovered] = useState(false);
 
   const synthRef = useRef<SpeechSynthesis | null>(null);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
@@ -160,12 +159,10 @@ export default function RobotSpeechPresenter({
         <div className="absolute inset-0 flex items-start justify-center pt-4">
           <motion.button
             onClick={startPresentation}
-            onMouseEnter={() => setIsHovered(true)}
-            onMouseLeave={() => setIsHovered(false)}
             aria-label="Interact with AI Robot Presenter"
-            className="pointer-events-auto group flex items-center gap-2 rounded-full border border-white/20 bg-navy-950/80 px-4 py-2 text-xs font-medium text-white shadow-[0_10px_30px_rgba(0,0,0,0.5)] backdrop-blur-xl transition-all duration-300 hover:scale-105 hover:border-white/40 focus:outline-none"
+            className="pointer-events-auto group flex items-center gap-2 rounded-full border border-white/20 bg-[#08080c]/80 px-4 py-2 text-xs font-medium text-white shadow-[0_10px_30px_rgba(0,0,0,0.5)] backdrop-blur-xl transition-all duration-300 hover:scale-105 hover:border-blue-400/40 focus:outline-none cursor-pointer"
           >
-            <Sparkles className="h-3.5 w-3.5 text-cyan-400 animate-pulse" />
+            <Sparkles className="h-3.5 w-3.5 text-blue-400 animate-pulse" />
             <span>Click robot to speak</span>
           </motion.button>
         </div>
@@ -179,16 +176,16 @@ export default function RobotSpeechPresenter({
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.9, y: 15 }}
             transition={{ type: "spring", stiffness: 280, damping: 22 }}
-            className="pointer-events-auto absolute -top-24 left-1/2 -translate-x-1/2 sm:-top-28 sm:left-auto sm:right-4 sm:translate-x-0 w-[90%] max-w-sm rounded-3xl border border-white/20 bg-navy-950/90 p-5 shadow-[0_20px_60px_rgba(0,0,0,0.7)] backdrop-blur-2xl"
+            className="pointer-events-auto absolute -top-24 left-1/2 -translate-x-1/2 sm:-top-28 sm:left-auto sm:right-4 sm:translate-x-0 w-[90%] max-w-sm rounded-3xl border border-white/[0.08] bg-[#08080c]/90 p-5 shadow-[0_20px_60px_rgba(0,0,0,0.75)] backdrop-blur-2xl"
           >
             {/* Specular inner line */}
-            <div className="pointer-events-none absolute inset-0 rounded-[inherit] shadow-[inset_0_1px_0_0_rgba(255,255,255,0.25)]" />
+            <div className="pointer-events-none absolute inset-0 rounded-[inherit] shadow-[inset_0_1px_0_0_rgba(255,255,255,0.18)]" />
 
             <div className="flex items-center justify-between border-b border-white/10 pb-2.5">
               <div className="flex items-center gap-2">
                 <span className="relative flex h-2.5 w-2.5">
-                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-cyan-400 opacity-75" />
-                  <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-cyan-400" />
+                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-blue-400 opacity-75" />
+                  <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-blue-400" />
                 </span>
                 <span className="font-mono text-[10px] font-bold uppercase tracking-widest text-white/70">
                   Lumora AI Presenter
@@ -199,21 +196,21 @@ export default function RobotSpeechPresenter({
               <div className="flex items-center gap-1.5">
                 <button
                   onClick={togglePause}
-                  className="flex h-7 w-7 items-center justify-center rounded-full border border-white/10 bg-white/5 text-white/80 hover:bg-white/15"
+                  className="flex h-7 w-7 items-center justify-center rounded-full border border-white/10 bg-white/5 text-white/80 hover:bg-white/15 cursor-pointer"
                   aria-label={isPaused ? "Resume speech" : "Pause speech"}
                 >
                   {isPaused ? <Play className="h-3 w-3" /> : <Pause className="h-3 w-3" />}
                 </button>
                 <button
                   onClick={toggleMute}
-                  className="flex h-7 w-7 items-center justify-center rounded-full border border-white/10 bg-white/5 text-white/80 hover:bg-white/15"
+                  className="flex h-7 w-7 items-center justify-center rounded-full border border-white/10 bg-white/5 text-white/80 hover:bg-white/15 cursor-pointer"
                   aria-label={isMuted ? "Unmute speech" : "Mute speech"}
                 >
-                  {isMuted ? <VolumeX className="h-3 w-3 text-red-400" /> : <Volume2 className="h-3 w-3 text-cyan-300" />}
+                  {isMuted ? <VolumeX className="h-3 w-3 text-red-400" /> : <Volume2 className="h-3 w-3 text-blue-400" />}
                 </button>
                 <button
                   onClick={startPresentation}
-                  className="flex h-7 w-7 items-center justify-center rounded-full border border-white/10 bg-white/5 text-white/80 hover:bg-white/15"
+                  className="flex h-7 w-7 items-center justify-center rounded-full border border-white/10 bg-white/5 text-white/80 hover:bg-white/15 cursor-pointer"
                   aria-label="Replay speech"
                 >
                   <RotateCcw className="h-3 w-3" />
@@ -232,7 +229,7 @@ export default function RobotSpeechPresenter({
                       className={cn(
                         "inline-block transition-all duration-200 mr-1.5",
                         isActive
-                          ? "scale-105 font-semibold text-cyan-300 drop-shadow-[0_0_8px_#00f0ff]"
+                          ? "scale-105 font-semibold text-blue-400 drop-shadow-[0_0_8px_rgba(59,130,246,0.5)]"
                           : "opacity-80"
                       )}
                     >

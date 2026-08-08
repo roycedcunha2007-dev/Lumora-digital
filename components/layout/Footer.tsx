@@ -16,12 +16,12 @@ export default function Footer() {
           Lumora
         </span>
       </div>
-      <div className="pointer-events-none absolute -top-20 left-1/2 h-64 w-[80%] -translate-x-1/2 rounded-full bg-electric-500/10 blur-[120px]" />
+      <div className="pointer-events-none absolute -top-20 left-1/2 h-64 w-[80%] -translate-x-1/2 rounded-full bg-blue-500/10 blur-[120px]" />
 
       <div className="container-px relative">
         {/* CTA band */}
         <Reveal>
-          <div className="relative mb-20 flex flex-col items-center gap-6 rounded-[2.5rem] border border-white/15 bg-gradient-to-br from-white/[0.08] via-white/[0.02] to-white/[0.04] backdrop-blur-3xl shadow-[0_24px_60px_-15px_rgba(0,0,0,0.65),inset_0_1.5px_0_0_rgba(255,255,255,0.3)] px-8 py-14 text-center">
+          <div className="relative mb-20 flex flex-col items-center gap-6 rounded-[2.5rem] border border-white/[0.08] bg-gradient-to-br from-white/[0.04] via-white/[0.01] to-white/[0.02] backdrop-blur-3xl shadow-[0_24px_60px_-15px_rgba(0,0,0,0.7),inset_0_1px_0_0_rgba(255,255,255,0.18)] px-8 py-14 text-center">
             <h2 className="max-w-3xl font-display text-3xl font-semibold leading-tight text-white sm:text-5xl">
               Ready to make your business{" "}
               <span className="text-gradient">unforgettable?</span>
@@ -43,7 +43,7 @@ export default function Footer() {
         <div className="grid gap-12 pb-14 lg:grid-cols-[1.4fr_1fr_1fr_1.3fr]">
           <div>
             <div className="flex items-center gap-2.5">
-              <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-electric-500 via-purple-500 to-cyan-500 font-display font-bold text-white">
+              <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-blue-600 font-display font-bold text-white shadow-md shadow-blue-500/20">
                 L
               </span>
               <span className="font-display text-xl font-semibold text-white">
@@ -59,7 +59,7 @@ export default function Footer() {
                   key={s.label}
                   href={s.href}
                   aria-label={s.label}
-                  className="flex h-10 w-10 items-center justify-center rounded-full border border-white/10 text-xs font-medium text-white/60 transition-colors hover:border-white/30 hover:text-white"
+                  className="flex h-10 w-10 items-center justify-center rounded-full border border-white/10 text-xs font-medium text-white/60 transition-colors hover:border-blue-500/40 hover:text-white"
                 >
                   {s.label.slice(0, 2)}
                 </a>
@@ -116,7 +116,7 @@ export default function Footer() {
                 setSubscribed(true);
                 setTimeout(() => setSubscribed(false), 4000);
               }}
-              className="mt-4 flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.03] p-1.5 pl-4 focus-within:border-white/25"
+              className="mt-4 flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.03] p-1.5 pl-4 focus-within:border-blue-400/50"
             >
               <input
                 type="email"
@@ -127,7 +127,7 @@ export default function Footer() {
               <button
                 type="submit"
                 aria-label="Subscribe"
-                className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-electric-500 to-purple-500 text-white transition-transform hover:scale-105"
+                className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-blue-600 text-white transition-transform hover:scale-105 hover:bg-blue-500 cursor-pointer"
               >
                 {subscribed ? (
                   <Check className="h-4 w-4" />

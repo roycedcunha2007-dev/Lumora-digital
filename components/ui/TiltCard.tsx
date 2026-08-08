@@ -21,7 +21,7 @@ export type CardVariant =
 export default function TiltCard({
   children,
   className,
-  intensity = 12,
+  intensity = 1.8,
   glare = true,
   variant = "default",
 }: {
@@ -44,104 +44,43 @@ export default function TiltCard({
     }
   }, []);
 
-  const sx = useSpring(x, { stiffness: 280, damping: 20, mass: 0.4 });
-  const sy = useSpring(y, { stiffness: 280, damping: 20, mass: 0.4 });
+  const sx = useSpring(x, { stiffness: 260, damping: 24, mass: 0.4 });
+  const sy = useSpring(y, { stiffness: 260, damping: 24, mass: 0.4 });
+
+  // Strictly cap maximum rotation to 2.0 degrees for refined luxury feel
+  const maxTilt = Math.min(Math.max(intensity, 0.5), 2.0);
 
   const rotateX = useTransform(
     sy,
     [-0.5, 0.5],
-    [isTouch ? 0 : intensity, isTouch ? 0 : -intensity]
+    [isTouch ? 0 : maxTilt, isTouch ? 0 : -maxTilt]
   );
   const rotateY = useTransform(
     sx,
     [-0.5, 0.5],
-    [isTouch ? 0 : -intensity, isTouch ? 0 : intensity]
+    [isTouch ? 0 : -maxTilt, isTouch ? 0 : maxTilt]
   );
 
   /* Cursor-reactive refraction spotlight coordinates */
-  const glareX = useTransform(sx, [-0.5, 0.5], ["10%", "90%"]) as MotionValue<string>;
-  const glareY = useTransform(sy, [-0.5, 0.5], ["10%", "90%"]) as MotionValue<string>;
+  const glareX = useTransform(sx, [-0.5, 0.5], ["15%", "85%"]) as MotionValue<string>;
+  const glareY = useTransform(sy, [-0.5, 0.5], ["15%", "85%"]) as MotionValue<string>;
 
-  /* Dynamic Directional Shadow Offset opposite cursor displacement */
-  const shadowX = useTransform(sx, [-0.5, 0.5], [22, -22]);
-  const shadowY = useTransform(sy, [-0.5, 0.5], [32, 10]);
+  /* Directional shadow offset */
+  const shadowX = useTransform(sx, [-0.5, 0.5], [8, -8]);
+  const shadowY = useTransform(sy, [-0.5, 0.5], [16, 6]);
 
   const dynamicBoxShadow = useTransform(
     [shadowX, shadowY],
-    ([sxVal, syVal]) => {
-      const shadowColor =
-        variant === "gold-luxury"
-          ? "rgba(212, 175, 55, 0.22)"
-          : variant === "ai-futuristic"
-          ? "rgba(0, 240, 255, 0.25)"
-          : variant === "trust-blue"
-          ? "rgba(129, 140, 248, 0.22)"
-          : "rgba(97, 130, 255, 0.18)";
-      return `${sxVal}px ${syVal}px 55px rgba(0, 0, 0, 0.65), 0 0 35px ${shadowColor}`;
-    }
+    ([sxVal, syVal]) =>
+      `${sxVal}px ${syVal}px 45px -10px rgba(0, 0, 0, 0.75), 0 0 30px -8px rgba(59, 130, 246, 0.16)`
   );
 
+  /* Subtle single electric-blue cursor-following reflection glare */
   const glareBg = useTransform(
     [glareX, glareY],
-    ([gx, gy]) => {
-      if (variant === "ai-futuristic") {
-        return `radial-gradient(circle 380px at ${gx} ${gy}, rgba(255,255,255,0.4) 0%, rgba(0,240,255,0.25) 30%, rgba(97,130,255,0.12) 60%, transparent 85%)`;
-      }
-      if (variant === "gold-luxury") {
-        return `radial-gradient(circle 380px at ${gx} ${gy}, rgba(255,235,160,0.45) 0%, rgba(212,175,55,0.25) 30%, rgba(255,190,40,0.12) 60%, transparent 85%)`;
-      }
-      if (variant === "silver-cyan") {
-        return `radial-gradient(circle 380px at ${gx} ${gy}, rgba(255,255,255,0.42) 0%, rgba(0,240,255,0.16) 32%, rgba(220,225,235,0.1) 60%, transparent 85%)`;
-      }
-      if (variant === "trust-blue") {
-        return `radial-gradient(circle 380px at ${gx} ${gy}, rgba(255,255,255,0.38) 0%, rgba(129,140,248,0.22) 30%, rgba(99,102,241,0.1) 60%, transparent 85%)`;
-      }
-      return `radial-gradient(circle 380px at ${gx} ${gy}, rgba(255,255,255,0.35) 0%, rgba(0,240,255,0.18) 30%, rgba(139,92,246,0.1) 60%, transparent 85%)`;
-    }
+    ([gx, gy]) =>
+      `radial-gradient(circle 380px at ${gx} ${gy}, rgba(255,255,255,0.18) 0%, rgba(59,130,246,0.10) 35%, transparent 75%)`
   );
-
-  const holoBg = useTransform(
-    [glareX, glareY],
-    ([gx, gy]) => {
-      if (variant === "ai-futuristic") {
-        return `radial-gradient(circle 340px at ${gx} ${gy}, rgba(0,240,255,0.35) 0%, rgba(97,130,255,0.25) 35%, rgba(0,240,255,0.15) 65%, transparent 85%)`;
-      }
-      if (variant === "gold-luxury") {
-        return `radial-gradient(circle 340px at ${gx} ${gy}, rgba(255,215,0,0.32) 0%, rgba(212,175,55,0.25) 35%, rgba(255,235,160,0.16) 65%, transparent 85%)`;
-      }
-      if (variant === "silver-cyan") {
-        return `radial-gradient(circle 340px at ${gx} ${gy}, rgba(255,255,255,0.34) 0%, rgba(0,240,255,0.2) 35%, rgba(200,215,240,0.12) 65%, transparent 85%)`;
-      }
-      if (variant === "trust-blue") {
-        return `radial-gradient(circle 340px at ${gx} ${gy}, rgba(129,140,248,0.3) 0%, rgba(99,102,241,0.22) 35%, rgba(168,85,247,0.14) 65%, transparent 85%)`;
-      }
-      return `radial-gradient(circle 340px at ${gx} ${gy}, rgba(0, 240, 255, 0.28) 0%, rgba(139, 92, 246, 0.22) 32%, rgba(236, 72, 153, 0.16) 62%, transparent 85%)`;
-    }
-  );
-
-  const backglowMap: Record<CardVariant, string> = {
-    default: "from-electric-500/20 via-cyan-500/20 to-purple-500/25",
-    luxury: "from-purple-500/30 via-electric-500/20 to-cyan-500/25",
-    "ai-futuristic": "from-cyan-500/28 via-blue-500/22 to-electric-500/25",
-    "gold-luxury": "from-amber-500/35 via-yellow-500/25 to-amber-600/30",
-    "silver-cyan": "from-white/20 via-cyan-500/15 to-white/10",
-    "trust-blue": "from-purple-500/22 via-indigo-500/22 to-cyan-500/20",
-  };
-
-  const borderConicMap: Record<CardVariant, string> = {
-    default:
-      "bg-[conic-gradient(from_var(--border-angle,0deg),rgba(255,255,255,0.4),rgba(0,240,255,0.6)_25%,rgba(139,92,246,0.6)_50%,rgba(97,130,255,0.5)_75%,rgba(255,255,255,0.4)_100%)]",
-    luxury:
-      "bg-[conic-gradient(from_var(--border-angle,0deg),rgba(255,255,255,0.6),rgba(139,92,246,0.6)_35%,rgba(97,130,255,0.5)_70%,rgba(255,255,255,0.6)_100%)]",
-    "ai-futuristic":
-      "bg-[conic-gradient(from_var(--border-angle,0deg),rgba(255,255,255,0.5),rgba(0,240,255,0.85)_30%,rgba(97,130,255,0.65)_65%,rgba(255,255,255,0.5)_100%)]",
-    "gold-luxury":
-      "bg-[conic-gradient(from_var(--border-angle,0deg),rgba(255,223,128,0.8),rgba(212,175,55,0.6)_30%,rgba(255,215,0,0.7)_65%,rgba(255,223,128,0.8)_100%)]",
-    "silver-cyan":
-      "bg-[conic-gradient(from_var(--border-angle,0deg),rgba(255,255,255,0.55),rgba(220,225,235,0.35)_40%,rgba(0,240,255,0.45)_75%,rgba(255,255,255,0.55)_100%)]",
-    "trust-blue":
-      "bg-[conic-gradient(from_var(--border-angle,0deg),rgba(255,255,255,0.45),rgba(129,140,248,0.6)_35%,rgba(99,102,241,0.45)_70%,rgba(255,255,255,0.45)_100%)]",
-  };
 
   const handleMove = (e: React.MouseEvent) => {
     if (isTouch) return;
@@ -163,17 +102,14 @@ export default function TiltCard({
   };
 
   return (
-    <div className="relative group [perspective:1200px]">
-      {/* Soft Ambient Backglow behind the card (Variant Specific) */}
+    <div className="relative group [perspective:1400px]">
+      {/* Subtle Ambient Electric Blue Backglow - Idle: very subtle (0.12), Hover: slightly stronger (0.32) */}
       <div
         className={cn(
-          "pointer-events-none absolute -inset-3 rounded-[2.8rem] bg-gradient-to-r opacity-30 blur-2xl transition-opacity duration-700 group-hover:opacity-100",
-          backglowMap[variant]
+          "pointer-events-none absolute -inset-2 rounded-[2.5rem] bg-[radial-gradient(ellipse_at_center,rgba(59,130,246,0.18),transparent_70%)] blur-2xl transition-opacity duration-700 ease-out",
+          isHovered ? "opacity-100" : "opacity-35"
         )}
       />
-
-      {/* Behind Card Ambient Light & Particle Sparkle Field */}
-      <div className="pointer-events-none absolute -inset-1 rounded-[2.5rem] bg-[radial-gradient(circle_at_50%_50%,rgba(0,240,255,0.12),transparent_70%)] opacity-0 blur-xl transition-opacity duration-500 group-hover:opacity-100" />
 
       <motion.div
         ref={ref}
@@ -182,60 +118,48 @@ export default function TiltCard({
         onMouseLeave={handleMouseLeave}
         animate={
           isHovered
-            ? { y: -12, scale: 1.02 }
-            : { y: [0, -3, 0], scale: 1 }
+            ? { y: -8, scale: 1.015 }
+            : { y: 0, scale: 1 }
         }
-        transition={
-          isHovered
-            ? { type: "spring", stiffness: 280, damping: 20 }
-            : {
-                y: { duration: 5, repeat: Infinity, ease: "easeInOut" },
-                scale: { duration: 0.4 },
-              }
-        }
+        transition={{
+          type: "spring",
+          stiffness: 260,
+          damping: 24,
+          mass: 0.5,
+        }}
         style={{
           rotateX,
           rotateY,
-          boxShadow: isHovered ? dynamicBoxShadow : undefined,
+          boxShadow: isHovered ? dynamicBoxShadow : "0 18px 45px -15px rgba(0,0,0,0.65)",
           transformStyle: "preserve-3d",
         }}
         className={cn(
-          "relative will-change-transform rounded-[2rem] border border-white/15 bg-white/[0.035] backdrop-blur-3xl shadow-[0_20px_50px_rgba(0,0,0,0.65)] transition-colors duration-500 hover:border-white/30 hover:bg-white/[0.07]",
+          "relative will-change-transform rounded-[2rem] border border-white/[0.08] bg-[#08080c]/85 backdrop-blur-[24px] transition-colors duration-500 hover:border-blue-500/30 hover:bg-[#090a10]/90",
           className
         )}
       >
-        {/* Animated Moving Gradient Border Sweep */}
+        {/* Slow light sweep on thin border */}
         <div
-          className={cn(
-            "pointer-events-none absolute -inset-[1px] rounded-[inherit] p-[1px] [mask:linear-gradient(#fff_0_0)_content-box,linear-gradient(#fff_0_0)] [mask-composite:exclude] opacity-40 transition-opacity duration-500 group-hover:opacity-100 animate-[rotate-border_8s_linear_infinite]",
-            borderConicMap[variant]
-          )}
+          className="pointer-events-none absolute -inset-[1px] rounded-[inherit] p-[1px] [mask:linear-gradient(#fff_0_0)_content-box,linear-gradient(#fff_0_0)] [mask-composite:exclude] opacity-25 transition-opacity duration-500 group-hover:opacity-80 bg-[conic-gradient(from_var(--border-angle,0deg),rgba(255,255,255,0.25),rgba(59,130,246,0.45)_30%,rgba(255,255,255,0.06)_60%,rgba(59,130,246,0.35)_85%,rgba(255,255,255,0.25)_100%)] animate-[rotate-border_12s_linear_infinite]"
         />
 
-        {/* Specular Inner Edge Top & Left Highlight Lines (Apple Vision Pro Liquid Glass Rim) */}
-        <div className="pointer-events-none absolute inset-0 rounded-[inherit] shadow-[inset_0_1.5px_0_0_rgba(255,255,255,0.35),inset_0_-1px_0_0_rgba(255,255,255,0.1),inset_0_0_20px_rgba(255,255,255,0.03)]" />
+        {/* Specular Inner Edge Top Highlight (Subtle Inner Highlight & Rim Light) */}
+        <div className="pointer-events-none absolute inset-0 rounded-[inherit] shadow-[inset_0_1px_0_0_rgba(255,255,255,0.18),inset_0_-1px_0_0_rgba(255,255,255,0.02)]" />
 
-        {/* Shimmer Light Reflection Sweep Line */}
-        <span className="pointer-events-none absolute -inset-full top-0 block h-full w-1/2 -skew-x-12 bg-gradient-to-r from-transparent via-white/25 to-transparent opacity-0 transition-all duration-1000 group-hover:left-full group-hover:opacity-100" />
+        {/* Occasional Slow Shimmer Light Sweep */}
+        <span className="pointer-events-none absolute -inset-full top-0 block h-full w-1/2 -skew-x-12 bg-gradient-to-r from-transparent via-white/[0.12] to-transparent opacity-0 transition-all duration-1000 group-hover:left-full group-hover:opacity-100" />
 
-        {/* Holographic Iridescent Cursor-Reactive Overlay */}
-        <motion.div
-          className="pointer-events-none absolute inset-0 rounded-[inherit] opacity-0 transition-opacity duration-500 group-hover:opacity-100 mix-blend-color-dodge"
-          style={{ background: holoBg, transform: "translateZ(10px)" }}
-        />
-
-        {/* Layered Content Container with 3D Preservation */}
+        {/* Layered Content Container with Preserved 3D Depth */}
         <div className="relative z-10 [transform-style:preserve-3d]">{children}</div>
 
-        {/* Cursor Reactive Spotlight Glare / Caustics */}
+        {/* Cursor-Reactive Glare Reflection */}
         {glare && (
           <motion.div
-            className="pointer-events-none absolute inset-0 rounded-[inherit] opacity-0 transition-opacity duration-400 group-hover:opacity-100 mix-blend-overlay"
-            style={{ background: glareBg, transform: "translateZ(15px)" }}
+            className="pointer-events-none absolute inset-0 rounded-[inherit] opacity-0 transition-opacity duration-300 group-hover:opacity-100 mix-blend-screen"
+            style={{ background: glareBg, transform: "translateZ(10px)" }}
           />
         )}
       </motion.div>
     </div>
   );
 }
-

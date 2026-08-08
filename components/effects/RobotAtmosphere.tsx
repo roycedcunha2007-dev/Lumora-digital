@@ -19,7 +19,7 @@ export default function RobotAtmosphere() {
       x: Math.random() * w,
       y: Math.random() * h,
       r: Math.random() * 1.5 + 0.5,
-      opacity: Math.random() * 0.4 + 0.1,
+      opacity: Math.random() * 0.35 + 0.1,
       speedY: Math.random() * -0.2 - 0.05,
       speedX: (Math.random() - 0.5) * 0.1,
     }));
@@ -37,9 +37,9 @@ export default function RobotAtmosphere() {
 
         ctx.beginPath();
         ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(0, 240, 255, ${p.opacity})`;
-        ctx.shadowBlur = 8;
-        ctx.shadowColor = "rgba(0, 240, 255, 0.5)";
+        ctx.fillStyle = `rgba(59, 130, 246, ${p.opacity})`;
+        ctx.shadowBlur = 6;
+        ctx.shadowColor = "rgba(59, 130, 246, 0.4)";
         ctx.fill();
       }
       animId = requestAnimationFrame(render);
@@ -62,12 +62,12 @@ export default function RobotAtmosphere() {
 
   return (
     <div className="pointer-events-none absolute inset-0 -z-10 flex items-center justify-center">
-      {/* Soft Breathing Ambient Eye/Chest Glow */}
+      {/* Soft Breathing Ambient Electric Blue Glow */}
       <motion.div
-        className="h-[60%] w-[60%] rounded-full bg-gradient-to-tr from-cyan-500/10 via-purple-500/10 to-electric-500/15 blur-[100px]"
+        className="h-[60%] w-[60%] rounded-full bg-gradient-to-tr from-blue-500/10 via-blue-600/5 to-transparent blur-[100px]"
         animate={{
-          scale: [1, 1.06, 1],
-          opacity: [0.5, 0.75, 0.5],
+          scale: [1, 1.05, 1],
+          opacity: [0.4, 0.65, 0.4],
         }}
         transition={{
           repeat: Infinity,

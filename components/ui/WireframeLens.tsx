@@ -2,7 +2,7 @@
 
 import { useRef, useState } from "react";
 import { motion } from "framer-motion";
-import { Sparkles, MoveRight, Layers, Eye, ShieldCheck, Zap } from "lucide-react";
+import { Sparkles, MoveRight, Layers, ShieldCheck, Zap } from "lucide-react";
 
 export default function WireframeLens() {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -22,17 +22,17 @@ export default function WireframeLens() {
     <div className="w-full max-w-5xl mx-auto mt-12">
       {/* Interactive Controls Header */}
       <div className="flex flex-wrap items-center justify-between gap-4 mb-4 px-2">
-        <div className="flex items-center gap-2 text-xs font-mono text-cyan-300">
-          <span className="h-2 w-2 rounded-full bg-cyan-400 animate-ping" />
+        <div className="flex items-center gap-2 text-xs font-mono text-blue-400">
+          <span className="h-2 w-2 rounded-full bg-blue-400 animate-ping" />
           <span>INTERACTIVE X-RAY LENS // HOVER TO REFRACT</span>
         </div>
 
-        <div className="flex items-center gap-2 bg-navy-900/80 border border-white/10 rounded-full p-1 text-xs">
+        <div className="flex items-center gap-2 bg-[#0a0a0f] border border-white/10 rounded-full p-1 text-xs">
           <button
             onClick={() => setActiveTab("masterpiece")}
             className={`px-3 py-1.5 rounded-full font-medium transition-all ${
               activeTab === "masterpiece"
-                ? "bg-gradient-to-r from-electric-500 to-purple-500 text-white shadow-lg"
+                ? "bg-blue-600 text-white shadow-lg shadow-blue-500/20"
                 : "text-white/50 hover:text-white"
             }`}
           >
@@ -57,7 +57,7 @@ export default function WireframeLens() {
         onMouseMove={handleMouseMove}
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
-        className="relative aspect-[16/9] sm:aspect-[21/9] w-full overflow-hidden rounded-[2.5rem] border border-white/15 bg-navy-950 shadow-2xl cursor-crosshair select-none group"
+        className="relative aspect-[16/9] sm:aspect-[21/9] w-full overflow-hidden rounded-[2.5rem] border border-white/[0.08] bg-[#07080d] shadow-2xl cursor-crosshair select-none group"
       >
         {/* BASE LAYER: Basic Template Wireframe */}
         <div className="absolute inset-0 bg-[#090b14] p-6 sm:p-10 flex flex-col justify-between font-mono text-white/30">
@@ -98,9 +98,9 @@ export default function WireframeLens() {
           </div>
         </div>
 
-        {/* OVERLAY LAYER: Lumora Bespoke Masterpiece (Revealed by X-Ray Lens / Tab) */}
+        {/* OVERLAY LAYER: Lumora Bespoke Masterpiece */}
         <div
-          className="absolute inset-0 bg-gradient-to-br from-navy-900 via-navy-950 to-[#04060f] p-6 sm:p-10 flex flex-col justify-between transition-all duration-300"
+          className="absolute inset-0 bg-gradient-to-br from-[#0a0c16] via-[#07080d] to-[#040508] p-6 sm:p-10 flex flex-col justify-between transition-all duration-300"
           style={{
             clipPath:
               activeTab === "masterpiece" && !isHovered
@@ -111,14 +111,14 @@ export default function WireframeLens() {
           }}
         >
           {/* Masterpiece Ambient Lighting */}
-          <div className="pointer-events-none absolute -top-24 -left-24 h-72 w-72 rounded-full bg-electric-500/30 blur-3xl" />
-          <div className="pointer-events-none absolute -bottom-24 -right-24 h-72 w-72 rounded-full bg-cyan-400/20 blur-3xl" />
+          <div className="pointer-events-none absolute -top-24 -left-24 h-72 w-72 rounded-full bg-blue-500/15 blur-3xl" />
+          <div className="pointer-events-none absolute -bottom-24 -right-24 h-72 w-72 rounded-full bg-blue-600/10 blur-3xl" />
           <div className="absolute inset-0 bg-grid opacity-30" />
 
           {/* Masterpiece Header */}
           <div className="relative z-10 flex items-center justify-between border-b border-white/15 pb-4">
             <div className="flex items-center gap-2">
-              <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-gradient-to-br from-electric-500 to-purple-500 font-display text-xs font-bold text-white shadow-lg shadow-electric-500/30">
+              <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-blue-600 font-display text-xs font-bold text-white shadow-lg shadow-blue-500/30">
                 L
               </span>
               <span className="font-display font-semibold text-white tracking-wide text-sm sm:text-base">
@@ -126,7 +126,7 @@ export default function WireframeLens() {
               </span>
             </div>
             <div className="flex items-center gap-2">
-              <span className="inline-flex items-center gap-1 rounded-full border border-cyan-400/30 bg-cyan-500/10 px-3 py-1 text-[11px] font-medium text-cyan-300 backdrop-blur-md">
+              <span className="inline-flex items-center gap-1 rounded-full border border-blue-400/30 bg-blue-500/10 px-3 py-1 text-[11px] font-medium text-blue-300 backdrop-blur-md">
                 <Sparkles className="h-3 w-3" /> Bespoke Craft
               </span>
             </div>
@@ -135,8 +135,8 @@ export default function WireframeLens() {
           {/* Masterpiece Body */}
           <div className="relative z-10 grid grid-cols-1 md:grid-cols-2 gap-8 my-auto items-center">
             <div className="space-y-4">
-              <div className="inline-flex items-center gap-1.5 rounded-full border border-purple-500/30 bg-purple-500/10 px-3 py-1 text-xs font-medium text-purple-300">
-                <Zap className="h-3.5 w-3.5 text-cyan-300" />
+              <div className="inline-flex items-center gap-1.5 rounded-full border border-blue-500/30 bg-blue-500/10 px-3 py-1 text-xs font-medium text-blue-300">
+                <Zap className="h-3.5 w-3.5 text-blue-400" />
                 Next-Gen Web Platform
               </div>
               <h3 className="font-display text-2xl sm:text-4xl font-bold tracking-tight text-white leading-tight">
@@ -146,7 +146,7 @@ export default function WireframeLens() {
                 Sub-second loading speeds, 60fps animations, and bespoke UI art direction engineered to elevate local brands.
               </p>
               <div className="flex items-center gap-3 pt-2">
-                <button className="flex items-center gap-2 rounded-full bg-white px-5 py-2.5 text-xs font-semibold text-navy-950 transition-transform hover:scale-105 shadow-xl shadow-white/10">
+                <button className="flex items-center gap-2 rounded-full bg-white px-5 py-2.5 text-xs font-semibold text-navy-950 transition-transform hover:scale-105 shadow-xl shadow-white/10 cursor-pointer">
                   Explore Live Demo
                   <MoveRight className="h-3.5 w-3.5" />
                 </button>
@@ -154,10 +154,10 @@ export default function WireframeLens() {
             </div>
 
             {/* Masterpiece Floating Card Widget */}
-            <div className="relative aspect-video w-full overflow-hidden rounded-2xl border border-white/20 bg-white/[0.04] p-5 backdrop-blur-xl shadow-2xl flex flex-col justify-between">
+            <div className="relative aspect-video w-full overflow-hidden rounded-2xl border border-white/[0.08] bg-white/[0.03] p-5 backdrop-blur-xl shadow-2xl flex flex-col justify-between">
               <div className="flex items-center justify-between">
-                <span className="text-xs font-mono text-cyan-300">CORE ENGINE METRICS</span>
-                <span className="flex h-2 w-2 rounded-full bg-cyan-400 shadow-[0_0_10px_#22d3ee]" />
+                <span className="text-xs font-mono text-blue-400">CORE ENGINE METRICS</span>
+                <span className="flex h-2 w-2 rounded-full bg-blue-400 shadow-[0_0_10px_#3b82f6]" />
               </div>
               <div className="grid grid-cols-3 gap-3 my-auto">
                 <div className="rounded-xl border border-white/10 bg-white/5 p-3 text-center">
@@ -165,17 +165,17 @@ export default function WireframeLens() {
                   <span className="text-[10px] text-white/50">Lighthouse</span>
                 </div>
                 <div className="rounded-xl border border-white/10 bg-white/5 p-3 text-center">
-                  <span className="block font-display text-xl font-bold text-cyan-300">60 FPS</span>
+                  <span className="block font-display text-xl font-bold text-blue-400">60 FPS</span>
                   <span className="text-[10px] text-white/50">Animations</span>
                 </div>
                 <div className="rounded-xl border border-white/10 bg-white/5 p-3 text-center">
-                  <span className="block font-display text-xl font-bold text-purple-300">+140%</span>
+                  <span className="block font-display text-xl font-bold text-white">+140%</span>
                   <span className="text-[10px] text-white/50">Conversions</span>
                 </div>
               </div>
               <div className="flex items-center justify-between text-[10px] text-white/40 border-t border-white/10 pt-2">
                 <span>Hand-coded Next.js &amp; Tailwind</span>
-                <span className="text-cyan-300">Bespoke Architecture</span>
+                <span className="text-blue-400">Bespoke Architecture</span>
               </div>
             </div>
           </div>
@@ -183,21 +183,21 @@ export default function WireframeLens() {
           {/* Masterpiece Footer Bar */}
           <div className="relative z-10 flex items-center justify-between border-t border-white/15 pt-4 text-[11px] text-white/60">
             <span className="flex items-center gap-1.5">
-              <ShieldCheck className="h-3.5 w-3.5 text-cyan-300" />
+              <ShieldCheck className="h-3.5 w-3.5 text-blue-400" />
               100% Custom Code · No Templates
             </span>
-            <span className="font-mono text-cyan-300">STATUS: OPTIMIZED</span>
+            <span className="font-mono text-blue-400">STATUS: OPTIMIZED</span>
           </div>
         </div>
 
         {/* Floating Reticle Guide when hovering */}
         {isHovered && (
           <motion.div
-            className="pointer-events-none absolute z-30 flex h-24 w-24 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border border-cyan-300/80 bg-cyan-400/10 shadow-[0_0_30px_rgba(0,240,255,0.4)] backdrop-blur-sm"
+            className="pointer-events-none absolute z-30 flex h-24 w-24 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border border-blue-400/80 bg-blue-500/10 shadow-[0_0_30px_rgba(59,130,246,0.4)] backdrop-blur-sm"
             style={{ left: `${position.x}%`, top: `${position.y}%` }}
           >
-            <div className="h-2 w-2 rounded-full bg-cyan-300 shadow-[0_0_10px_#00f0ff]" />
-            <span className="absolute -bottom-6 font-mono text-[9px] uppercase tracking-widest text-cyan-300">
+            <div className="h-2 w-2 rounded-full bg-blue-400 shadow-[0_0_10px_#3b82f6]" />
+            <span className="absolute -bottom-6 font-mono text-[9px] uppercase tracking-widest text-blue-400">
               REFRACTION LENS
             </span>
           </motion.div>

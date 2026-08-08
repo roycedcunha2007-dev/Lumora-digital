@@ -113,21 +113,21 @@ export default function HeroStatsBar() {
               className={cn(
                 "group relative flex flex-col items-center justify-center overflow-hidden rounded-2xl border px-4 py-4 text-center backdrop-blur-xl transition-all duration-350 ease-out sm:py-5 lg:px-6",
                 isHovered
-                  ? "-translate-y-2 border-white/30 bg-white/[0.06] shadow-[0_16px_40px_rgba(0,0,0,0.4)]"
-                  : "border-white/10 bg-white/[0.025] shadow-[0_8px_30px_rgba(0,0,0,0.2)]"
+                  ? "-translate-y-2 border-blue-500/30 bg-[#0a0c14]/85 shadow-[0_16px_40px_rgba(0,0,0,0.5),0_0_25px_rgba(59,130,246,0.12)]"
+                  : "border-white/[0.08] bg-[#08080c]/60 shadow-[0_8px_30px_rgba(0,0,0,0.3)]"
               )}
             >
               {/* 8-second recurring micro-interaction light sweep overlay */}
               <div className="border-sweep pointer-events-none absolute inset-0 -z-10 bg-gradient-to-r from-transparent via-white to-transparent opacity-0 mix-blend-overlay" />
 
-              {/* Number with 6° rotation + 1.08 scale on hover */}
+              {/* Number with subtle rotation + scale on hover */}
               <span
                 ref={(el) => {
                   numberRefs.current[idx] = el;
                 }}
                 className={cn(
                   "font-display text-2xl font-bold tracking-tight text-white transition-transform duration-350 ease-out sm:text-3xl lg:text-4xl",
-                  isHovered ? "scale-[1.08] rotate-[6deg] drop-shadow-[0_0_12px_rgba(255,255,255,0.4)]" : "scale-100 rotate-0"
+                  isHovered ? "scale-[1.05] drop-shadow-[0_0_12px_rgba(59,130,246,0.3)] text-white" : "scale-100"
                 )}
               >
                 0{s.suffix}
