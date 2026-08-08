@@ -51,22 +51,22 @@ const COUNTRY_CODES = [
   { code: "+49", label: "Germany (+49)" },
 ];
 
-const TEST_CARDS = {
+const TEST_CARDS: Record<"visa" | "mastercard" | "decline", CardPaymentData> = {
   visa: {
-    number: "4242 4242 4242 4242",
-    holder: "Alex Rivera",
+    cardNumber: "4242 4242 4242 4242",
+    cardholderName: "Alex Rivera",
     expiry: "12/28",
     cvv: "892",
   },
   mastercard: {
-    number: "5555 5555 5555 4444",
-    holder: "Jordan Lee",
+    cardNumber: "5555 5555 5555 4444",
+    cardholderName: "Jordan Lee",
     expiry: "09/27",
     cvv: "321",
   },
   decline: {
-    number: "4000 0000 0000 0002",
-    holder: "Sam Taylor",
+    cardNumber: "4000 0000 0000 0002",
+    cardholderName: "Sam Taylor",
     expiry: "11/26",
     cvv: "002",
   },
