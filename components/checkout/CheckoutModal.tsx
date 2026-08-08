@@ -140,10 +140,11 @@ export default function CheckoutModal() {
     }
   }, [selectedPlan, quantity]);
 
-  // Reset modal state on open
+  // Reset modal state on open & guarantee native browser cursor inside checkout
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = "hidden";
+      document.body.classList.remove("has-custom-cursor");
       setStep("review");
       setIsProcessing(false);
       setPaymentResult(null);
@@ -151,6 +152,10 @@ export default function CheckoutModal() {
       setOrder(paymentService.createCheckoutOrder(selectedPlan, quantity));
     } else {
       document.body.style.overflow = "auto";
+      const fine = window.matchMedia("(pointer: fine)").matches;
+      if (fine) {
+        document.body.classList.add("has-custom-cursor");
+      }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOpen]);
@@ -383,7 +388,7 @@ export default function CheckoutModal() {
   return (
     <AnimatePresence>
       {isOpen && (
-        <div className="fixed inset-0 z-[9999] flex items-center justify-center p-3 sm:p-5 md:p-8 overflow-y-auto">
+        <div className="checkout-modal fixed inset-0 z-[99999] flex items-center justify-center p-3 sm:p-5 md:p-8 overflow-y-auto pointer-events-auto">
           {/* Subtle Backdrop Blur Overlay */}
           <motion.div
             initial={{ opacity: 0 }}
@@ -391,7 +396,7 @@ export default function CheckoutModal() {
             exit={{ opacity: 0 }}
             transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
             onClick={closeCheckout}
-            className="fixed inset-0 bg-black/80 backdrop-blur-[16px]"
+            className="fixed inset-0 bg-black/80 backdrop-blur-[16px] pointer-events-auto"
           />
 
           {/* Liquid Glass Modal Container */}
@@ -400,7 +405,7 @@ export default function CheckoutModal() {
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.96, y: 16 }}
             transition={{ type: "spring", stiffness: 320, damping: 28 }}
-            className="relative my-auto w-full max-w-5xl overflow-hidden rounded-[2.5rem] border border-white/[0.12] bg-[#07080c]/95 shadow-[0_30px_100px_rgba(0,0,0,0.9)] backdrop-blur-2xl"
+            className="relative my-auto w-full max-w-5xl overflow-hidden rounded-[2.5rem] border border-white/[0.12] bg-[#07080c]/95 shadow-[0_30px_100px_rgba(0,0,0,0.9)] backdrop-blur-2xl z-20 pointer-events-auto"
           >
             {/* Subtle Liquid Glass Ambient Glow */}
             <div className="pointer-events-none absolute -top-32 left-1/2 h-72 w-[32rem] -translate-x-1/2 rounded-full bg-blue-500/12 blur-[100px]" />
@@ -415,7 +420,7 @@ export default function CheckoutModal() {
                   <button
                     type="button"
                     onClick={() => setStep("review")}
-                    className="flex items-center gap-1.5 rounded-full border border-white/10 bg-white/[0.03] px-3 py-1.5 text-xs font-medium text-white/70 backdrop-blur-md transition-all hover:border-white/20 hover:text-white cursor-pointer"
+                    className="flex items-center gap-1.5 rounded-full border border-white/10 bg-white/[0.03] px-3 py-1.5 text-xs font-medium text-white/70 backdrop-blur-md transition-all hover:border-white/20 hover:text-white cursor-pointer pointer-events-auto"
                   >
                     <ArrowLeft className="h-3.5 w-3.5" />
                     <span>01 Details</span>
@@ -505,7 +510,7 @@ export default function CheckoutModal() {
               <button
                 type="button"
                 onClick={closeCheckout}
-                className="flex h-9 w-9 items-center justify-center rounded-full border border-white/10 bg-white/[0.04] text-white/60 transition-all duration-300 hover:border-white/20 hover:bg-white/10 hover:text-white cursor-pointer"
+                className="flex h-9 w-9 items-center justify-center rounded-full border border-white/10 bg-white/[0.04] text-white/60 transition-all duration-300 hover:border-white/20 hover:bg-white/10 hover:text-white cursor-pointer pointer-events-auto"
                 aria-label="Close checkout"
               >
                 <X className="h-4 w-4" />
@@ -553,11 +558,13 @@ export default function CheckoutModal() {
                           <div className="relative">
                             <input
                               type="text"
+                              autoComplete="name"
+                              inputMode="text"
                               value={customer.fullName}
                               onChange={(e) => handleFullNameInput(e.target.value)}
                               placeholder="Alex Rivera"
                               className={cn(
-                                "w-full rounded-xl border bg-white/[0.025] px-4 py-3 text-sm text-white placeholder-white/25 outline-none transition-all duration-200",
+                                "checkout-input w-full rounded-xl border bg-white/[0.025] px-4 py-3 text-sm text-white placeholder-white/25 outline-none transition-all duration-200 cursor-text select-text pointer-events-auto",
                                 touched.fullName && customerErrors.fullName
                                   ? "border-red-500/80 bg-red-500/5 ring-1 ring-red-500/30"
                                   : touched.fullName && !customerErrors.fullName
@@ -589,11 +596,13 @@ export default function CheckoutModal() {
                           <div className="relative">
                             <input
                               type="email"
+                              autoComplete="email"
+                              inputMode="email"
                               value={customer.email}
                               onChange={(e) => handleEmailInput(e.target.value)}
                               placeholder="customer@gmail.com"
                               className={cn(
-                                "w-full rounded-xl border bg-white/[0.025] px-4 py-3 text-sm text-white placeholder-white/25 outline-none transition-all duration-200",
+                                "checkout-input w-full rounded-xl border bg-white/[0.025] px-4 py-3 text-sm text-white placeholder-white/25 outline-none transition-all duration-200 cursor-text select-text pointer-events-auto",
                                 touched.email && customerErrors.email
                                   ? "border-red-500/80 bg-red-500/5 ring-1 ring-red-500/30"
                                   : touched.email && !customerErrors.email
@@ -628,7 +637,7 @@ export default function CheckoutModal() {
                               onChange={(e) =>
                                 setCustomer((p) => ({ ...p, countryCode: e.target.value }))
                               }
-                              className="rounded-xl border border-white/[0.08] bg-[#07080c] px-3 py-3 text-xs text-white outline-none focus:border-blue-400 cursor-pointer"
+                              className="rounded-xl border border-white/[0.08] bg-[#07080c] px-3 py-3 text-xs text-white outline-none focus:border-blue-400 cursor-pointer pointer-events-auto"
                             >
                               {COUNTRY_CODES.map((c) => (
                                 <option key={c.code} value={c.code} className="bg-[#08080c] text-white">
@@ -638,12 +647,14 @@ export default function CheckoutModal() {
                             </select>
                             <input
                               type="tel"
+                              autoComplete="tel"
+                              inputMode="tel"
                               value={customer.phone}
                               onChange={(e) => handlePhoneInput(e.target.value)}
                               placeholder="9876543210"
                               maxLength={10}
                               className={cn(
-                                "flex-1 rounded-xl border bg-white/[0.025] px-4 py-3 text-sm text-white placeholder-white/25 outline-none transition-all duration-200",
+                                "checkout-input flex-1 rounded-xl border bg-white/[0.025] px-4 py-3 text-sm text-white placeholder-white/25 outline-none transition-all duration-200 cursor-text select-text pointer-events-auto",
                                 touched.phone && customerErrors.phone
                                   ? "border-red-500/80 bg-red-500/5 ring-1 ring-red-500/30"
                                   : touched.phone && !customerErrors.phone
@@ -661,10 +672,12 @@ export default function CheckoutModal() {
                           </label>
                           <input
                             type="text"
+                            autoComplete="organization"
+                            inputMode="text"
                             value={customer.company || ""}
                             onChange={(e) => setCustomer((p) => ({ ...p, company: e.target.value }))}
                             placeholder="Rivera Studio"
-                            className="w-full rounded-xl border border-white/[0.08] bg-white/[0.025] px-4 py-3 text-sm text-white placeholder-white/25 outline-none focus:border-blue-400 focus:bg-white/[0.04]"
+                            className="checkout-input w-full rounded-xl border border-white/[0.08] bg-white/[0.025] px-4 py-3 text-sm text-white placeholder-white/25 outline-none focus:border-blue-400 focus:bg-white/[0.04] cursor-text select-text pointer-events-auto"
                           />
                         </div>
 
@@ -675,7 +688,7 @@ export default function CheckoutModal() {
                           animate={buttonShake ? { x: [0, -8, 8, -6, 6, -3, 3, 0] } : {}}
                           transition={{ duration: 0.4 }}
                           className={cn(
-                            "group mt-6 flex w-full items-center justify-center gap-2 rounded-full py-4 text-sm font-bold text-white shadow-lg transition-all duration-300",
+                            "group mt-6 flex w-full items-center justify-center gap-2 rounded-full py-4 text-sm font-bold text-white shadow-lg transition-all duration-300 pointer-events-auto",
                             isCustomerValid
                               ? "bg-blue-600 shadow-blue-500/30 hover:bg-blue-500 hover:shadow-blue-500/50 cursor-pointer"
                               : "bg-white/10 opacity-50 cursor-not-allowed text-white/40"
@@ -714,7 +727,7 @@ export default function CheckoutModal() {
                                 type="button"
                                 onClick={() => setMethod(m.id as PaymentMethod)}
                                 className={cn(
-                                  "group relative flex flex-col items-center justify-center gap-2 rounded-2xl border p-3.5 text-center transition-all duration-300 cursor-pointer",
+                                  "group relative flex flex-col items-center justify-center gap-2 rounded-2xl border p-3.5 text-center transition-all duration-300 cursor-pointer pointer-events-auto",
                                   isSelected
                                     ? "border-blue-500/60 bg-blue-500/15 text-blue-300 shadow-[0_0_25px_rgba(59,130,246,0.22)] scale-[1.02]"
                                     : "border-white/[0.08] bg-white/[0.02] text-white/60 hover:border-white/20 hover:bg-white/[0.04] hover:text-white"
@@ -745,7 +758,7 @@ export default function CheckoutModal() {
                           onMouseMove={handleCardMouseMove}
                           onMouseLeave={resetCardTilt}
                           style={{ perspective: 1000 }}
-                          className="relative cursor-pointer select-none"
+                          className="relative select-none pointer-events-auto"
                         >
                           <motion.div
                             animate={{
@@ -756,7 +769,7 @@ export default function CheckoutModal() {
                             className="relative h-48 sm:h-52 w-full overflow-hidden rounded-3xl border border-white/20 bg-gradient-to-br from-[#121420] via-[#090b14] to-[#04060c] p-6 shadow-[0_20px_60px_rgba(0,0,0,0.85),0_0_30px_rgba(59,130,246,0.15)]"
                           >
                             {/* Micro-dot grid background */}
-                            <div className="absolute inset-0 bg-[radial-gradient(#ffffff0a_1px,transparent_1px)] [background-size:12px_12px]" />
+                            <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(#ffffff0a_1px,transparent_1px)] [background-size:12px_12px]" />
 
                             {/* Dynamic Holographic Specular Glare Reflection */}
                             <div
@@ -833,21 +846,21 @@ export default function CheckoutModal() {
                                 <button
                                   type="button"
                                   onClick={() => fillTestCard("visa")}
-                                  className="rounded-md border border-white/10 bg-white/[0.04] px-2.5 py-1 text-[11px] text-white/70 hover:border-blue-400/40 hover:bg-blue-500/10 hover:text-blue-300 cursor-pointer"
+                                  className="rounded-md border border-white/10 bg-white/[0.04] px-2.5 py-1 text-[11px] text-white/70 hover:border-blue-400/40 hover:bg-blue-500/10 hover:text-blue-300 cursor-pointer pointer-events-auto"
                                 >
                                   Test Visa (16 Digits)
                                 </button>
                                 <button
                                   type="button"
                                   onClick={() => fillTestCard("mastercard")}
-                                  className="rounded-md border border-white/10 bg-white/[0.04] px-2.5 py-1 text-[11px] text-white/70 hover:border-blue-400/40 hover:bg-blue-500/10 hover:text-blue-300 cursor-pointer"
+                                  className="rounded-md border border-white/10 bg-white/[0.04] px-2.5 py-1 text-[11px] text-white/70 hover:border-blue-400/40 hover:bg-blue-500/10 hover:text-blue-300 cursor-pointer pointer-events-auto"
                                 >
                                   Test Mastercard
                                 </button>
                                 <button
                                   type="button"
                                   onClick={() => fillTestCard("decline")}
-                                  className="rounded-md border border-red-500/20 bg-red-500/10 px-2.5 py-1 text-[11px] text-red-300 hover:border-red-400 cursor-pointer"
+                                  className="rounded-md border border-red-500/20 bg-red-500/10 px-2.5 py-1 text-[11px] text-red-300 hover:border-red-400 cursor-pointer pointer-events-auto"
                                 >
                                   Test Decline
                                 </button>
@@ -874,11 +887,13 @@ export default function CheckoutModal() {
                               </div>
                               <input
                                 type="text"
+                                autoComplete="cc-name"
+                                inputMode="text"
                                 value={cardData.cardholderName}
                                 onChange={(e) => handleCardholderInput(e.target.value)}
                                 placeholder="Alex Rivera"
                                 className={cn(
-                                  "w-full rounded-xl border bg-white/[0.025] px-4 py-2.5 text-sm text-white placeholder-white/25 outline-none transition-all duration-200",
+                                  "checkout-input w-full rounded-xl border bg-white/[0.025] px-4 py-2.5 text-sm text-white placeholder-white/25 outline-none transition-all duration-200 cursor-text select-text pointer-events-auto",
                                   touched.cardholderName && cardErrors.cardholderName
                                     ? "border-red-500/80 bg-red-500/5 ring-1 ring-red-500/30"
                                     : touched.cardholderName && !cardErrors.cardholderName
@@ -909,12 +924,14 @@ export default function CheckoutModal() {
                               <div className="relative">
                                 <input
                                   type="text"
+                                  autoComplete="cc-number"
+                                  inputMode="numeric"
                                   value={cardData.cardNumber}
                                   onChange={(e) => handleCardNumberInput(e.target.value)}
                                   placeholder="1234 5678 9012 3456"
                                   maxLength={19}
                                   className={cn(
-                                    "w-full rounded-xl border bg-white/[0.025] px-4 py-2.5 pr-20 text-sm font-mono text-white placeholder-white/25 outline-none transition-all duration-200",
+                                    "checkout-input w-full rounded-xl border bg-white/[0.025] px-4 py-2.5 pr-20 text-sm font-mono text-white placeholder-white/25 outline-none transition-all duration-200 cursor-text select-text pointer-events-auto",
                                     touched.cardNumber && cardErrors.cardNumber
                                       ? "border-red-500/80 bg-red-500/5 ring-1 ring-red-500/30"
                                       : touched.cardNumber && !cardErrors.cardNumber
@@ -922,7 +939,7 @@ export default function CheckoutModal() {
                                       : "border-white/[0.08] focus:border-blue-400 focus:bg-white/[0.04]"
                                   )}
                                 />
-                                <div className="absolute right-3 top-2.5 flex items-center gap-1.5">
+                                <div className="absolute right-3 top-2.5 flex items-center gap-1.5 pointer-events-none">
                                   {touched.cardNumber && !cardErrors.cardNumber && (
                                     <CheckCircle2 className="h-4 w-4 text-emerald-400" />
                                   )}
@@ -955,12 +972,14 @@ export default function CheckoutModal() {
                                 </div>
                                 <input
                                   type="text"
+                                  autoComplete="cc-exp"
+                                  inputMode="numeric"
                                   value={cardData.expiry}
                                   onChange={(e) => handleExpiryInput(e.target.value)}
                                   placeholder="08/29"
                                   maxLength={5}
                                   className={cn(
-                                    "w-full rounded-xl border bg-white/[0.025] px-4 py-2.5 text-sm font-mono text-white placeholder-white/25 outline-none transition-all duration-200",
+                                    "checkout-input w-full rounded-xl border bg-white/[0.025] px-4 py-2.5 text-sm font-mono text-white placeholder-white/25 outline-none transition-all duration-200 cursor-text select-text pointer-events-auto",
                                     touched.expiry && cardErrors.expiry
                                       ? "border-red-500/80 bg-red-500/5 ring-1 ring-red-500/30"
                                       : touched.expiry && !cardErrors.expiry
@@ -978,13 +997,13 @@ export default function CheckoutModal() {
                                       CVV <span className="text-blue-400">*</span>
                                     </label>
                                     <div
-                                      className="relative"
+                                      className="relative pointer-events-auto"
                                       onMouseEnter={() => setShowCvvTooltip(true)}
                                       onMouseLeave={() => setShowCvvTooltip(false)}
                                     >
                                       <HelpCircle className="h-3 w-3 text-white/40 hover:text-white cursor-pointer" />
                                       {showCvvTooltip && (
-                                        <div className="absolute -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-md bg-black/90 px-2 py-1 text-[10px] text-white border border-white/10 shadow-lg z-50">
+                                        <div className="absolute -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-md bg-black/90 px-2 py-1 text-[10px] text-white border border-white/10 shadow-lg z-50 pointer-events-none">
                                           3-digit security code
                                         </div>
                                       )}
@@ -1006,13 +1025,14 @@ export default function CheckoutModal() {
                                 <div className="relative">
                                   <input
                                     type={showCvv ? "text" : "password"}
+                                    autoComplete="cc-csc"
                                     inputMode="numeric"
                                     value={cardData.cvv}
                                     onChange={(e) => handleCvvInput(e.target.value)}
                                     placeholder="•••"
                                     maxLength={3}
                                     className={cn(
-                                      "w-full rounded-xl border bg-white/[0.025] px-4 py-2.5 pr-12 text-sm font-mono text-white placeholder-white/25 outline-none transition-all duration-200 tracking-widest",
+                                      "checkout-input w-full rounded-xl border bg-white/[0.025] px-4 py-2.5 pr-12 text-sm font-mono text-white placeholder-white/25 outline-none transition-all duration-200 tracking-widest cursor-text select-text pointer-events-auto",
                                       touched.cvv && cardErrors.cvv
                                         ? "border-red-500/80 bg-red-500/5 ring-1 ring-red-500/30"
                                         : touched.cvv && !cardErrors.cvv
@@ -1023,7 +1043,7 @@ export default function CheckoutModal() {
                                   <button
                                     type="button"
                                     onClick={() => setShowCvv((v) => !v)}
-                                    className="absolute right-3 top-2.5 text-white/40 hover:text-white/80 cursor-pointer"
+                                    className="absolute right-3 top-2.5 text-white/40 hover:text-white/80 cursor-pointer pointer-events-auto"
                                     aria-label={showCvv ? "Hide CVV" : "Show CVV"}
                                   >
                                     {showCvv ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
@@ -1085,13 +1105,15 @@ export default function CheckoutModal() {
                               <div className="relative">
                                 <input
                                   type="text"
+                                  inputMode="text"
+                                  autoComplete="off"
                                   value={upiData.upiId}
                                   onChange={(e) => {
                                     setUpiData({ upiId: e.target.value.trim() });
                                     setTouched((p) => ({ ...p, upiId: true }));
                                   }}
                                   placeholder="yourname@okaxis"
-                                  className="w-full rounded-xl border border-white/[0.08] bg-white/[0.025] px-4 py-2.5 pr-24 text-sm text-white placeholder-white/25 outline-none focus:border-blue-400"
+                                  className="checkout-input w-full rounded-xl border border-white/[0.08] bg-white/[0.025] px-4 py-2.5 pr-24 text-sm text-white placeholder-white/25 outline-none focus:border-blue-400 cursor-text select-text pointer-events-auto"
                                 />
                                 <button
                                   type="button"
@@ -1101,7 +1123,7 @@ export default function CheckoutModal() {
                                     setTouched((p) => ({ ...p, upiId: true }));
                                     setTimeout(() => setCopiedUpi(false), 2000);
                                   }}
-                                  className="absolute right-2 top-2 rounded-lg border border-white/10 bg-white/5 px-2.5 py-1 text-[11px] text-white/70 hover:bg-white/10 hover:text-white cursor-pointer"
+                                  className="absolute right-2 top-2 rounded-lg border border-white/10 bg-white/5 px-2.5 py-1 text-[11px] text-white/70 hover:bg-white/10 hover:text-white cursor-pointer pointer-events-auto"
                                 >
                                   {copiedUpi ? "Filled!" : "Demo ID"}
                                 </button>
@@ -1164,7 +1186,7 @@ export default function CheckoutModal() {
                             type="button"
                             onClick={() => setSimulateDecline((v) => !v)}
                             className={cn(
-                              "relative inline-flex h-5 w-9 shrink-0 items-center rounded-full transition-colors cursor-pointer",
+                              "relative inline-flex h-5 w-9 shrink-0 items-center rounded-full transition-colors cursor-pointer pointer-events-auto",
                               simulateDecline ? "bg-red-500" : "bg-white/20"
                             )}
                           >
@@ -1191,7 +1213,7 @@ export default function CheckoutModal() {
                           }
                           transition={{ type: "spring", stiffness: 280, damping: 18 }}
                           className={cn(
-                            "group relative mt-5 flex w-full items-center justify-center gap-2 overflow-hidden rounded-full py-4 text-sm font-bold text-white shadow-lg transition-all duration-300",
+                            "group relative mt-5 flex w-full items-center justify-center gap-2 overflow-hidden rounded-full py-4 text-sm font-bold text-white shadow-lg transition-all duration-300 pointer-events-auto",
                             isPayButtonEnabled
                               ? "bg-blue-600 shadow-[0_8px_32px_rgba(59,130,246,0.35)] hover:bg-blue-500 hover:shadow-[0_12px_45px_rgba(59,130,246,0.5)] cursor-pointer"
                               : "bg-white/10 opacity-50 cursor-not-allowed text-white/40"
@@ -1243,7 +1265,7 @@ export default function CheckoutModal() {
                           type="button"
                           onClick={() => selectPlan(p.id)}
                           className={cn(
-                            "flex-1 rounded-lg py-1.5 text-xs font-medium transition-all cursor-pointer",
+                            "flex-1 rounded-lg py-1.5 text-xs font-medium transition-all cursor-pointer pointer-events-auto",
                             selectedPlan.id === p.id
                               ? "bg-blue-600 text-white shadow-md shadow-blue-500/20"
                               : "text-white/50 hover:text-white"
@@ -1446,7 +1468,7 @@ export default function CheckoutModal() {
                   <button
                     type="button"
                     onClick={() => setShowOrderSummaryModal((v) => !v)}
-                    className="flex items-center gap-2 rounded-full border border-white/15 bg-white/[0.04] px-5 py-2.5 text-xs font-semibold text-white transition-all hover:border-blue-400/40 hover:bg-white/[0.08] cursor-pointer"
+                    className="flex items-center gap-2 rounded-full border border-white/15 bg-white/[0.04] px-5 py-2.5 text-xs font-semibold text-white transition-all hover:border-blue-400/40 hover:bg-white/[0.08] cursor-pointer pointer-events-auto"
                   >
                     <FileText className="h-3.5 w-3.5 text-blue-400" />
                     <span>{showOrderSummaryModal ? "Hide Summary" : "View Order"}</span>
@@ -1455,7 +1477,7 @@ export default function CheckoutModal() {
                   <button
                     type="button"
                     onClick={handleDownloadReceipt}
-                    className="flex items-center gap-2 rounded-full border border-white/15 bg-white/[0.04] px-5 py-2.5 text-xs font-semibold text-white transition-all hover:border-blue-400/40 hover:bg-white/[0.08] cursor-pointer"
+                    className="flex items-center gap-2 rounded-full border border-white/15 bg-white/[0.04] px-5 py-2.5 text-xs font-semibold text-white transition-all hover:border-blue-400/40 hover:bg-white/[0.08] cursor-pointer pointer-events-auto"
                   >
                     <Download className="h-3.5 w-3.5 text-blue-400" />
                     <span>Download Receipt</span>
@@ -1464,7 +1486,7 @@ export default function CheckoutModal() {
                   <button
                     type="button"
                     onClick={closeCheckout}
-                    className="flex items-center gap-2 rounded-full bg-blue-600 px-6 py-2.5 text-xs font-bold text-white shadow-lg shadow-blue-500/25 transition-all hover:bg-blue-500 cursor-pointer"
+                    className="flex items-center gap-2 rounded-full bg-blue-600 px-6 py-2.5 text-xs font-bold text-white shadow-lg shadow-blue-500/25 transition-all hover:bg-blue-500 cursor-pointer pointer-events-auto"
                   >
                     <span>Return Home</span>
                     <ArrowRight className="h-3.5 w-3.5" />
@@ -1524,7 +1546,7 @@ export default function CheckoutModal() {
                       setSimulateDecline(false);
                       setStep("payment");
                     }}
-                    className="flex items-center gap-2 rounded-full bg-blue-600 px-6 py-2.5 text-xs font-bold text-white shadow-lg shadow-blue-500/25 transition-all hover:bg-blue-500 cursor-pointer"
+                    className="flex items-center gap-2 rounded-full bg-blue-600 px-6 py-2.5 text-xs font-bold text-white shadow-lg shadow-blue-500/25 transition-all hover:bg-blue-500 cursor-pointer pointer-events-auto"
                   >
                     <RotateCcw className="h-3.5 w-3.5" />
                     <span>Try Again</span>
@@ -1533,7 +1555,7 @@ export default function CheckoutModal() {
                   <button
                     type="button"
                     onClick={() => setStep("payment")}
-                    className="flex items-center gap-2 rounded-full border border-white/15 bg-white/[0.04] px-5 py-2.5 text-xs font-semibold text-white transition-all hover:border-white/25 cursor-pointer"
+                    className="flex items-center gap-2 rounded-full border border-white/15 bg-white/[0.04] px-5 py-2.5 text-xs font-semibold text-white transition-all hover:border-white/25 cursor-pointer pointer-events-auto"
                   >
                     <span>Change Payment Method</span>
                   </button>
@@ -1541,7 +1563,7 @@ export default function CheckoutModal() {
                   <button
                     type="button"
                     onClick={() => setStep("review")}
-                    className="flex items-center gap-2 rounded-full border border-white/15 bg-white/[0.04] px-5 py-2.5 text-xs font-semibold text-white/70 transition-all hover:text-white cursor-pointer"
+                    className="flex items-center gap-2 rounded-full border border-white/15 bg-white/[0.04] px-5 py-2.5 text-xs font-semibold text-white/70 transition-all hover:text-white cursor-pointer pointer-events-auto"
                   >
                     <span>Edit Details</span>
                   </button>

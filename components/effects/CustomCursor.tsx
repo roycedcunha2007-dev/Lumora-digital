@@ -5,7 +5,7 @@ import { motion, useMotionValue, useSpring } from "framer-motion";
 
 export default function CustomCursor() {
   const [enabled, setEnabled] = useState(false);
-  const [variant, setVariant] = useState<"default" | "hover" | "text">("default");
+  const [variant, setVariant] = useState<"default" | "hover" | "text" | "hidden">("default");
   const [label, setLabel] = useState<string>("");
 
   const x = useMotionValue(-100);
@@ -30,9 +30,20 @@ export default function CustomCursor() {
     };
 
     const over = (e: MouseEvent) => {
-      const t = (e.target as HTMLElement)?.closest(
-        "a, button, [data-cursor]"
-      ) as HTMLElement | null;
+      const target = e.target as HTMLElement | null;
+      if (!target) return;
+
+      // When over form inputs, textareas, selects, or checkout modal, hide custom cursor
+      const isInput = target.closest(
+        "input, textarea, select, [contenteditable='true'], .checkout-modal, .checkout-input"
+      );
+      if (isInput) {
+        setVariant("hidden");
+        setLabel("");
+        return;
+      }
+
+      const t = target.closest("a, button, [data-cursor]") as HTMLElement | null;
       if (!t) {
         setVariant("default");
         setLabel("");
@@ -57,7 +68,7 @@ export default function CustomCursor() {
     };
   }, [x, y]);
 
-  if (!enabled) return null;
+  if (!enabled || variant === "hidden") return null;
 
   return (
     <>
@@ -79,6 +90,7 @@ export default function CustomCursor() {
               ? "rgba(255,255,255,0.15)"
               : "rgba(255,255,255,0)",
           scale: variant === "hover" ? 1.15 : 1,
+          opacity: variant === "hidden" ? 0 : 1,
         }}
         transition={{ type: "spring", stiffness: 300, damping: 22 }}
       >
@@ -97,7 +109,7 @@ export default function CustomCursor() {
           y: dotY,
           translateX: "-50%",
           translateY: "-50%",
-          opacity: variant === "text" ? 0 : 1,
+          opacity: variant === "text" || variant === "hidden" ? 0 : 1,
         }}
       />
     </>

@@ -42,11 +42,43 @@ body {
   overflow-x: hidden;
 }
 
-/* Hide native cursor on devices with a fine pointer (custom cursor takes over) */
+/* Custom cursor styles - never hide native cursor on inputs, buttons, or checkout modal */
 @media (pointer: fine) {
-  body.has-custom-cursor,
-  body.has-custom-cursor * {
-    cursor: none !important;
+  body.has-custom-cursor {
+    cursor: default;
+  }
+  body.has-custom-cursor a,
+  body.has-custom-cursor button,
+  body.has-custom-cursor [role="button"],
+  body.has-custom-cursor select,
+  body.has-custom-cursor label {
+    cursor: pointer !important;
+    pointer-events: auto !important;
+  }
+  body.has-custom-cursor input,
+  body.has-custom-cursor textarea,
+  body.has-custom-cursor [contenteditable="true"] {
+    cursor: text !important;
+    pointer-events: auto !important;
+    user-select: text !important;
+    -webkit-user-select: text !important;
+  }
+  body.has-custom-cursor button:disabled,
+  body.has-custom-cursor input:disabled {
+    cursor: not-allowed !important;
+  }
+  body.has-custom-cursor .checkout-modal,
+  body.has-custom-cursor .checkout-modal * {
+    pointer-events: auto;
+  }
+  body.has-custom-cursor .checkout-modal input {
+    cursor: text !important;
+  }
+  body.has-custom-cursor .checkout-modal button {
+    cursor: pointer !important;
+  }
+  body.has-custom-cursor .checkout-modal button:disabled {
+    cursor: not-allowed !important;
   }
 }
 
