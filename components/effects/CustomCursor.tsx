@@ -90,7 +90,6 @@ export default function CustomCursor() {
               ? "rgba(255,255,255,0.15)"
               : "rgba(255,255,255,0)",
           scale: variant === "hover" ? 1.15 : 1,
-          opacity: variant === "hidden" ? 0 : 1,
         }}
         transition={{ type: "spring", stiffness: 300, damping: 22 }}
       >
@@ -109,7 +108,7 @@ export default function CustomCursor() {
           y: dotY,
           translateX: "-50%",
           translateY: "-50%",
-          opacity: variant === "text" || variant === "hidden" ? 0 : 1,
+          opacity: variant === "text" ? 0 : 1,
         }}
       />
     </>
