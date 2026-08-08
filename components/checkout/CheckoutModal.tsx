@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect, MouseEvent } from "react";
+import { useState, useRef, useEffect, MouseEvent, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   X,
@@ -18,14 +18,10 @@ import {
   Info,
   Download,
   RotateCcw,
-  User,
-  Mail,
-  Phone,
-  Building,
-  FileText,
   CheckCircle2,
   XCircle,
-  HelpCircle,
+  Eye,
+  EyeOff,
 } from "lucide-react";
 import { useCheckout, PlanItem } from "./CheckoutContext";
 import {
@@ -97,7 +93,7 @@ export default function CheckoutModal() {
   // Customer Details Form State
   const [customer, setCustomer] = useState<CustomerDetails>({
     fullName: "Alex Rivera",
-    email: "alex.rivera@example.com",
+    email: "alex.rivera@gmail.com",
     phone: "9876543210",
     countryCode: "+91",
     company: "Rivera Studio",
@@ -112,6 +108,7 @@ export default function CheckoutModal() {
     expiry: "12/28",
     cvv: "892",
   });
+  const [showCvv, setShowCvv] = useState(false);
   const [upiData, setUpiData] = useState<UpiPaymentData>({
     upiId: "alexrivera@okaxis",
   });
@@ -122,13 +119,21 @@ export default function CheckoutModal() {
   const [paymentResult, setPaymentResult] = useState<PaymentResult | null>(null);
   const [simulateDecline, setSimulateDecline] = useState(false);
   const [qrCountdown, setQrCountdown] = useState(300);
-  const [showOrderBreakdown, setShowOrderBreakdown] = useState(false);
+  const [showOrderSummaryModal, setShowOrderSummaryModal] = useState(false);
   const [copiedUpi, setCopiedUpi] = useState(false);
   const [buttonShake, setButtonShake] = useState(false);
 
-  // Validation Errors
-  const [errors, setErrors] = useState<Record<string, string>>({});
-  const [touched, setTouched] = useState<Record<string, boolean>>({});
+  // Touched state for displaying validation errors
+  const [touched, setTouched] = useState<Record<string, boolean>>({
+    fullName: true,
+    email: true,
+    phone: true,
+    cardholderName: true,
+    cardNumber: true,
+    expiry: true,
+    cvv: true,
+    upiId: true,
+  });
 
   // Magnetic button physics
   const payBtnRef = useRef<HTMLButtonElement>(null);
@@ -148,8 +153,6 @@ export default function CheckoutModal() {
       setStep("review");
       setIsProcessing(false);
       setPaymentResult(null);
-      setErrors({});
-      setTouched({});
       setQrCountdown(300);
       setOrder(paymentService.createCheckoutOrder(selectedPlan, quantity));
     } else {
@@ -167,61 +170,102 @@ export default function CheckoutModal() {
     return () => clearInterval(interval);
   }, [isOpen, method, step]);
 
-  // Step 1 -> Step 2 Validation
-  const handleProceedToPayment = (e: React.FormEvent) => {
-    e.preventDefault();
-    setTouched({ fullName: true, email: true, phone: true });
+  // --------------------------------------------------------------------------
+  // REAL-TIME VALIDATION CALCULATIONS (Evaluates instantly as user types)
+  // --------------------------------------------------------------------------
+  const customerErrors = useMemo(() => {
+    return paymentService.validateCustomerDetails(customer);
+  }, [customer]);
 
-    const validationErrors = paymentService.validateCustomerDetails(customer);
-    setErrors(validationErrors);
+  const cardErrors = useMemo(() => {
+    return paymentService.validateCardDetails(cardData);
+  }, [cardData]);
 
-    if (Object.keys(validationErrors).length > 0) {
-      setButtonShake(true);
-      setTimeout(() => setButtonShake(false), 500);
-      return;
+  const upiErrors = useMemo(() => {
+    return paymentService.validateUpiDetails(upiData);
+  }, [upiData]);
+
+  // Boolean validity states for Step 1
+  const isCustomerValid = useMemo(() => {
+    return Object.keys(customerErrors).length === 0;
+  }, [customerErrors]);
+
+  // Boolean validity states for Step 2
+  const isPaymentValid = useMemo(() => {
+    if (method === "card") {
+      return Object.keys(cardErrors).length === 0;
     }
+    if (method === "upi") {
+      return Object.keys(upiErrors).length === 0;
+    }
+    if (method === "gpay" || method === "paypal") {
+      return true;
+    }
+    return false;
+  }, [method, cardErrors, upiErrors]);
 
-    setErrors({});
-    setStep("payment");
+  // Pay button disabled state: strictly required conditions
+  const isPayButtonEnabled = useMemo(() => {
+    return isCustomerValid && isPaymentValid && !isProcessing;
+  }, [isCustomerValid, isPaymentValid, isProcessing]);
+
+  // --------------------------------------------------------------------------
+  // STRICT INPUT FORMATTING & HANDLERS
+  // --------------------------------------------------------------------------
+
+  // Full Name input: strictly letters, spaces, dots, hyphens
+  const handleFullNameInput = (val: string) => {
+    const clean = val.replace(/[^a-zA-Z\s.'-]/g, "");
+    setCustomer((p) => ({ ...p, fullName: clean }));
+    setTouched((p) => ({ ...p, fullName: true }));
   };
 
-  // Card formatting helpers
+  // Email input
+  const handleEmailInput = (val: string) => {
+    setCustomer((p) => ({ ...p, email: val.trim() }));
+    setTouched((p) => ({ ...p, email: true }));
+  };
+
+  // Phone input: strictly digits only (max 10 digits for local mobile)
+  const handlePhoneInput = (val: string) => {
+    const digits = val.replace(/\D/g, "").slice(0, 10);
+    setCustomer((p) => ({ ...p, phone: digits }));
+    setTouched((p) => ({ ...p, phone: true }));
+  };
+
+  // Cardholder Name input: letters & spaces only
+  const handleCardholderInput = (val: string) => {
+    const clean = val.replace(/[^a-zA-Z\s.'-]/g, "");
+    setCardData((p) => ({ ...p, cardholderName: clean }));
+    setTouched((p) => ({ ...p, cardholderName: true }));
+  };
+
+  // Card Number input: digits only, maximum 16 digits, auto formatted as 1234 5678 9012 3456
   const handleCardNumberInput = (val: string) => {
     const digits = val.replace(/\D/g, "").slice(0, 16);
     const formatted = digits.replace(/(\d{4})(?=\d)/g, "$1 ");
     setCardData((prev) => ({ ...prev, cardNumber: formatted }));
-    if (touched.cardNumber) {
-      if (digits.length < 15) {
-        setErrors((p) => ({ ...p, cardNumber: "Enter a valid 16-digit card number." }));
-      } else {
-        setErrors((p) => {
-          const next = { ...p };
-          delete next.cardNumber;
-          return next;
-        });
-      }
-    }
+    setTouched((p) => ({ ...p, cardNumber: true }));
   };
 
+  // Expiry input: digits only, auto formatted as MM / YY, month 01-12
   const handleExpiryInput = (val: string) => {
     let digits = val.replace(/\D/g, "").slice(0, 4);
     if (digits.length >= 3) {
       digits = `${digits.slice(0, 2)}/${digits.slice(2, 4)}`;
     }
     setCardData((prev) => ({ ...prev, expiry: digits }));
-    if (touched.expiry) {
-      if (digits.length < 5) {
-        setErrors((p) => ({ ...p, expiry: "Expiry date is required (MM/YY)." }));
-      } else {
-        setErrors((p) => {
-          const next = { ...p };
-          delete next.expiry;
-          return next;
-        });
-      }
-    }
+    setTouched((p) => ({ ...p, expiry: true }));
   };
 
+  // CVV input: strictly digits only, exactly maximum 3 digits
+  const handleCvvInput = (val: string) => {
+    const digits = val.replace(/\D/g, "").slice(0, 3);
+    setCardData((prev) => ({ ...prev, cvv: digits }));
+    setTouched((p) => ({ ...p, cvv: true }));
+  };
+
+  // Detect card brand icon
   const getCardBrand = () => {
     const clean = cardData.cardNumber.replace(/\s/g, "");
     if (clean.startsWith("4")) return "VISA";
@@ -231,6 +275,7 @@ export default function CheckoutModal() {
     return "CARD";
   };
 
+  // Quick fill test cards
   const fillTestCard = (type: "visa" | "mastercard" | "decline") => {
     const card = TEST_CARDS[type];
     setCardData(card);
@@ -239,36 +284,33 @@ export default function CheckoutModal() {
     } else {
       setSimulateDecline(false);
     }
-    setErrors({});
+    setTouched((p) => ({
+      ...p,
+      cardholderName: true,
+      cardNumber: true,
+      expiry: true,
+      cvv: true,
+    }));
+  };
+
+  // Step 1 -> Step 2 Navigation
+  const handleProceedToPayment = (e: React.FormEvent) => {
+    e.preventDefault();
+    setTouched({ fullName: true, email: true, phone: true });
+
+    if (!isCustomerValid) {
+      setButtonShake(true);
+      setTimeout(() => setButtonShake(false), 500);
+      return;
+    }
+
+    setStep("payment");
   };
 
   // Step 2 Submission & Verification
   const handlePaymentSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (isProcessing) return;
-
-    let validationErrors: Record<string, string> = {};
-
-    if (method === "card") {
-      setTouched({
-        cardholderName: true,
-        cardNumber: true,
-        expiry: true,
-        cvv: true,
-      });
-      validationErrors = paymentService.validateCardDetails(cardData);
-    } else if (method === "upi") {
-      setTouched({ upiId: true });
-      validationErrors = paymentService.validateUpiDetails(upiData);
-    }
-
-    setErrors(validationErrors);
-
-    if (Object.keys(validationErrors).length > 0) {
-      setButtonShake(true);
-      setTimeout(() => setButtonShake(false), 500);
-      return;
-    }
+    if (!isPayButtonEnabled || isProcessing) return;
 
     setIsProcessing(true);
     setStep("processing");
@@ -276,7 +318,7 @@ export default function CheckoutModal() {
 
     // Simulated 3-stage authorization pipeline
     setTimeout(() => {
-      setProcessingStatus("Connecting to sandbox simulator...");
+      setProcessingStatus("Connecting to test sandbox simulator...");
 
       setTimeout(async () => {
         setProcessingStatus("Authorizing simulated transaction...");
@@ -289,7 +331,7 @@ export default function CheckoutModal() {
           {
             forceFailure: simulateDecline,
             failureReason: simulateDecline
-              ? "Simulated Bank Decline: The card sandbox declined this test transaction."
+              ? "Test Card Declined: The sandbox card issuer declined this test transaction."
               : undefined,
           }
         );
@@ -302,8 +344,8 @@ export default function CheckoutModal() {
         } else {
           setStep("failure");
         }
-      }, 700);
-    }, 600);
+      }, 750);
+    }, 650);
   };
 
   // Download Receipt
@@ -319,13 +361,14 @@ export default function CheckoutModal() {
     URL.revokeObjectURL(url);
   };
 
-  // Magnetic Button Hover
+  // Magnetic Button Hover Physics
   const handleButtonMove = (e: MouseEvent<HTMLButtonElement>) => {
+    if (!isPayButtonEnabled) return;
     const el = payBtnRef.current;
     if (!el) return;
     const rect = el.getBoundingClientRect();
-    const x = (e.clientX - rect.left - rect.width / 2) * 0.35;
-    const y = (e.clientY - rect.top - rect.height / 2) * 0.35;
+    const x = (e.clientX - rect.left - rect.width / 2) * 0.3;
+    const y = (e.clientY - rect.top - rect.height / 2) * 0.3;
     setBtnPos({ x, y });
   };
   const resetBtnPos = () => setBtnPos({ x: 0, y: 0 });
@@ -362,6 +405,7 @@ export default function CheckoutModal() {
             <div className="flex items-center gap-3">
               {step === "payment" && (
                 <button
+                  type="button"
                   onClick={() => setStep("review")}
                   className="flex items-center gap-1.5 rounded-full border border-white/10 bg-white/[0.03] px-3 py-1.5 text-xs font-medium text-white/70 backdrop-blur-md transition-all hover:border-white/20 hover:text-white cursor-pointer"
                 >
@@ -372,7 +416,7 @@ export default function CheckoutModal() {
 
               <span className="inline-flex items-center gap-1.5 rounded-full border border-blue-400/30 bg-blue-500/15 px-3 py-1 text-[11px] font-semibold text-blue-300 shadow-[0_0_15px_rgba(59,130,246,0.2)]">
                 <span className="h-1.5 w-1.5 rounded-full bg-blue-400 animate-pulse" />
-                DEMO CHECKOUT SIMULATOR
+                STRICT TEST / DEMO SANDBOX
               </span>
             </div>
 
@@ -514,86 +558,116 @@ export default function CheckoutModal() {
                   <span className="text-xs font-mono uppercase tracking-widest text-white/45">
                     Customer Information
                   </span>
-                  <span className="text-[11px] text-blue-400">* Required for project onboarding</span>
+                  <span className="text-[11px] text-blue-400">* Real-time validated</span>
                 </div>
 
                 <form onSubmit={handleProceedToPayment} className="mt-5 space-y-4">
-                  {/* Full Name */}
+                  {/* Full Name Field */}
                   <div className="space-y-1">
-                    <div className="flex justify-between">
+                    <div className="flex justify-between items-center">
                       <label className="text-xs font-medium text-white/70">
                         Full Name <span className="text-blue-400">*</span>
                       </label>
-                      {errors.fullName && (
-                        <span className="text-[11px] text-red-400">{errors.fullName}</span>
+                      {touched.fullName && (
+                        customerErrors.fullName ? (
+                          <span className="text-[11px] text-red-400 flex items-center gap-1">
+                            <AlertCircle className="h-3 w-3" /> {customerErrors.fullName}
+                          </span>
+                        ) : (
+                          <span className="text-[11px] text-emerald-400 flex items-center gap-1">
+                            <CheckCircle2 className="h-3 w-3" /> Valid
+                          </span>
+                        )
                       )}
                     </div>
                     <div className="relative">
                       <input
                         type="text"
                         value={customer.fullName}
-                        onChange={(e) => {
-                          setCustomer((p) => ({ ...p, fullName: e.target.value }));
-                          if (errors.fullName) {
-                            setErrors((p) => {
-                              const next = { ...p };
-                              delete next.fullName;
-                              return next;
-                            });
-                          }
-                        }}
+                        onChange={(e) => handleFullNameInput(e.target.value)}
                         placeholder="[Your Full Name]"
                         className={cn(
-                          "w-full rounded-xl border bg-white/[0.025] px-4 py-2.5 text-sm text-white placeholder-white/25 outline-none transition-all",
-                          errors.fullName
+                          "w-full rounded-xl border bg-white/[0.025] px-4 py-2.5 pr-9 text-sm text-white placeholder-white/25 outline-none transition-all",
+                          touched.fullName && customerErrors.fullName
                             ? "border-red-500/80 bg-red-500/5 ring-1 ring-red-500/30"
-                            : "border-white/[0.08] focus:border-blue-400 focus:bg-white/[0.04] focus:ring-2 focus:ring-blue-500/20"
+                            : touched.fullName && !customerErrors.fullName
+                            ? "border-emerald-500/60 focus:border-emerald-400"
+                            : "border-white/[0.08] focus:border-blue-400 focus:bg-white/[0.04]"
                         )}
                       />
+                      {touched.fullName && (
+                        <span className="absolute right-3 top-3">
+                          {customerErrors.fullName ? (
+                            <AlertCircle className="h-4 w-4 text-red-400" />
+                          ) : (
+                            <CheckCircle2 className="h-4 w-4 text-emerald-400" />
+                          )}
+                        </span>
+                      )}
                     </div>
                   </div>
 
-                  {/* Email Address */}
+                  {/* Email Address Field */}
                   <div className="space-y-1">
-                    <div className="flex justify-between">
+                    <div className="flex justify-between items-center">
                       <label className="text-xs font-medium text-white/70">
                         Email Address <span className="text-blue-400">*</span>
                       </label>
-                      {errors.email && (
-                        <span className="text-[11px] text-red-400">{errors.email}</span>
+                      {touched.email && (
+                        customerErrors.email ? (
+                          <span className="text-[11px] text-red-400 flex items-center gap-1">
+                            <AlertCircle className="h-3 w-3" /> {customerErrors.email}
+                          </span>
+                        ) : (
+                          <span className="text-[11px] text-emerald-400 flex items-center gap-1">
+                            <CheckCircle2 className="h-3 w-3" /> Valid format
+                          </span>
+                        )
                       )}
                     </div>
-                    <input
-                      type="email"
-                      value={customer.email}
-                      onChange={(e) => {
-                        setCustomer((p) => ({ ...p, email: e.target.value }));
-                        if (errors.email) {
-                          setErrors((p) => {
-                            const next = { ...p };
-                            delete next.email;
-                            return next;
-                          });
-                        }
-                      }}
-                      placeholder="name@example.com"
-                      className={cn(
-                        "w-full rounded-xl border bg-white/[0.025] px-4 py-2.5 text-sm text-white placeholder-white/25 outline-none transition-all",
-                        errors.email
-                          ? "border-red-500/80 bg-red-500/5 ring-1 ring-red-500/30"
-                          : "border-white/[0.08] focus:border-blue-400 focus:bg-white/[0.04] focus:ring-2 focus:ring-blue-500/20"
+                    <div className="relative">
+                      <input
+                        type="email"
+                        value={customer.email}
+                        onChange={(e) => handleEmailInput(e.target.value)}
+                        placeholder="customer@gmail.com"
+                        className={cn(
+                          "w-full rounded-xl border bg-white/[0.025] px-4 py-2.5 pr-9 text-sm text-white placeholder-white/25 outline-none transition-all",
+                          touched.email && customerErrors.email
+                            ? "border-red-500/80 bg-red-500/5 ring-1 ring-red-500/30"
+                            : touched.email && !customerErrors.email
+                            ? "border-emerald-500/60 focus:border-emerald-400"
+                            : "border-white/[0.08] focus:border-blue-400 focus:bg-white/[0.04]"
+                        )}
+                      />
+                      {touched.email && (
+                        <span className="absolute right-3 top-3">
+                          {customerErrors.email ? (
+                            <AlertCircle className="h-4 w-4 text-red-400" />
+                          ) : (
+                            <CheckCircle2 className="h-4 w-4 text-emerald-400" />
+                          )}
+                        </span>
                       )}
-                    />
+                    </div>
                   </div>
 
-                  {/* Phone Number with Country Code */}
+                  {/* Phone Number Field with Country Code */}
                   <div className="space-y-1">
-                    <div className="flex justify-between">
+                    <div className="flex justify-between items-center">
                       <label className="text-xs font-medium text-white/70">
                         Phone Number <span className="text-blue-400">*</span>
                       </label>
-                      {errors.phone && (
-                        <span className="text-[11px] text-red-400">{errors.phone}</span>
+                      {touched.phone && (
+                        customerErrors.phone ? (
+                          <span className="text-[11px] text-red-400 flex items-center gap-1">
+                            <AlertCircle className="h-3 w-3" /> {customerErrors.phone}
+                          </span>
+                        ) : (
+                          <span className="text-[11px] text-emerald-400 flex items-center gap-1">
+                            <CheckCircle2 className="h-3 w-3" /> Valid (10 digits)
+                          </span>
+                        )
                       )}
                     </div>
                     <div className="flex gap-2">
@@ -610,31 +684,36 @@ export default function CheckoutModal() {
                           </option>
                         ))}
                       </select>
-                      <input
-                        type="tel"
-                        value={customer.phone}
-                        onChange={(e) => {
-                          setCustomer((p) => ({ ...p, phone: e.target.value }));
-                          if (errors.phone) {
-                            setErrors((p) => {
-                              const next = { ...p };
-                              delete next.phone;
-                              return next;
-                            });
-                          }
-                        }}
-                        placeholder="[10-digit mobile number]"
-                        className={cn(
-                          "flex-1 rounded-xl border bg-white/[0.025] px-4 py-2.5 text-sm text-white placeholder-white/25 outline-none transition-all",
-                          errors.phone
-                            ? "border-red-500/80 bg-red-500/5 ring-1 ring-red-500/30"
-                            : "border-white/[0.08] focus:border-blue-400 focus:bg-white/[0.04] focus:ring-2 focus:ring-blue-500/20"
+                      <div className="relative flex-1">
+                        <input
+                          type="tel"
+                          value={customer.phone}
+                          onChange={(e) => handlePhoneInput(e.target.value)}
+                          placeholder="9876543210"
+                          maxLength={10}
+                          className={cn(
+                            "w-full rounded-xl border bg-white/[0.025] px-4 py-2.5 pr-9 text-sm text-white placeholder-white/25 outline-none transition-all",
+                            touched.phone && customerErrors.phone
+                              ? "border-red-500/80 bg-red-500/5 ring-1 ring-red-500/30"
+                              : touched.phone && !customerErrors.phone
+                              ? "border-emerald-500/60 focus:border-emerald-400"
+                              : "border-white/[0.08] focus:border-blue-400 focus:bg-white/[0.04]"
+                          )}
+                        />
+                        {touched.phone && (
+                          <span className="absolute right-3 top-3">
+                            {customerErrors.phone ? (
+                              <AlertCircle className="h-4 w-4 text-red-400" />
+                            ) : (
+                              <CheckCircle2 className="h-4 w-4 text-emerald-400" />
+                            )}
+                          </span>
                         )}
-                      />
+                      </div>
                     </div>
                   </div>
 
-                  {/* Company / Project Name (Optional) */}
+                  {/* Company Name Field (Optional) */}
                   <div className="space-y-1">
                     <label className="text-xs font-medium text-white/70">
                       Company / Organization (Optional)
@@ -648,12 +727,18 @@ export default function CheckoutModal() {
                     />
                   </div>
 
-                  {/* Continue Button */}
+                  {/* Continue to Payment Button */}
                   <motion.button
                     type="submit"
+                    disabled={!isCustomerValid}
                     animate={buttonShake ? { x: [0, -8, 8, -6, 6, -3, 3, 0] } : {}}
                     transition={{ duration: 0.4 }}
-                    className="mt-6 flex w-full items-center justify-center gap-2 rounded-full bg-blue-600 py-3.5 text-sm font-bold text-white shadow-lg shadow-blue-500/30 transition-all hover:bg-blue-500 hover:shadow-blue-500/50 cursor-pointer"
+                    className={cn(
+                      "mt-6 flex w-full items-center justify-center gap-2 rounded-full py-3.5 text-sm font-bold text-white shadow-lg transition-all",
+                      isCustomerValid
+                        ? "bg-blue-600 shadow-blue-500/30 hover:bg-blue-500 hover:shadow-blue-500/50 cursor-pointer"
+                        : "bg-white/10 opacity-50 cursor-not-allowed text-white/40"
+                    )}
                   >
                     <span>Continue to Payment Method</span>
                     <ArrowRight className="h-4 w-4" />
@@ -685,6 +770,7 @@ export default function CheckoutModal() {
                     {order.total.toLocaleString("en-IN")}
                   </span>
                   <button
+                    type="button"
                     onClick={() => setStep("review")}
                     className="text-[11px] text-blue-400 hover:underline cursor-pointer"
                   >
@@ -702,7 +788,7 @@ export default function CheckoutModal() {
                 <div className="mt-3 grid grid-cols-2 gap-2.5 sm:grid-cols-4">
                   {[
                     { id: "card", label: "Credit / Debit Card", icon: CreditCard },
-                    { id: "upi", label: "UPI / Dynamic QR", icon: QrCode },
+                    { id: "upi", label: "UPI / QR Code", icon: QrCode },
                     { id: "gpay", label: "Google Pay", icon: Smartphone },
                     { id: "paypal", label: "PayPal Express", icon: Lock },
                   ].map((m) => {
@@ -714,7 +800,6 @@ export default function CheckoutModal() {
                         type="button"
                         onClick={() => {
                           setMethod(m.id as PaymentMethod);
-                          setErrors({});
                         }}
                         className={cn(
                           "flex flex-col items-center justify-center gap-2 rounded-2xl border p-3.5 text-center transition-all cursor-pointer",
@@ -731,9 +816,9 @@ export default function CheckoutModal() {
                 </div>
               </div>
 
-              {/* Dynamic Payment Interface */}
+              {/* Dynamic Payment Method Forms */}
               <form onSubmit={handlePaymentSubmit} className="mt-6 space-y-4">
-                {/* METHOD 1: CARD */}
+                {/* METHOD 1: CARD FORM */}
                 {method === "card" && (
                   <div className="space-y-4 rounded-2xl border border-white/[0.08] bg-[#07080c]/60 p-5">
                     {/* Test Card Quick Fill Helpers */}
@@ -745,7 +830,7 @@ export default function CheckoutModal() {
                           onClick={() => fillTestCard("visa")}
                           className="rounded-md border border-white/10 bg-white/[0.04] px-2.5 py-1 text-[11px] text-white/70 hover:border-blue-400/40 hover:bg-blue-500/10 hover:text-blue-300 cursor-pointer"
                         >
-                          Test Visa (Pass)
+                          Test Visa (16 Digits)
                         </button>
                         <button
                           type="button"
@@ -759,52 +844,72 @@ export default function CheckoutModal() {
                           onClick={() => fillTestCard("decline")}
                           className="rounded-md border border-red-500/20 bg-red-500/10 px-2.5 py-1 text-[11px] text-red-300 hover:border-red-400 cursor-pointer"
                         >
-                          Test Decline (Error)
+                          Test Decline
                         </button>
                       </div>
                     </div>
 
                     {/* Cardholder Name */}
                     <div className="space-y-1">
-                      <div className="flex justify-between">
+                      <div className="flex justify-between items-center">
                         <label className="text-xs font-medium text-white/70">
                           Cardholder Name <span className="text-blue-400">*</span>
                         </label>
-                        {errors.cardholderName && (
-                          <span className="text-[11px] text-red-400">{errors.cardholderName}</span>
+                        {touched.cardholderName && (
+                          cardErrors.cardholderName ? (
+                            <span className="text-[11px] text-red-400 flex items-center gap-1">
+                              <AlertCircle className="h-3 w-3" /> {cardErrors.cardholderName}
+                            </span>
+                          ) : (
+                            <span className="text-[11px] text-emerald-400 flex items-center gap-1">
+                              <CheckCircle2 className="h-3 w-3" /> Valid
+                            </span>
+                          )
                         )}
                       </div>
-                      <input
-                        type="text"
-                        value={cardData.cardholderName}
-                        onChange={(e) => {
-                          setCardData((p) => ({ ...p, cardholderName: e.target.value }));
-                          if (errors.cardholderName) {
-                            setErrors((p) => {
-                              const next = { ...p };
-                              delete next.cardholderName;
-                              return next;
-                            });
-                          }
-                        }}
-                        placeholder="[Name on Card]"
-                        className={cn(
-                          "w-full rounded-xl border bg-white/[0.025] px-4 py-2.5 text-sm text-white placeholder-white/25 outline-none transition-all",
-                          errors.cardholderName
-                            ? "border-red-500/80 bg-red-500/5 ring-1 ring-red-500/30"
-                            : "border-white/[0.08] focus:border-blue-400 focus:bg-white/[0.04]"
+                      <div className="relative">
+                        <input
+                          type="text"
+                          value={cardData.cardholderName}
+                          onChange={(e) => handleCardholderInput(e.target.value)}
+                          placeholder="[Name on Card]"
+                          className={cn(
+                            "w-full rounded-xl border bg-white/[0.025] px-4 py-2.5 pr-9 text-sm text-white placeholder-white/25 outline-none transition-all",
+                            touched.cardholderName && cardErrors.cardholderName
+                              ? "border-red-500/80 bg-red-500/5 ring-1 ring-red-500/30"
+                              : touched.cardholderName && !cardErrors.cardholderName
+                              ? "border-emerald-500/60 focus:border-emerald-400"
+                              : "border-white/[0.08] focus:border-blue-400 focus:bg-white/[0.04]"
+                          )}
+                        />
+                        {touched.cardholderName && (
+                          <span className="absolute right-3 top-3">
+                            {cardErrors.cardholderName ? (
+                              <AlertCircle className="h-4 w-4 text-red-400" />
+                            ) : (
+                              <CheckCircle2 className="h-4 w-4 text-emerald-400" />
+                            )}
+                          </span>
                         )}
-                      />
+                      </div>
                     </div>
 
                     {/* Card Number */}
                     <div className="space-y-1">
-                      <div className="flex justify-between">
+                      <div className="flex justify-between items-center">
                         <label className="text-xs font-medium text-white/70">
-                          Card Number <span className="text-blue-400">*</span>
+                          Card Number (16 Digits) <span className="text-blue-400">*</span>
                         </label>
-                        {errors.cardNumber && (
-                          <span className="text-[11px] text-red-400">{errors.cardNumber}</span>
+                        {touched.cardNumber && (
+                          cardErrors.cardNumber ? (
+                            <span className="text-[11px] text-red-400 flex items-center gap-1">
+                              <AlertCircle className="h-3 w-3" /> {cardErrors.cardNumber}
+                            </span>
+                          ) : (
+                            <span className="text-[11px] text-emerald-400 flex items-center gap-1">
+                              <CheckCircle2 className="h-3 w-3" /> Valid 16 digits
+                            </span>
+                          )
                         )}
                       </div>
                       <div className="relative">
@@ -812,77 +917,128 @@ export default function CheckoutModal() {
                           type="text"
                           value={cardData.cardNumber}
                           onChange={(e) => handleCardNumberInput(e.target.value)}
-                          placeholder="4242 4242 4242 4242"
+                          placeholder="1234 5678 9012 3456"
+                          maxLength={19} // 16 digits + 3 spaces
                           className={cn(
-                            "w-full rounded-xl border bg-white/[0.025] px-4 py-2.5 pr-16 text-sm font-mono text-white placeholder-white/25 outline-none transition-all",
-                            errors.cardNumber
+                            "w-full rounded-xl border bg-white/[0.025] px-4 py-2.5 pr-20 text-sm font-mono text-white placeholder-white/25 outline-none transition-all",
+                            touched.cardNumber && cardErrors.cardNumber
                               ? "border-red-500/80 bg-red-500/5 ring-1 ring-red-500/30"
+                              : touched.cardNumber && !cardErrors.cardNumber
+                              ? "border-emerald-500/60 focus:border-emerald-400"
                               : "border-white/[0.08] focus:border-blue-400 focus:bg-white/[0.04]"
                           )}
                         />
-                        <span className="absolute right-3 top-2.5 rounded-md border border-white/10 bg-white/5 px-2 py-0.5 text-[10px] font-bold text-blue-400">
-                          {getCardBrand()}
-                        </span>
+                        <div className="absolute right-3 top-2.5 flex items-center gap-1.5">
+                          {touched.cardNumber && !cardErrors.cardNumber && (
+                            <CheckCircle2 className="h-4 w-4 text-emerald-400" />
+                          )}
+                          <span className="rounded-md border border-white/10 bg-white/5 px-2 py-0.5 text-[10px] font-bold text-blue-400">
+                            {getCardBrand()}
+                          </span>
+                        </div>
                       </div>
                     </div>
 
                     {/* Expiry & CVV */}
                     <div className="grid grid-cols-2 gap-3">
+                      {/* Expiry MM/YY */}
                       <div className="space-y-1">
-                        <div className="flex justify-between">
+                        <div className="flex justify-between items-center">
                           <label className="text-xs font-medium text-white/70">
-                            Expiry <span className="text-blue-400">*</span>
+                            Expiry (MM/YY) <span className="text-blue-400">*</span>
                           </label>
-                          {errors.expiry && (
-                            <span className="text-[10px] text-red-400">{errors.expiry}</span>
+                          {touched.expiry && (
+                            cardErrors.expiry ? (
+                              <span className="text-[10px] text-red-400 flex items-center gap-1">
+                                <AlertCircle className="h-2.5 w-2.5" /> {cardErrors.expiry}
+                              </span>
+                            ) : (
+                              <span className="text-[10px] text-emerald-400 flex items-center gap-1">
+                                <CheckCircle2 className="h-2.5 w-2.5" /> Valid
+                              </span>
+                            )
                           )}
                         </div>
-                        <input
-                          type="text"
-                          value={cardData.expiry}
-                          onChange={(e) => handleExpiryInput(e.target.value)}
-                          placeholder="MM/YY"
-                          className={cn(
-                            "w-full rounded-xl border bg-white/[0.025] px-4 py-2.5 text-sm font-mono text-white placeholder-white/25 outline-none transition-all",
-                            errors.expiry
-                              ? "border-red-500/80 bg-red-500/5 ring-1 ring-red-500/30"
-                              : "border-white/[0.08] focus:border-blue-400 focus:bg-white/[0.04]"
+                        <div className="relative">
+                          <input
+                            type="text"
+                            value={cardData.expiry}
+                            onChange={(e) => handleExpiryInput(e.target.value)}
+                            placeholder="08/29"
+                            maxLength={5}
+                            className={cn(
+                              "w-full rounded-xl border bg-white/[0.025] px-4 py-2.5 pr-8 text-sm font-mono text-white placeholder-white/25 outline-none transition-all",
+                              touched.expiry && cardErrors.expiry
+                                ? "border-red-500/80 bg-red-500/5 ring-1 ring-red-500/30"
+                                : touched.expiry && !cardErrors.expiry
+                                ? "border-emerald-500/60 focus:border-emerald-400"
+                                : "border-white/[0.08] focus:border-blue-400 focus:bg-white/[0.04]"
+                            )}
+                          />
+                          {touched.expiry && (
+                            <span className="absolute right-2.5 top-3">
+                              {cardErrors.expiry ? (
+                                <AlertCircle className="h-3.5 w-3.5 text-red-400" />
+                              ) : (
+                                <CheckCircle2 className="h-3.5 w-3.5 text-emerald-400" />
+                              )}
+                            </span>
                           )}
-                        />
+                        </div>
                       </div>
 
+                      {/* CVV (Strictly exactly 3 digits, masked) */}
                       <div className="space-y-1">
-                        <div className="flex justify-between">
+                        <div className="flex justify-between items-center">
                           <label className="text-xs font-medium text-white/70">
-                            CVV / CVC <span className="text-blue-400">*</span>
+                            CVV (3 Digits) <span className="text-blue-400">*</span>
                           </label>
-                          {errors.cvv && (
-                            <span className="text-[10px] text-red-400">{errors.cvv}</span>
+                          {touched.cvv && (
+                            cardErrors.cvv ? (
+                              <span className="text-[10px] text-red-400 flex items-center gap-1">
+                                <AlertCircle className="h-2.5 w-2.5" /> {cardErrors.cvv}
+                              </span>
+                            ) : (
+                              <span className="text-[10px] text-emerald-400 flex items-center gap-1">
+                                <CheckCircle2 className="h-2.5 w-2.5" /> 3 digits
+                              </span>
+                            )
                           )}
                         </div>
-                        <input
-                          type="password"
-                          value={cardData.cvv}
-                          onChange={(e) => {
-                            const val = e.target.value.replace(/\D/g, "").slice(0, 4);
-                            setCardData((p) => ({ ...p, cvv: val }));
-                            if (errors.cvv) {
-                              setErrors((p) => {
-                                const next = { ...p };
-                                delete next.cvv;
-                                return next;
-                              });
-                            }
-                          }}
-                          placeholder="123"
-                          maxLength={4}
-                          className={cn(
-                            "w-full rounded-xl border bg-white/[0.025] px-4 py-2.5 text-sm font-mono text-white placeholder-white/25 outline-none transition-all",
-                            errors.cvv
-                              ? "border-red-500/80 bg-red-500/5 ring-1 ring-red-500/30"
-                              : "border-white/[0.08] focus:border-blue-400 focus:bg-white/[0.04]"
-                          )}
-                        />
+                        <div className="relative">
+                          <input
+                            type={showCvv ? "text" : "password"}
+                            value={cardData.cvv}
+                            onChange={(e) => handleCvvInput(e.target.value)}
+                            placeholder="•••"
+                            maxLength={3}
+                            className={cn(
+                              "w-full rounded-xl border bg-white/[0.025] px-4 py-2.5 pr-14 text-sm font-mono text-white placeholder-white/25 outline-none transition-all tracking-widest",
+                              touched.cvv && cardErrors.cvv
+                                ? "border-red-500/80 bg-red-500/5 ring-1 ring-red-500/30"
+                                : touched.cvv && !cardErrors.cvv
+                                ? "border-emerald-500/60 focus:border-emerald-400"
+                                : "border-white/[0.08] focus:border-blue-400 focus:bg-white/[0.04]"
+                            )}
+                          />
+                          <div className="absolute right-2.5 top-2.5 flex items-center gap-1.5">
+                            <button
+                              type="button"
+                              onClick={() => setShowCvv((v) => !v)}
+                              className="text-white/40 hover:text-white/80 cursor-pointer"
+                              aria-label={showCvv ? "Hide CVV" : "Show CVV"}
+                            >
+                              {showCvv ? <EyeOff className="h-3.5 w-3.5" /> : <Eye className="h-3.5 w-3.5" />}
+                            </button>
+                            {touched.cvv && (
+                              cardErrors.cvv ? (
+                                <AlertCircle className="h-3.5 w-3.5 text-red-400" />
+                              ) : (
+                                <CheckCircle2 className="h-3.5 w-3.5 text-emerald-400" />
+                              )}
+                            )}
+                          </div>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -945,12 +1101,20 @@ export default function CheckoutModal() {
 
                     {/* UPI ID Field */}
                     <div className="space-y-1">
-                      <div className="flex justify-between">
+                      <div className="flex justify-between items-center">
                         <label className="text-xs font-medium text-white/70">
                           Or Enter UPI VPA <span className="text-blue-400">*</span>
                         </label>
-                        {errors.upiId && (
-                          <span className="text-[11px] text-red-400">{errors.upiId}</span>
+                        {touched.upiId && (
+                          upiErrors.upiId ? (
+                            <span className="text-[11px] text-red-400 flex items-center gap-1">
+                              <AlertCircle className="h-3 w-3" /> {upiErrors.upiId}
+                            </span>
+                          ) : (
+                            <span className="text-[11px] text-emerald-400 flex items-center gap-1">
+                              <CheckCircle2 className="h-3 w-3" /> Valid format
+                            </span>
+                          )
                         )}
                       </div>
                       <div className="relative">
@@ -958,20 +1122,16 @@ export default function CheckoutModal() {
                           type="text"
                           value={upiData.upiId}
                           onChange={(e) => {
-                            setUpiData({ upiId: e.target.value });
-                            if (errors.upiId) {
-                              setErrors((p) => {
-                                const next = { ...p };
-                                delete next.upiId;
-                                return next;
-                              });
-                            }
+                            setUpiData({ upiId: e.target.value.trim() });
+                            setTouched((p) => ({ ...p, upiId: true }));
                           }}
                           placeholder="yourname@okaxis"
                           className={cn(
                             "w-full rounded-xl border bg-white/[0.025] px-4 py-2.5 pr-24 text-sm text-white placeholder-white/25 outline-none transition-all",
-                            errors.upiId
+                            touched.upiId && upiErrors.upiId
                               ? "border-red-500/80 bg-red-500/5 ring-1 ring-red-500/30"
+                              : touched.upiId && !upiErrors.upiId
+                              ? "border-emerald-500/60 focus:border-emerald-400"
                               : "border-white/[0.08] focus:border-blue-400 focus:bg-white/[0.04]"
                           )}
                         />
@@ -980,6 +1140,7 @@ export default function CheckoutModal() {
                           onClick={() => {
                             setUpiData({ upiId: "lumoraclient@okaxis" });
                             setCopiedUpi(true);
+                            setTouched((p) => ({ ...p, upiId: true }));
                             setTimeout(() => setCopiedUpi(false), 2000);
                           }}
                           className="absolute right-2 top-2 rounded-lg border border-white/10 bg-white/5 px-2.5 py-1 text-[11px] text-white/70 hover:bg-white/10 hover:text-white cursor-pointer"
@@ -1074,11 +1235,11 @@ export default function CheckoutModal() {
                   </button>
                 </div>
 
-                {/* Final Pay Button with Exact Amount */}
+                {/* Final Pay Button with Exact Amount and Disabled State */}
                 <motion.button
                   ref={payBtnRef}
                   type="submit"
-                  disabled={isProcessing}
+                  disabled={!isPayButtonEnabled}
                   onMouseMove={handleButtonMove}
                   onMouseLeave={resetBtnPos}
                   animate={
@@ -1088,21 +1249,36 @@ export default function CheckoutModal() {
                   }
                   transition={{ type: "spring", stiffness: 240, damping: 16 }}
                   className={cn(
-                    "group relative mt-4 flex w-full items-center justify-center gap-2 overflow-hidden rounded-full py-4 text-sm font-bold text-white shadow-lg transition-all duration-300 cursor-pointer",
-                    isProcessing
-                      ? "bg-blue-700/80 cursor-wait"
-                      : "bg-blue-600 shadow-[0_8px_32px_rgba(59,130,246,0.35)] hover:bg-blue-500 hover:shadow-[0_12px_45px_rgba(59,130,246,0.5)]"
+                    "group relative mt-4 flex w-full items-center justify-center gap-2 overflow-hidden rounded-full py-4 text-sm font-bold text-white shadow-lg transition-all duration-300",
+                    isPayButtonEnabled
+                      ? "bg-blue-600 shadow-[0_8px_32px_rgba(59,130,246,0.35)] hover:bg-blue-500 hover:shadow-[0_12px_45px_rgba(59,130,246,0.5)] cursor-pointer"
+                      : "bg-white/10 opacity-50 cursor-not-allowed text-white/40"
                   )}
                 >
                   <span className="pointer-events-none absolute -inset-full top-0 block h-full w-1/2 -skew-x-12 bg-gradient-to-r from-transparent via-white/25 to-transparent opacity-0 transition-all duration-1000 group-hover:left-full group-hover:opacity-100" />
                   <span className="relative z-10 flex items-center gap-2">
-                    <span>
-                      Pay {order.currency}
-                      {order.total.toLocaleString("en-IN")} (Demo Checkout)
-                    </span>
-                    <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+                    {isProcessing ? (
+                      <>
+                        <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />
+                        <span>Processing payment...</span>
+                      </>
+                    ) : (
+                      <>
+                        <span>
+                          Pay {order.currency}
+                          {order.total.toLocaleString("en-IN")}
+                        </span>
+                        <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+                      </>
+                    )}
                   </span>
                 </motion.button>
+
+                {!isPayButtonEnabled && (
+                  <p className="text-center text-[11px] text-white/40">
+                    Complete all required fields with valid test data to enable payment.
+                  </p>
+                )}
               </form>
             </div>
           )}
@@ -1118,7 +1294,7 @@ export default function CheckoutModal() {
               </div>
 
               <h3 className="mt-6 font-display text-xl font-bold text-white">
-                Processing Payment...
+                Processing payment...
               </h3>
               <p className="mt-2 text-sm text-white/60">{processingStatus}</p>
 
@@ -1131,13 +1307,13 @@ export default function CheckoutModal() {
               </div>
 
               <span className="mt-6 text-[11px] text-white/40 font-mono">
-                Do not refresh or close this window
+                Simulating verified sandbox execution
               </span>
             </div>
           )}
 
           {/* ========================================================================= */}
-          {/* STEP 4A: SUCCESS EXPERIENCE                                               */}
+          {/* STEP 4A: SUCCESS STATE                                                    */}
           {/* ========================================================================= */}
           {step === "success" && paymentResult && (
             <div className="relative p-8 text-center sm:p-12">
@@ -1187,7 +1363,7 @@ export default function CheckoutModal() {
                 transition={{ delay: 0.3, duration: 0.45 }}
                 className="mt-6 font-display text-2xl font-bold tracking-tight text-white sm:text-3xl"
               >
-                ✓ Demo Payment Completed
+                ✓ Payment Complete
               </motion.h3>
 
               <motion.p
@@ -1196,11 +1372,10 @@ export default function CheckoutModal() {
                 transition={{ delay: 0.4, duration: 0.45 }}
                 className="mx-auto mt-2 max-w-md text-sm leading-relaxed text-white/65"
               >
-                Thank you, <span className="font-semibold text-white">{customer.fullName}</span>!
-                Your order is confirmed in the demo sandbox.
+                Order confirmed in demo sandbox.
               </motion.p>
 
-              {/* Order Receipt Summary Card */}
+              {/* Order ID & Details Card */}
               <motion.div
                 initial={{ opacity: 0, scale: 0.96 }}
                 animate={{ opacity: 1, scale: 1 }}
@@ -1208,33 +1383,29 @@ export default function CheckoutModal() {
                 className="mx-auto mt-6 max-w-lg rounded-2xl border border-white/[0.08] bg-[#07080c]/80 p-5 text-left text-xs text-white/70"
               >
                 <div className="flex items-center justify-between border-b border-white/[0.06] pb-3 font-mono">
-                  <span className="text-white/40">Order ID</span>
+                  <span className="text-white/40">Order ID:</span>
                   <span className="font-bold text-blue-400">{paymentResult.orderId}</span>
                 </div>
 
                 <div className="mt-3 space-y-2">
                   <div className="flex justify-between">
-                    <span className="text-white/50">Plan Purchased</span>
-                    <span className="font-medium text-white">{order.planName} Package</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-white/50">Amount Paid (Demo)</span>
+                    <span className="text-white/50">Amount:</span>
                     <span className="font-medium text-white">
                       {order.currency}
                       {order.total.toLocaleString("en-IN")}
                     </span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-white/50">Customer Email</span>
+                    <span className="text-white/50">Email:</span>
                     <span className="font-medium text-white">{customer.email}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-white/50">Payment Method</span>
-                    <span className="font-medium uppercase text-blue-300">{method}</span>
+                    <span className="text-white/50">Plan:</span>
+                    <span className="font-medium text-white">{order.planName} Package</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-white/50">Status</span>
-                    <span className="font-semibold text-emerald-400">SUCCESS (SANDBOX)</span>
+                    <span className="text-white/50">Payment Method:</span>
+                    <span className="font-medium uppercase text-blue-300">{method}</span>
                   </div>
                 </div>
               </motion.div>
@@ -1247,6 +1418,16 @@ export default function CheckoutModal() {
                 className="mt-8 flex flex-wrap items-center justify-center gap-3"
               >
                 <button
+                  type="button"
+                  onClick={() => setShowOrderSummaryModal((v) => !v)}
+                  className="flex items-center gap-2 rounded-full border border-white/15 bg-white/[0.04] px-5 py-2.5 text-xs font-semibold text-white transition-all hover:border-blue-400/40 hover:bg-white/[0.08] cursor-pointer"
+                >
+                  <FileText className="h-3.5 w-3.5 text-blue-400" />
+                  <span>{showOrderSummaryModal ? "Hide Summary" : "View Order Summary"}</span>
+                </button>
+
+                <button
+                  type="button"
                   onClick={handleDownloadReceipt}
                   className="flex items-center gap-2 rounded-full border border-white/15 bg-white/[0.04] px-5 py-2.5 text-xs font-semibold text-white transition-all hover:border-blue-400/40 hover:bg-white/[0.08] cursor-pointer"
                 >
@@ -1255,6 +1436,7 @@ export default function CheckoutModal() {
                 </button>
 
                 <button
+                  type="button"
                   onClick={closeCheckout}
                   className="flex items-center gap-2 rounded-full bg-blue-600 px-6 py-2.5 text-xs font-bold text-white shadow-lg shadow-blue-500/25 transition-all hover:bg-blue-500 cursor-pointer"
                 >
@@ -1263,14 +1445,32 @@ export default function CheckoutModal() {
                 </button>
               </motion.div>
 
+              {/* Collapsible Order Summary View */}
+              {showOrderSummaryModal && (
+                <motion.div
+                  initial={{ opacity: 0, height: 0 }}
+                  animate={{ opacity: 1, height: "auto" }}
+                  className="mx-auto mt-6 max-w-lg overflow-hidden rounded-2xl border border-white/10 bg-black/40 p-4 text-left text-xs text-white/70"
+                >
+                  <span className="block font-semibold text-white mb-2">Included Deliverables:</span>
+                  <ul className="space-y-1 text-white/60">
+                    {order.features.map((f, i) => (
+                      <li key={i} className="flex items-center gap-2">
+                        <Check className="h-3 w-3 text-emerald-400" /> {f}
+                      </li>
+                    ))}
+                  </ul>
+                </motion.div>
+              )}
+
               <div className="mt-5 rounded-xl border border-blue-500/20 bg-blue-500/5 p-2.5 text-[11px] text-blue-300 max-w-lg mx-auto">
-                Notice: Demo checkout — no real payment was processed.
+                Test checkout — no real payment was processed.
               </div>
             </div>
           )}
 
           {/* ========================================================================= */}
-          {/* STEP 4B: FAILURE / DECLINE STATE                                          */}
+          {/* STEP 4B: FAILURE STATE                                                    */}
           {/* ========================================================================= */}
           {step === "failure" && paymentResult && (
             <div className="p-8 text-center sm:p-12">
@@ -1279,7 +1479,7 @@ export default function CheckoutModal() {
               </div>
 
               <h3 className="mt-6 font-display text-2xl font-bold tracking-tight text-white sm:text-3xl">
-                Payment Could Not Be Completed
+                Payment could not be completed.
               </h3>
 
               <div className="mx-auto mt-4 max-w-md rounded-2xl border border-red-500/20 bg-red-500/5 p-4 text-left text-xs">
@@ -1293,6 +1493,7 @@ export default function CheckoutModal() {
               {/* Action Buttons for Failure State */}
               <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
                 <button
+                  type="button"
                   onClick={() => {
                     setSimulateDecline(false);
                     setStep("payment");
@@ -1304,6 +1505,7 @@ export default function CheckoutModal() {
                 </button>
 
                 <button
+                  type="button"
                   onClick={() => setStep("payment")}
                   className="flex items-center gap-2 rounded-full border border-white/15 bg-white/[0.04] px-5 py-2.5 text-xs font-semibold text-white transition-all hover:border-white/25 cursor-pointer"
                 >
@@ -1311,10 +1513,11 @@ export default function CheckoutModal() {
                 </button>
 
                 <button
+                  type="button"
                   onClick={() => setStep("review")}
                   className="flex items-center gap-2 rounded-full border border-white/15 bg-white/[0.04] px-5 py-2.5 text-xs font-semibold text-white/70 transition-all hover:text-white cursor-pointer"
                 >
-                  <span>Return to Order Review</span>
+                  <span>Edit Details</span>
                 </button>
               </div>
             </div>

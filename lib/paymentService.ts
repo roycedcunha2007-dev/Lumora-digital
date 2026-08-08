@@ -1,15 +1,13 @@
 /**
  * ============================================================================
- * LUMORA DIGITAL — Production-Quality Payment Abstraction Layer (Frontend Service)
+ * LUMORA DIGITAL — Strict Realistic Test/Demo Payment Abstraction Layer
  * ============================================================================
- * 
- * Provides a clean architecture ready for real payment gateway integration
- * (e.g. Stripe, Razorpay, LemonSqueezy) while running frontend demo simulations.
  * 
  * Rules:
  * - Never store raw card numbers, CVVs, or payment credentials in persistent storage.
- * - Clearly demarcate demo/sandbox transaction outcomes.
- * - Perform robust client-side validation for emails, phone numbers, and payment details.
+ * - Enforce strict client-side validation for Card, CVV (exactly 3 digits), Expiry (MM/YY 01-12),
+ *   Email (strict RFC), Phone (10 digits), and Name.
+ * - Clearly mark all transactions and receipts as TEST / DEMO sandbox operations.
  */
 
 import { PlanItem } from "@/components/checkout/CheckoutContext";
@@ -69,10 +67,10 @@ export interface PaymentResult {
 export function createCheckoutOrder(plan: PlanItem, quantity: number = 1): CheckoutOrder {
   const numericPrice = plan.numericPrice || 14999;
   const subtotal = numericPrice * Math.max(1, quantity);
-  const tax = 0; // Waived for demo / transparent pricing
+  const tax = 0; // Transparent zero-hidden-fee pricing
   const total = subtotal + tax;
 
-  const orderId = `DEMO-LMR-${Math.floor(100000 + Math.random() * 900000)}`;
+  const orderId = `DEMO-${Math.floor(10000000 + Math.random() * 90000000)}`;
 
   return {
     orderId,
@@ -96,105 +94,117 @@ export function createCheckoutOrder(plan: PlanItem, quantity: number = 1): Check
 export function validateCustomerDetails(details: CustomerDetails): Record<string, string> {
   const errors: Record<string, string> = {};
 
-  // Full Name: Required, min 2 characters, letters & spaces
-  if (!details.fullName || !details.fullName.trim()) {
+  // Full Name: Required, min 3 characters, letters and spaces only
+  const trimmedName = (details.fullName || "").trim();
+  if (!trimmedName) {
     errors.fullName = "Full name is required.";
-  } else if (details.fullName.trim().length < 2) {
-    errors.fullName = "Please enter your full name (at least 2 characters).";
+  } else if (trimmedName.length < 3) {
+    errors.fullName = "Full name must be at least 3 characters.";
+  } else if (/\d/.test(trimmedName)) {
+    errors.fullName = "Name cannot contain numbers.";
   }
 
-  // Email Validation: Strict RFC 5322 regex rejecting invalid formats
+  // Email Validation: Strict RFC regex requiring username + @ + domain + dot + TLD (2+ chars)
+  // Rejects name@, name.com, name@gmail, @gmail.com
   const emailTrimmed = (details.email || "").trim();
   const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
   if (!emailTrimmed) {
     errors.email = "Email address is required.";
   } else if (!emailRegex.test(emailTrimmed)) {
-    errors.email = "Enter a valid email address (e.g. name@example.com).";
+    errors.email = "Enter a valid email address (e.g. customer@gmail.com).";
   }
 
-  // Phone Validation: 10-15 digits
+  // Phone Validation: 10 digits (digits only)
   const phoneDigits = (details.phone || "").replace(/\D/g, "");
   if (!details.phone || !details.phone.trim()) {
-    errors.phone = "Phone number is required for project coordination.";
-  } else if (phoneDigits.length < 8 || phoneDigits.length > 15) {
-    errors.phone = "Enter a valid phone number (8–15 digits).";
+    errors.phone = "Phone number is required.";
+  } else if (phoneDigits.length !== 10) {
+    errors.phone = "Enter a valid 10-digit mobile number.";
   }
 
   return errors;
 }
 
 /**
- * Validates Card payment data.
+ * Validates Card payment data with strict rules:
+ * - Card number: Exactly 16 digits
+ * - CVV: Exactly 3 digits (masked)
+ * - Expiry: MM/YY (Month 01-12, unexpired)
+ * - Cardholder name: Required, letters only
  */
 export function validateCardDetails(card: CardPaymentData): Record<string, string> {
   const errors: Record<string, string> = {};
 
   // Cardholder name
-  if (!card.cardholderName || !card.cardholderName.trim()) {
+  const holderTrimmed = (card.cardholderName || "").trim();
+  if (!holderTrimmed) {
     errors.cardholderName = "Cardholder name is required.";
-  } else if (card.cardholderName.trim().length < 3) {
-    errors.cardholderName = "Enter the full name on your card.";
+  } else if (holderTrimmed.length < 3) {
+    errors.cardholderName = "Cardholder name must be at least 3 characters.";
+  } else if (/\d/.test(holderTrimmed)) {
+    errors.cardholderName = "Cardholder name cannot contain numbers.";
   }
 
-  // Card number: 16 digits
-  const digits = (card.cardNumber || "").replace(/\D/g, "");
-  if (!digits) {
+  // Card number: Exactly 16 digits
+  const cleanDigits = (card.cardNumber || "").replace(/\D/g, "");
+  if (!cleanDigits) {
     errors.cardNumber = "Card number is required.";
-  } else if (digits.length < 15 || digits.length > 19) {
+  } else if (cleanDigits.length !== 16) {
     errors.cardNumber = "Enter a valid 16-digit card number.";
   }
 
-  // Expiry MM/YY
-  const expiry = (card.expiry || "").trim();
-  if (!expiry) {
-    errors.expiry = "Expiry date is required.";
-  } else if (!/^\d{2}\/\d{2}$/.test(expiry)) {
-    errors.expiry = "Use MM/YY format (e.g. 12/28).";
+  // Expiry MM/YY: Month 01-12, unexpired
+  const cleanExpiry = (card.expiry || "").trim();
+  if (!cleanExpiry) {
+    errors.expiry = "Expiry date is required (MM/YY).";
+  } else if (!/^\d{2}\/\d{2}$/.test(cleanExpiry)) {
+    errors.expiry = "Use MM/YY format (e.g. 08/29).";
   } else {
-    const [mmStr, yyStr] = expiry.split("/");
+    const [mmStr, yyStr] = cleanExpiry.split("/");
     const mm = parseInt(mmStr, 10);
     const yy = parseInt(yyStr, 10);
     const currentYear = new Date().getFullYear() % 100;
     const currentMonth = new Date().getMonth() + 1;
 
     if (mm < 1 || mm > 12) {
-      errors.expiry = "Invalid month (01–12).";
+      errors.expiry = "Month must be between 01 and 12.";
     } else if (yy < currentYear || (yy === currentYear && mm < currentMonth)) {
       errors.expiry = "Card has expired.";
+    } else if (yy > currentYear + 25) {
+      errors.expiry = "Invalid future expiry year.";
     }
   }
 
-  // CVV: 3 or 4 digits
-  const cvv = (card.cvv || "").replace(/\D/g, "");
-  if (!cvv) {
+  // CVV: Strictly exactly 3 digits
+  const cleanCvv = (card.cvv || "").replace(/\D/g, "");
+  if (!cleanCvv) {
     errors.cvv = "CVV is required.";
-  } else if (cvv.length < 3 || cvv.length > 4) {
-    errors.cvv = "CVV must be 3 or 4 digits.";
+  } else if (cleanCvv.length !== 3) {
+    errors.cvv = "CVV must contain exactly 3 digits.";
   }
 
   return errors;
 }
 
 /**
- * Validates UPI payment data.
+ * Validates UPI payment data (name@bank format).
  */
 export function validateUpiDetails(upi: UpiPaymentData): Record<string, string> {
   const errors: Record<string, string> = {};
   const upiId = (upi.upiId || "").trim();
 
-  const upiRegex = /^[\w.-]+@[\w.-]+$/;
+  const upiRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+$/;
   if (!upiId) {
-    errors.upiId = "Please enter a valid UPI ID (e.g. yourname@bank).";
+    errors.upiId = "UPI ID is required.";
   } else if (!upiRegex.test(upiId)) {
-    errors.upiId = "Invalid UPI ID format (example: yourname@okaxis).";
+    errors.upiId = "Enter a valid UPI ID (e.g. name@okaxis).";
   }
 
   return errors;
 }
 
 /**
- * Simulates a robust frontend payment verification with simulated network latency,
- * zero credential leakage, and explicit failure simulation capabilities.
+ * Simulates a realistic test/demo payment process with strict error handling.
  */
 export async function processDemoPayment(
   order: CheckoutOrder,
@@ -207,12 +217,12 @@ export async function processDemoPayment(
     latencyMs?: number;
   }
 ): Promise<PaymentResult> {
-  const latency = options?.latencyMs ?? 1400;
+  const latency = options?.latencyMs ?? 1300;
 
-  // Simulate network roundtrip
+  // Simulate network latency
   await new Promise((resolve) => setTimeout(resolve, latency));
 
-  // Check for forced simulation failure or test decline card
+  // Check for test decline card or forced failure
   const isDeclineCard =
     method === "card" &&
     typeof paymentData?.cardNumber === "string" &&
@@ -222,8 +232,8 @@ export async function processDemoPayment(
     const reason =
       options?.failureReason ||
       (isDeclineCard
-        ? "Simulated Test Card Decline: Transaction was declined by the issuer sandbox."
-        : "Sandbox Authorization Declined: Unable to verify simulated funds.");
+        ? "Test Card Declined: The sandbox card issuer declined this test transaction."
+        : "Sandbox Authorization Declined: Unable to verify test funds.");
 
     return {
       success: false,
@@ -238,7 +248,7 @@ export async function processDemoPayment(
     };
   }
 
-  // Successful demo completion
+  // Success simulation
   return {
     success: true,
     orderId: order.orderId,
@@ -252,41 +262,40 @@ export async function processDemoPayment(
 }
 
 /**
- * Formats the downloadable receipt text for the client.
+ * Generates clear downloadable test receipt.
  */
 export function generateReceiptText(result: PaymentResult): string {
   return `================================================================
-LUMORA DIGITAL — FRONTEND DEMO PAYMENT RECEIPT
+LUMORA DIGITAL — TEST / DEMO CHECKOUT RECEIPT
 ================================================================
-Notice: This is a verified frontend simulation.
-No actual money or funds were deducted from your account.
+Notice: This is a verified frontend test demonstration.
+No real financial charge occurred.
 ----------------------------------------------------------------
-Order Reference : ${result.orderId}
-Transaction Date: ${new Date(result.timestamp).toLocaleString()}
-Status          : SUCCESS (DEMO SANDBOX)
-Payment Channel : ${result.paymentMethod.toUpperCase()}
+Order ID        : ${result.orderId}
+Date & Time     : ${new Date(result.timestamp).toLocaleString()}
+Status          : PAYMENT COMPLETE (TEST SANDBOX)
+Payment Method  : ${result.paymentMethod.toUpperCase()}
 ----------------------------------------------------------------
 CUSTOMER DETAILS:
 Name            : ${result.customer.fullName}
 Email           : ${result.customer.email}
 Phone           : ${result.customer.countryCode} ${result.customer.phone}
-Company         : ${result.customer.company || "Individual Client"}
+Company         : ${result.customer.company || "Direct Client"}
 ----------------------------------------------------------------
-PACKAGE BREAKDOWN:
+ORDER BREAKDOWN:
 Plan Selected   : ${result.order.planName} Package
 Quantity        : ${result.order.quantity}
 Cadence         : ${result.order.cadence}
 Subtotal        : ${result.order.currency}${result.order.subtotal.toLocaleString("en-IN")}
-Platform Fee    : ₹0.00 (Demo Waived)
-Taxes (GST 18%) : ₹0.00 (Included/Waived)
+Taxes / Fees    : ₹0.00 (Demo Sandbox)
 ----------------------------------------------------------------
-TOTAL DUE / PAID: ${result.amountFormatted} (DEMO)
+TOTAL PAID      : ${result.amountFormatted} (DEMO)
 ================================================================
-DELIVERABLES INCLUDED:
-${result.order.features.map((f, i) => `[${i + 1}] ${f}`).join("\n")}
+INCLUDED DELIVERABLES:
+${result.order.features.map((f, i) => `• ${f}`).join("\n")}
 ================================================================
 Support & Inquiries: business@lumoradigital.com
-Lumora Digital Studio · Engineered for Performance & Impact.
+Lumora Digital Studio · High-Performance Web Craft.
 ================================================================`;
 }
 
