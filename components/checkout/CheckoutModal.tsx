@@ -373,11 +373,10 @@ export default function CheckoutModal() {
   };
   const resetBtnPos = () => setBtnPos({ x: 0, y: 0 });
 
-  if (!isOpen) return null;
-
   return (
     <AnimatePresence>
-      <div className="fixed inset-0 z-[9999] flex items-center justify-center p-3 sm:p-5 md:p-8 overflow-y-auto">
+      {isOpen && (
+        <div className="fixed inset-0 z-[9999] flex items-center justify-center p-3 sm:p-5 md:p-8 overflow-y-auto">
         {/* Backdrop Blur Overlay */}
         <motion.div
           initial={{ opacity: 0 }}
@@ -1524,6 +1523,7 @@ export default function CheckoutModal() {
           )}
         </motion.div>
       </div>
+      )}
     </AnimatePresence>
   );
 }
