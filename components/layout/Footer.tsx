@@ -4,9 +4,11 @@ import { useState } from "react";
 import { ArrowUpRight, Send, ArrowUp, Check } from "lucide-react";
 import { site, navLinks, services } from "@/lib/site";
 import Reveal from "@/components/ui/Reveal";
+import { useCheckout } from "@/components/checkout/CheckoutContext";
 
 export default function Footer() {
   const [subscribed, setSubscribed] = useState(false);
+  const { openCheckout } = useCheckout();
 
   return (
     <footer className="relative overflow-hidden border-t border-white/10 pt-24">
@@ -29,13 +31,14 @@ export default function Footer() {
             <p className="max-w-md text-white/55">
               Let&apos;s craft a website that works as hard as you do.
             </p>
-            <a
-              href="#contact"
-              className="group mt-2 inline-flex items-center gap-2 rounded-full bg-white px-7 py-3.5 text-sm font-semibold text-navy-950 transition-transform duration-300 hover:scale-[1.03]"
+            <button
+              type="button"
+              onClick={() => openCheckout("business")}
+              className="group mt-2 inline-flex items-center gap-2 rounded-full bg-white px-7 py-3.5 text-sm font-semibold text-navy-950 transition-transform duration-300 hover:scale-[1.03] cursor-pointer"
             >
               Start a project
               <ArrowUpRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-            </a>
+            </button>
           </div>
         </Reveal>
 

@@ -15,10 +15,12 @@ import Pricing from "@/components/sections/Pricing";
 import Team from "@/components/sections/Team";
 import FAQ from "@/components/sections/FAQ";
 import Contact from "@/components/sections/Contact";
+import { CheckoutProvider } from "@/components/checkout/CheckoutContext";
+import CheckoutModal from "@/components/checkout/CheckoutModal";
 
 export default function Home() {
   return (
-    <>
+    <CheckoutProvider>
       <AuroraBackground />
       <LumoraPrism3D />
       <Navbar />
@@ -45,6 +47,7 @@ export default function Home() {
       </main>
       <Footer />
       <WhatsAppButton />
-    </>
+      <CheckoutModal />
+    </CheckoutProvider>
   );
 }

@@ -12,6 +12,7 @@ import RobotSpeechPresenter from "@/components/ui/RobotSpeechPresenter";
 import RobotAtmosphere from "@/components/effects/RobotAtmosphere";
 import ContinuousAIScanHeading from "@/components/effects/ContinuousAIScanHeading";
 import HeroStatsBar from "@/components/effects/HeroStatsBar";
+import { useCheckout } from "@/components/checkout/CheckoutContext";
 
 const headlineLines = [
   "Crafting digital",
@@ -20,6 +21,7 @@ const headlineLines = [
 ];
 
 export default function Hero() {
+  const { openCheckout } = useCheckout();
   const ref = useRef<HTMLElement>(null);
   const { scrollYProgress } = useScroll({
     target: ref,
@@ -89,15 +91,15 @@ export default function Hero() {
             transition={{ delay: 0.95, duration: 0.75, ease: [0.16, 1, 0.3, 1] }}
             className="mt-6 flex flex-col items-start gap-3 sm:mt-7 sm:flex-row sm:items-center sm:gap-4"
           >
-            <MagneticButton href="#contact" variant="primary">
+            <MagneticButton onClick={() => openCheckout("business")} variant="primary">
               Start Your Transformation
               <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
             </MagneticButton>
-            <MagneticButton href="#portfolio" variant="outline">
+            <MagneticButton href="#pricing" variant="outline">
               <span className="flex h-5.5 w-5.5 items-center justify-center rounded-full bg-white/10 transition-colors group-hover:bg-white/20">
                 <Play className="h-2.5 w-2.5 fill-white text-white translate-x-0.5" />
               </span>
-              View Selected Work
+              Explore Pricing & Plans
             </MagneticButton>
           </motion.div>
 

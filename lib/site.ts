@@ -318,7 +318,9 @@ export const pricing = [
   {
     id: "starter",
     name: "Starter",
-    price: "[$X,XXX]",
+    price: "₹4,999",
+    numericPrice: 4999,
+    usdPrice: "$599",
     cadence: "one-time",
     tagline: "For a striking first impression.",
     highlight: false,
@@ -334,7 +336,9 @@ export const pricing = [
   {
     id: "business",
     name: "Business",
-    price: "[$X,XXX]",
+    price: "₹14,999",
+    numericPrice: 14999,
+    usdPrice: "$1,499",
     cadence: "one-time",
     tagline: "Our most popular package.",
     highlight: true,
@@ -352,7 +356,9 @@ export const pricing = [
   {
     id: "premium",
     name: "Premium",
-    price: "[$XX,XXX]",
+    price: "₹39,999",
+    numericPrice: 39999,
+    usdPrice: "$3,999",
     cadence: "one-time",
     tagline: "The full flagship experience.",
     highlight: false,

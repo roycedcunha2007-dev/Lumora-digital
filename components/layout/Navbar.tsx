@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { AnimatePresence, motion, useScroll, useMotionValueEvent } from "framer-motion";
 import { Menu, X, ArrowUpRight, Activity } from "lucide-react";
 import { navLinks, site } from "@/lib/site";
+import { useCheckout } from "@/components/checkout/CheckoutContext";
 import { cn } from "@/lib/utils";
 
 export default function Navbar() {
@@ -11,6 +12,7 @@ export default function Navbar() {
   const [open, setOpen] = useState(false);
   const [active, setActive] = useState<string>("");
   const { scrollY } = useScroll();
+  const { openCheckout } = useCheckout();
 
   useMotionValueEvent(scrollY, "change", (v) => setScrolled(v > 40));
 
@@ -110,13 +112,14 @@ export default function Navbar() {
 
           {/* CTA + mobile toggle */}
           <div className="flex items-center gap-2">
-            <a
-              href="#contact"
-              className="group hidden items-center gap-1.5 rounded-full bg-white px-5 py-2 text-sm font-semibold text-navy-950 transition-all duration-300 hover:scale-[1.02] hover:bg-neutral-100 shadow-[0_4px_20px_rgba(255,255,255,0.15)] sm:inline-flex"
+            <button
+              type="button"
+              onClick={() => openCheckout("business")}
+              className="group hidden items-center gap-1.5 rounded-full bg-white px-5 py-2 text-sm font-semibold text-navy-950 transition-all duration-300 hover:scale-[1.02] hover:bg-neutral-100 shadow-[0_4px_20px_rgba(255,255,255,0.15)] sm:inline-flex cursor-pointer"
             >
               Start a project
               <ArrowUpRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-            </a>
+            </button>
             <button
               onClick={() => setOpen((v) => !v)}
               className="flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-white/5 text-white transition-colors hover:bg-white/10 lg:hidden cursor-pointer"
@@ -167,14 +170,17 @@ export default function Navbar() {
                   </motion.li>
                 ))}
               </ul>
-              <a
-                href="#contact"
-                onClick={() => setOpen(false)}
-                className="mt-4 flex items-center justify-center gap-2 rounded-full bg-blue-600 px-5 py-3.5 text-sm font-bold text-white shadow-lg shadow-blue-500/30 hover:bg-blue-500"
+              <button
+                type="button"
+                onClick={() => {
+                  setOpen(false);
+                  openCheckout("business");
+                }}
+                className="mt-4 flex w-full items-center justify-center gap-2 rounded-full bg-blue-600 px-5 py-3.5 text-sm font-bold text-white shadow-lg shadow-blue-500/30 hover:bg-blue-500 cursor-pointer"
               >
                 Start a project
                 <ArrowUpRight className="h-4 w-4" />
-              </a>
+              </button>
             </motion.nav>
           </motion.div>
         )}

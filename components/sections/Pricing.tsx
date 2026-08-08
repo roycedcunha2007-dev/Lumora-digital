@@ -2,17 +2,19 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { Check, X, Sparkles, ArrowRight } from "lucide-react";
+import { Check, X, Sparkles, ArrowRight, ShieldCheck } from "lucide-react";
 import SectionHeading from "@/components/ui/SectionHeading";
 import { Stagger, staggerItem } from "@/components/ui/Reveal";
 import Reveal from "@/components/ui/Reveal";
 import MagneticButton from "@/components/ui/MagneticButton";
 import TiltCard from "@/components/ui/TiltCard";
 import { pricing, comparison } from "@/lib/site";
+import { useCheckout } from "@/components/checkout/CheckoutContext";
 import { cn } from "@/lib/utils";
 
 export default function Pricing() {
   const [showTable, setShowTable] = useState(false);
+  const { openCheckout } = useCheckout();
 
   return (
     <section id="pricing" className="relative py-28 sm:py-36">
@@ -20,7 +22,7 @@ export default function Pricing() {
         <SectionHeading
           eyebrow="Pricing"
           title="Simple, honest pricing"
-          description="Transparent packages with no hidden fees. Pick a starting point — we'll tailor the details to your business."
+          description="Transparent packages with no hidden fees. Select any tier to experience our frontend checkout simulation."
         />
 
         <Stagger
@@ -100,18 +102,23 @@ export default function Pricing() {
 
                   <div className="mt-8" style={{ transform: "translateZ(20px)" }}>
                     {plan.highlight ? (
-                      <MagneticButton href="#contact" variant="primary" className="w-full">
+                      <MagneticButton
+                        onClick={() => openCheckout(plan)}
+                        variant="primary"
+                        className="w-full cursor-pointer"
+                      >
                         Get started
                         <ArrowRight className="h-4 w-4" />
                       </MagneticButton>
                     ) : (
-                      <a
-                        href="#contact"
-                        className="flex w-full items-center justify-center gap-2 rounded-full border border-white/15 py-3.5 text-sm font-semibold text-white transition-all duration-300 hover:border-blue-500/40 hover:bg-white/[0.05]"
+                      <button
+                        type="button"
+                        onClick={() => openCheckout(plan)}
+                        className="flex w-full items-center justify-center gap-2 rounded-full border border-white/15 py-3.5 text-sm font-semibold text-white transition-all duration-300 hover:border-blue-500/40 hover:bg-white/[0.05] cursor-pointer"
                       >
                         Choose {plan.name}
                         <ArrowRight className="h-4 w-4" />
-                      </a>
+                      </button>
                     )}
                   </div>
                 </div>
