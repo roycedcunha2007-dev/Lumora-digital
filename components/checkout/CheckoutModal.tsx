@@ -99,12 +99,11 @@ export default function CheckoutModal() {
       setQrCountdown(300);
 
       // Default demo billing email if empty
-      if (!billingEmail) {
-        setBillingEmail("client@example.com");
-      }
+      setBillingEmail((prev) => prev || "client@example.com");
     } else {
       document.body.style.overflow = "auto";
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOpen]);
 
   // QR countdown timer
