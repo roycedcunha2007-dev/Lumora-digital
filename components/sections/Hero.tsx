@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef } from "react";
+import { useRef, useState, useEffect, useCallback } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { ArrowRight, Play, Star, Activity } from "lucide-react";
 import MagneticButton from "@/components/ui/MagneticButton";
@@ -14,15 +14,13 @@ import ContinuousAIScanHeading from "@/components/effects/ContinuousAIScanHeadin
 import HeroStatsBar from "@/components/effects/HeroStatsBar";
 import { useCheckout } from "@/components/checkout/CheckoutContext";
 
-const headlineLines = [
-  "Crafting digital",
-  "experiences that",
-  "illuminate your",
-];
-
 export default function Hero() {
   const { openCheckout } = useCheckout();
   const ref = useRef<HTMLElement>(null);
+  const robotContainerRef = useRef<HTMLDivElement>(null);
+  const splineAppRef = useRef<any>(null);
+  const [isSpeaking, setIsSpeaking] = useState(false);
+
   const { scrollYProgress } = useScroll({
     target: ref,
     offset: ["start start", "end start"],
@@ -30,6 +28,108 @@ export default function Hero() {
 
   const yText = useTransform(scrollYProgress, [0, 1], [0, 60]);
   const opacity = useTransform(scrollYProgress, [0, 0.75], [1, 0]);
+
+  // Cursor Tracking when Idle
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      if (isSpeaking || !splineAppRef.current) return;
+      try {
+        const app = splineAppRef.current;
+        const rect = robotContainerRef.current?.getBoundingClientRect();
+        if (!rect) return;
+
+        // Normalized coordinates relative to the 3D robot container
+        const nx = (e.clientX - (rect.left + rect.width / 2)) / (window.innerWidth / 2);
+        const ny = (e.clientY - (rect.top + rect.height / 2)) / (window.innerHeight / 2);
+
+        // Update Spline variables if defined in scene
+        if (typeof app.setVariable === "function") {
+          app.setVariable("mouseX", nx);
+          app.setVariable("mouseY", -ny);
+        }
+
+        // Direct object tracking if available
+        const headObj =
+          app.findObjectByName?.("Head") ||
+          app.findObjectByName?.("head") ||
+          app.findObjectByName?.("Robot") ||
+          app.findObjectByName?.("robot");
+
+        if (headObj && headObj.rotation && !isSpeaking) {
+          headObj.rotation.y = nx * 0.35;
+          headObj.rotation.x = -ny * 0.25;
+        }
+      } catch (err) {
+        // Fallback gracefully
+      }
+    };
+
+    window.addEventListener("mousemove", handleMouseMove, { passive: true });
+    return () => {
+      window.removeEventListener("mousemove", handleMouseMove);
+    };
+  }, [isSpeaking]);
+
+  // Handle Robot Animation Actions during speech sequence
+  const handleRobotAnimation = useCallback(
+    (action: "turn_to_user" | "blink" | "welcome_gesture" | "present_gesture" | "idle") => {
+      const app = splineAppRef.current;
+      if (!app) return;
+
+      try {
+        if (action === "turn_to_user") {
+          setIsSpeaking(true);
+          const headObj =
+            app.findObjectByName?.("Head") ||
+            app.findObjectByName?.("head") ||
+            app.findObjectByName?.("Robot") ||
+            app.findObjectByName?.("robot");
+          if (headObj && headObj.rotation) {
+            // Smoothly look directly toward visitor
+            headObj.rotation.x = 0;
+            headObj.rotation.y = 0;
+          }
+          if (typeof app.emitEvent === "function") {
+            app.emitEvent("mouseHover", "Head");
+          }
+        } else if (action === "blink") {
+          const eyesObj =
+            app.findObjectByName?.("Eyes") ||
+            app.findObjectByName?.("eyes") ||
+            app.findObjectByName?.("Eye") ||
+            app.findObjectByName?.("eye");
+          if (eyesObj && eyesObj.scale) {
+            eyesObj.scale.y = 0.1;
+            setTimeout(() => {
+              if (eyesObj.scale) eyesObj.scale.y = 1.0;
+            }, 140);
+          }
+        } else if (action === "welcome_gesture") {
+          setIsSpeaking(true);
+          if (typeof app.emitEvent === "function") {
+            app.emitEvent("mouseDown", "Robot");
+          }
+        } else if (action === "present_gesture") {
+          setIsSpeaking(true);
+          const rightArm =
+            app.findObjectByName?.("Right Arm") ||
+            app.findObjectByName?.("Arm_R") ||
+            app.findObjectByName?.("arm_r");
+          if (rightArm && rightArm.rotation) {
+            rightArm.rotation.z = -0.3;
+            setTimeout(() => {
+              if (rightArm.rotation) rightArm.rotation.z = 0;
+            }, 1200);
+          }
+        } else if (action === "idle") {
+          setIsSpeaking(false);
+        }
+      } catch (e) {
+        // Safe animation fallback
+      }
+    },
+    []
+  );
 
   return (
     <section
@@ -124,8 +224,9 @@ export default function Hero() {
           </motion.div>
         </motion.div>
 
-        {/* ---------- Right Column: 3D Robot Frame (Untouched Scene) ---------- */}
+        {/* ---------- Right Column: 3D Robot Frame (Interactive Click-to-Speak 3D Robot) ---------- */}
         <motion.div
+          ref={robotContainerRef}
           initial={{ opacity: 0, scale: 0.96 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ delay: 0.4, duration: 1.0, ease: [0.16, 1, 0.3, 1] }}
@@ -133,11 +234,21 @@ export default function Hero() {
         >
           {/* Breathing aura halo and floating micro light particles */}
           <RobotAtmosphere />
-          <RobotSpeechPresenter className="absolute inset-0" />
 
+          {/* Spline 3D Robot Canvas */}
           <SplineScene
             scene="https://prod.spline.design/kZDDjO5HuC9GJUM2/scene.splinecode"
-            className="h-full w-full [&_canvas]:!h-full [&_canvas]:!w-full"
+            className="h-full w-full [&_canvas]:!h-full [&_canvas]:!w-full cursor-pointer"
+            onLoad={(app) => {
+              splineAppRef.current = app;
+            }}
+          />
+
+          {/* Interactive Click Hitbox, Speech Engine, Subtitles & Audio Visualizer */}
+          <RobotSpeechPresenter
+            className="absolute inset-0"
+            splineApp={splineAppRef.current}
+            onRobotAnimate={handleRobotAnimation}
           />
 
           {/* Vignette base transition */}
@@ -150,4 +261,3 @@ export default function Hero() {
     </section>
   );
 }
-
