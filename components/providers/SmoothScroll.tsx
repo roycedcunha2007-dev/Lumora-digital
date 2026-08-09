@@ -21,6 +21,7 @@ export default function SmoothScroll({ children }: { children: ReactNode }) {
       smoothWheel: true,
       wheelMultiplier: 1,
       touchMultiplier: 1.6,
+      prevent: (node) => !!node.closest?.(".checkout-modal, [data-lenis-prevent]"),
     });
 
     lenis.on("scroll", ScrollTrigger.update);

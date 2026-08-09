@@ -397,6 +397,90 @@ export default function CheckoutModal() {
     };
   }, [isOpen, step, method, checkScroll]);
 
+  useEffect(() => {
+    if (!isOpen) return;
+
+    // Lock page background scroll while checkout is open
+    const originalBodyOverflow = document.body.style.overflow;
+    const originalDocOverflow = document.documentElement.style.overflow;
+    document.body.style.overflow = "hidden";
+    document.documentElement.style.overflow = "hidden";
+
+    // Keyboard Scrolling Navigation (Arrow Up/Down, Page Up/Down, Space, Home, End)
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // If user is actively typing in an input, textarea, or select, preserve all native typing keys
+      const activeEl = document.activeElement as HTMLElement | null;
+      const isTyping =
+        activeEl &&
+        (activeEl.tagName === "INPUT" ||
+          activeEl.tagName === "TEXTAREA" ||
+          activeEl.tagName === "SELECT" ||
+          activeEl.isContentEditable);
+
+      if (isTyping) {
+        if (e.key === "Escape") {
+          closeCheckout();
+        }
+        return;
+      }
+
+      const scrollEl = contentRef.current;
+      if (!scrollEl) return;
+
+      const scrollStep = 90;
+      const pageStep = Math.max(200, scrollEl.clientHeight * 0.82);
+
+      switch (e.key) {
+        case "ArrowDown":
+          e.preventDefault();
+          scrollEl.scrollBy({ top: scrollStep, behavior: "smooth" });
+          break;
+        case "ArrowUp":
+          e.preventDefault();
+          scrollEl.scrollBy({ top: -scrollStep, behavior: "smooth" });
+          break;
+        case "PageDown":
+          e.preventDefault();
+          scrollEl.scrollBy({ top: pageStep, behavior: "smooth" });
+          break;
+        case "PageUp":
+          e.preventDefault();
+          scrollEl.scrollBy({ top: -pageStep, behavior: "smooth" });
+          break;
+        case " ": // Spacebar
+          e.preventDefault();
+          if (e.shiftKey) {
+            scrollEl.scrollBy({ top: -pageStep, behavior: "smooth" });
+          } else {
+            scrollEl.scrollBy({ top: pageStep, behavior: "smooth" });
+          }
+          break;
+        case "Home":
+          e.preventDefault();
+          scrollEl.scrollTo({ top: 0, behavior: "smooth" });
+          break;
+        case "End":
+          e.preventDefault();
+          scrollEl.scrollTo({ top: scrollEl.scrollHeight, behavior: "smooth" });
+          break;
+        case "Escape":
+          e.preventDefault();
+          closeCheckout();
+          break;
+        default:
+          break;
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      document.body.style.overflow = originalBodyOverflow;
+      document.documentElement.style.overflow = originalDocOverflow;
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [isOpen, closeCheckout]);
+
   // Magnetic Button Hover Physics
   const handleButtonMove = (e: MouseEvent<HTMLButtonElement>) => {
     if (!isPayButtonEnabled) return;
@@ -412,7 +496,10 @@ export default function CheckoutModal() {
   return (
     <AnimatePresence>
       {isOpen && (
-        <div className="checkout-modal fixed inset-0 z-[99999] flex items-center justify-center p-3 sm:p-4 md:p-6 overflow-hidden pointer-events-auto box-border">
+        <div
+          data-lenis-prevent="true"
+          className="checkout-modal fixed inset-0 z-[99999] flex items-center justify-center p-3 sm:p-4 md:p-6 overflow-hidden pointer-events-auto box-border"
+        >
           {/* Subtle Backdrop Blur Overlay */}
           <motion.div
             initial={{ opacity: 0 }}
@@ -425,6 +512,7 @@ export default function CheckoutModal() {
 
           {/* Liquid Glass Modal Container */}
           <motion.div
+            data-lenis-prevent="true"
             initial={{ opacity: 0, scale: 0.96, y: 16 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.96, y: 16 }}
@@ -553,8 +641,14 @@ export default function CheckoutModal() {
             {/* ========================================================================= */}
             <div
               ref={contentRef}
+              data-lenis-prevent="true"
               onScroll={checkScroll}
-              className="relative z-10 flex-1 min-h-0 overflow-y-auto overflow-x-hidden w-full checkout-scroll"
+              tabIndex={0}
+              style={{
+                overscrollBehavior: "contain",
+                WebkitOverflowScrolling: "touch",
+              }}
+              className="relative z-10 flex-1 min-h-0 overflow-y-auto overflow-x-hidden w-full checkout-scroll outline-none"
             >
               {/* ========================================================================= */}
               {/* MAIN TWO-COLUMN CHECKOUT LAYOUT (Desktop: Left Form / Right Receipt)        */}
