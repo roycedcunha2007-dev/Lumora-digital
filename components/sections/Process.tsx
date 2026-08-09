@@ -29,20 +29,14 @@ export default function Process() {
           <div className="absolute left-1/2 top-0 hidden h-full w-[2px] -translate-x-1/2 bg-white/10 lg:block" />
           <motion.div
             style={{ height: progress }}
-            className="absolute left-1/2 top-0 hidden w-[2px] -translate-x-1/2 bg-gradient-to-b from-blue-400 via-blue-500 to-blue-400 shadow-[0_0_15px_rgba(59,130,246,0.4)] lg:block"
-          />
-          {/* Traveling Light Pulse Beam */}
-          <motion.div
-            animate={{ y: ["0%", "800%"] }}
-            transition={{ repeat: Infinity, duration: 4, ease: "linear" }}
-            className="absolute left-1/2 top-0 hidden h-16 w-[3px] -translate-x-1/2 bg-gradient-to-b from-transparent via-blue-300 to-transparent shadow-[0_0_20px_rgba(59,130,246,0.5)] lg:block"
+            className="absolute left-1/2 top-0 hidden w-[2px] -translate-x-1/2 bg-gradient-to-b from-[#8a9a86] via-[#c5a880] to-[#8a9a86] shadow-[0_0_15px_rgba(138,154,134,0.3)] lg:block"
           />
 
           {/* left rail (mobile) */}
           <div className="absolute left-[19px] top-0 h-full w-[2px] bg-white/10 lg:hidden" />
           <motion.div
             style={{ height: progress }}
-            className="absolute left-[19px] top-0 w-[2px] bg-gradient-to-b from-blue-400 via-blue-500 to-blue-400 shadow-[0_0_15px_rgba(59,130,246,0.4)] lg:hidden"
+            className="absolute left-[19px] top-0 w-[2px] bg-gradient-to-b from-[#8a9a86] via-[#c5a880] to-[#8a9a86] shadow-[0_0_15px_rgba(138,154,134,0.3)] lg:hidden"
           />
 
           <div className="flex flex-col gap-10 lg:gap-4">
@@ -54,7 +48,7 @@ export default function Process() {
                   key={item.step}
                   className="relative grid grid-cols-[auto_1fr] items-center gap-6 pl-0 lg:grid-cols-2 lg:gap-16"
                 >
-                  {/* Liquid Glass Sphere Node */}
+                  {/* Sphere Node */}
                   <motion.div
                     initial={{ scale: 0 }}
                     whileInView={{ scale: 1 }}
@@ -62,9 +56,8 @@ export default function Process() {
                     transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
                     className="absolute left-[7px] z-10 flex h-7 w-7 items-center justify-center lg:left-1/2 lg:-translate-x-1/2"
                   >
-                    <span className="absolute h-7 w-7 animate-ping rounded-full bg-blue-500/20" />
-                    <span className="relative flex h-5 w-5 items-center justify-center rounded-full border border-white/30 bg-black/80 shadow-[0_0_15px_rgba(59,130,246,0.4)] backdrop-blur-md">
-                      <span className="h-2.5 w-2.5 rounded-full bg-gradient-to-tr from-blue-500 to-blue-300 shadow-[0_0_8px_rgba(59,130,246,0.8)]" />
+                    <span className="relative flex h-5 w-5 items-center justify-center rounded-full border border-white/30 bg-black/80 shadow-[0_0_10px_rgba(138,154,134,0.3)] backdrop-blur-md">
+                      <span className="h-2.5 w-2.5 rounded-full bg-gradient-to-tr from-[#8a9a86] to-[#c5a880]" />
                     </span>
                   </motion.div>
 
@@ -81,27 +74,27 @@ export default function Process() {
                     }`}
                   >
                     <TiltCard intensity={1.8} className="group w-full">
-                      <div className="relative inline-block w-full overflow-hidden rounded-[2rem] border border-white/[0.08] bg-transparent p-6 transition-colors duration-500 group-hover:border-blue-500/30">
+                      <div className="relative inline-block w-full overflow-hidden rounded-[2rem] border border-white/[0.08] bg-transparent p-6 transition-colors duration-500 group-hover:border-[#8a9a86]/35">
                         <div
                           className={`flex items-center gap-4 ${
                             isLeft ? "lg:flex-row-reverse" : ""
                           }`}
                           style={{ transform: "translateZ(30px)" }}
                         >
-                          <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border border-white/10 bg-white/[0.03] text-blue-400 ring-1 ring-white/5 transition-all duration-300 group-hover:border-blue-500/30 group-hover:bg-blue-500/10">
+                          <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border border-white/10 bg-white/[0.03] text-[#9ab096] ring-1 ring-white/5 transition-all duration-300 group-hover:border-[#8a9a86]/35 group-hover:bg-[#8a9a86]/10">
                             <Icon className="h-5 w-5" />
                           </span>
                           <div className={isLeft ? "lg:text-right" : ""}>
-                            <span className="font-mono text-xs font-semibold tracking-widest text-white/40">
+                            <span className="font-mono text-xs font-semibold tracking-widest text-[#a3a19b]/60">
                               STEP {item.step}
                             </span>
-                            <h3 className="font-display text-xl font-semibold text-white">
+                            <h3 className="font-display text-xl font-semibold text-[#f4f1ea]">
                               {item.title}
                             </h3>
                           </div>
                         </div>
                         <p
-                          className={`mt-3 text-sm leading-relaxed text-white/60 ${
+                          className={`mt-3 text-sm leading-relaxed text-[#a3a19b] ${
                             isLeft ? "lg:text-right" : ""
                           }`}
                           style={{ transform: "translateZ(20px)" }}

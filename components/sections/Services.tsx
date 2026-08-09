@@ -49,19 +49,14 @@ export default function Services() {
                     className={cn(
                       "relative h-full overflow-hidden rounded-[2rem] border p-7 transition-all duration-500 cursor-pointer",
                       isOpen
-                        ? "border-blue-500/30 bg-[#0c0d14]/90 shadow-[0_20px_50px_rgba(0,0,0,0.7)]"
-                        : "border-white/[0.08] bg-transparent hover:border-blue-500/25 hover:bg-white/[0.02]"
+                        ? "border-[#8a9a86]/35 bg-[#12141a]/95 shadow-[0_20px_50px_rgba(0,0,0,0.7)]"
+                        : "border-white/[0.08] bg-transparent hover:border-white/20 hover:bg-white/[0.02]"
                     )}
                     onClick={() => setExpanded(isOpen ? null : service.id)}
                     data-cursor={isOpen ? "Close" : "Expand"}
                   >
-                    {/* Subtle Electric Blue Corner Glow */}
-                    <div
-                      className="pointer-events-none absolute -right-12 -top-12 h-40 w-40 rounded-full bg-blue-500/10 blur-3xl opacity-0 transition-opacity duration-500 group-hover:opacity-100"
-                    />
-
                     <div className="flex items-start justify-between" style={{ transform: "translateZ(30px)" }}>
-                      <span className="flex h-12 w-12 items-center justify-center rounded-2xl border border-white/10 bg-white/[0.03] p-3 text-white transition-all duration-300 group-hover:border-blue-500/30 group-hover:bg-blue-500/10 group-hover:text-blue-400 group-hover:scale-105">
+                      <span className="flex h-12 w-12 items-center justify-center rounded-2xl border border-white/10 bg-white/[0.03] p-3 text-[#f4f1ea] transition-all duration-300 group-hover:border-[#8a9a86]/35 group-hover:bg-[#8a9a86]/10 group-hover:text-[#9ab096] group-hover:scale-105">
                         <Icon className="h-5 w-5" />
                       </span>
                       <motion.span
@@ -74,13 +69,13 @@ export default function Services() {
                     </div>
 
                     <h3
-                      className="mt-5 font-display text-xl font-semibold text-white"
+                      className="mt-5 font-display text-xl font-semibold text-[#f4f1ea]"
                       style={{ transform: "translateZ(20px)" }}
                     >
                       {service.title}
                     </h3>
                     <p
-                      className="mt-2 text-sm leading-relaxed text-white/60"
+                      className="mt-2 text-sm leading-relaxed text-[#a3a19b]"
                       style={{ transform: "translateZ(10px)" }}
                     >
                       {service.blurb}
@@ -100,10 +95,10 @@ export default function Services() {
                             {service.features.map((f) => (
                               <li
                                 key={f}
-                                className="flex items-center gap-2 text-xs text-white/70"
+                                className="flex items-center gap-2 text-xs text-[#d1cfc7]"
                               >
-                                <span className="flex h-4 w-4 items-center justify-center rounded-full bg-blue-500/15">
-                                  <Check className="h-2.5 w-2.5 text-blue-400" />
+                                <span className="flex h-4 w-4 items-center justify-center rounded-full bg-[#8a9a86]/15">
+                                  <Check className="h-2.5 w-2.5 text-[#9ab096]" />
                                 </span>
                                 {f}
                               </li>
@@ -112,7 +107,7 @@ export default function Services() {
                           <a
                             href="#contact"
                             onClick={(e) => e.stopPropagation()}
-                            className="mt-5 inline-flex items-center gap-1.5 text-sm font-medium text-blue-400 transition-colors hover:text-blue-300"
+                            className="mt-5 inline-flex items-center gap-1.5 text-sm font-medium text-[#9ab096] transition-colors hover:text-[#b8cbb5]"
                           >
                             Learn more
                             <ArrowUpRight className="h-3.5 w-3.5" />

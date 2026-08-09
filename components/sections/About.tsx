@@ -47,22 +47,21 @@ export default function About() {
           ].map((card, i) => (
             <Reveal key={card.title} direction="up" delay={i * 0.12}>
               <TiltCard intensity={1.8} className="group h-full">
-                <div className="relative h-full overflow-hidden rounded-[2rem] border border-white/[0.08] bg-transparent p-7 transition-all duration-500 group-hover:border-blue-500/30">
-                  <div className="absolute -right-10 -top-10 h-32 w-32 rounded-full bg-blue-500/10 blur-2xl opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
+                <div className="relative h-full overflow-hidden rounded-[2rem] border border-white/[0.08] bg-transparent p-7 transition-all duration-500 group-hover:border-[#8a9a86]/35">
                   <span
-                    className="inline-flex h-12 w-12 items-center justify-center rounded-2xl border border-white/10 bg-white/[0.03] text-blue-400 ring-1 ring-white/5 transition-all duration-300 group-hover:border-blue-500/30 group-hover:bg-blue-500/10 group-hover:scale-105"
+                    className="inline-flex h-12 w-12 items-center justify-center rounded-2xl border border-white/10 bg-white/[0.03] text-[#9ab096] ring-1 ring-white/5 transition-all duration-300 group-hover:border-[#8a9a86]/35 group-hover:bg-[#8a9a86]/10 group-hover:scale-105"
                     style={{ transform: "translateZ(30px)" }}
                   >
                     <card.icon className="h-5 w-5" />
                   </span>
                   <h3
-                    className="mt-5 font-display text-xl font-semibold text-white"
+                    className="mt-5 font-display text-xl font-semibold text-[#f4f1ea]"
                     style={{ transform: "translateZ(20px)" }}
                   >
                     {card.title}
                   </h3>
                   <p
-                    className="mt-2.5 text-sm leading-relaxed text-white/60"
+                    className="mt-2.5 text-sm leading-relaxed text-[#a3a19b]"
                     style={{ transform: "translateZ(10px)" }}
                   >
                     {card.body}
@@ -91,7 +90,7 @@ export default function About() {
             {/* track */}
             <div className="absolute left-[7px] top-2 h-full w-px bg-white/10" />
             <motion.div
-              className="absolute left-[7px] top-2 w-px bg-gradient-to-b from-blue-400 via-blue-500 to-blue-400 shadow-[0_0_10px_rgba(59,130,246,0.5)]"
+              className="absolute left-[7px] top-2 w-px bg-gradient-to-b from-[#8a9a86] via-[#c5a880] to-[#8a9a86] shadow-[0_0_10px_rgba(138,154,134,0.3)]"
               style={{ height: lineHeight }}
             />
 
@@ -103,10 +102,9 @@ export default function About() {
                   className="relative"
                 >
                   <span className="absolute -left-8 top-1.5 flex h-4 w-4 items-center justify-center">
-                    <span className="absolute h-4 w-4 animate-ping rounded-full bg-blue-500/20" />
-                    <span className="relative h-2.5 w-2.5 rounded-full border border-white/40 bg-blue-400 shadow-[0_0_6px_rgba(59,130,246,0.8)]" />
+                    <span className="relative h-2.5 w-2.5 rounded-full border border-white/40 bg-[#8a9a86]" />
                   </span>
-                  <span className="text-xs font-mono font-semibold tracking-wider text-blue-400">
+                  <span className="text-xs font-mono font-semibold tracking-wider text-[#9ab096]">
                     {item.year}
                   </span>
                   <h4 className="mt-1 font-display text-xl font-semibold text-white">

@@ -259,7 +259,7 @@ export const projects: Project[] = [
     tags: ["UI/UX", "Framer Motion"],
     year: "[2024]",
     blurb: "[Project Description] — a bold rebrand and site for a boutique studio.",
-    gradient: "from-blue-600/30 via-blue-500/15 to-transparent",
+    gradient: "from-[#8a9a86]/20 via-[#c5a880]/10 to-transparent",
     span: "tall",
   },
   {
@@ -269,7 +269,7 @@ export const projects: Project[] = [
     tags: ["Shopify", "CRO"],
     year: "[2024]",
     blurb: "[Project Description] — a storefront redesign that lifted conversions.",
-    gradient: "from-blue-500/25 via-white/[0.04] to-transparent",
+    gradient: "from-[#c5a880]/20 via-white/[0.03] to-transparent",
     span: "wide",
   },
   {
@@ -279,7 +279,7 @@ export const projects: Project[] = [
     tags: ["Next.js", "Headless"],
     year: "[2023]",
     blurb: "[Project Description] — a lightning-fast marketing platform.",
-    gradient: "from-blue-600/25 via-blue-400/15 to-transparent",
+    gradient: "from-[#8a9a86]/20 via-white/[0.03] to-transparent",
     span: "normal",
   },
   {
@@ -289,7 +289,7 @@ export const projects: Project[] = [
     tags: ["Identity", "Web"],
     year: "[2023]",
     blurb: "[Project Description] — identity and site for a local restaurant group.",
-    gradient: "from-blue-500/30 via-white/[0.03] to-transparent",
+    gradient: "from-[#c5a880]/20 via-[#8a9a86]/10 to-transparent",
     span: "normal",
   },
   {
@@ -299,7 +299,7 @@ export const projects: Project[] = [
     tags: ["SaaS", "Design System"],
     year: "[2024]",
     blurb: "[Project Description] — a scalable design system for a growing SaaS.",
-    gradient: "from-blue-600/30 via-blue-500/20 to-transparent",
+    gradient: "from-[#8a9a86]/25 via-white/[0.03] to-transparent",
     span: "wide",
   },
   {
@@ -309,7 +309,7 @@ export const projects: Project[] = [
     tags: ["Web App", "Realtime"],
     year: "[2022]",
     blurb: "[Project Description] — a realtime dashboard with delightful motion.",
-    gradient: "from-blue-500/25 via-blue-600/15 to-transparent",
+    gradient: "from-[#c5a880]/20 via-[#8a9a86]/10 to-transparent",
     span: "tall",
   },
 ];

@@ -32,13 +32,12 @@ export default function Team() {
           {team.map((member) => (
             <motion.div key={member.name} variants={staggerItem}>
               <TiltCard intensity={1.8} className="group h-full">
-                <div className="relative h-full overflow-hidden rounded-[2rem] border border-white/[0.08] bg-transparent p-2.5 transition-all duration-500 group-hover:border-blue-500/30">
+                <div className="relative h-full overflow-hidden rounded-[2rem] border border-white/[0.08] bg-transparent p-2.5 transition-all duration-500 group-hover:border-[#8a9a86]/35">
                   {/* portrait container */}
-                  <div className="relative aspect-[4/5] overflow-hidden rounded-[1.6rem] border border-white/10 bg-gradient-to-br from-[#131520] via-[#0b0c14] to-[#06070a]">
-                    <div className="absolute inset-0 bg-dots opacity-30 mix-blend-overlay" />
-                    <div className="absolute -top-10 -right-10 h-32 w-32 rounded-full bg-blue-500/10 blur-2xl" />
+                  <div className="relative aspect-[4/5] overflow-hidden rounded-[1.6rem] border border-white/10 bg-gradient-to-br from-[#16181f] via-[#101217] to-[#090a0d]">
+                    <div className="absolute inset-0 bg-dots opacity-20 mix-blend-overlay" />
                     <div className="absolute inset-0 flex items-center justify-center">
-                      <span className="font-display text-6xl font-bold text-white/80">
+                      <span className="font-display text-6xl font-bold text-white/70">
                         {member.initials}
                       </span>
                     </div>
@@ -56,7 +55,7 @@ export default function Team() {
                             key={s}
                             href="#"
                             aria-label={s}
-                            className="flex h-9 w-9 items-center justify-center rounded-full border border-white/20 bg-black/60 text-white backdrop-blur-md transition-all duration-300 hover:border-blue-400/50 hover:bg-blue-600 hover:text-white"
+                            className="flex h-9 w-9 items-center justify-center rounded-full border border-white/20 bg-black/60 text-white backdrop-blur-md transition-all duration-300 hover:border-[#8a9a86]/50 hover:bg-[#8a9a86] hover:text-[#0b0c0e]"
                           >
                             <Icon className="h-4 w-4" />
                           </a>
@@ -66,11 +65,11 @@ export default function Team() {
                   </div>
 
                   <div className="px-4 py-5">
-                    <h3 className="font-display text-lg font-semibold text-white">
+                    <h3 className="font-display text-lg font-semibold text-[#f4f1ea]">
                       {member.name}
                     </h3>
-                    <p className="text-sm font-medium text-blue-400">{member.role}</p>
-                    <p className="mt-2 text-sm leading-relaxed text-white/55">
+                    <p className="text-sm font-medium text-[#9ab096]">{member.role}</p>
+                    <p className="mt-2 text-sm leading-relaxed text-[#a3a19b]">
                       {member.bio}
                     </p>
                   </div>

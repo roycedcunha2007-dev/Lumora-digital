@@ -26,7 +26,7 @@ const P_SITES = 0.44; // projects change only after this
 const N = projects.length;
 const STEP = 100 / N;
 
-const BLUE = "#6182ff";
+const ACCENT = "#8a9a86";
 
 const macEase = cubicBezier(0.65, 0, 0.35, 1);
 const hingeEase = cubicBezier(0.34, 0, 0.1, 1);
@@ -265,11 +265,11 @@ export default function MacBookReveal() {
       <div className="sticky top-0 h-[100svh] overflow-hidden bg-[#050507]">
         {/* ================= ambient — deliberately restrained ================= */}
         <div className="pointer-events-none absolute inset-0">
-          {/* soft blue pool behind the machine */}
+          {/* soft ambient pool behind the machine */}
           <div
             className="absolute left-1/2 top-[56%] h-[52vh] w-[62vw] -translate-x-1/2 -translate-y-1/2 rounded-full blur-[90px]"
             style={{
-              background: `radial-gradient(ellipse at center, ${BLUE}1c, ${BLUE}08 45%, transparent 72%)`,
+              background: `radial-gradient(ellipse at center, ${ACCENT}1c, ${ACCENT}08 45%, transparent 72%)`,
             }}
           />
           {/* very faint grid */}
@@ -302,8 +302,8 @@ export default function MacBookReveal() {
                 <span
                   className="h-[5px] w-[5px] rounded-full transition-all duration-500"
                   style={{
-                    background: on ? BLUE : "transparent",
-                    boxShadow: on ? `0 0 8px ${BLUE}` : "none",
+                    background: on ? ACCENT : "transparent",
+                    boxShadow: on ? `0 0 8px ${ACCENT}` : "none",
                   }}
                 />
                 <span
@@ -327,7 +327,7 @@ export default function MacBookReveal() {
           <div className="flex shrink-0 flex-col items-center text-center">
             <span
               className="font-mono text-[11px] font-medium uppercase tracking-[0.42em]"
-              style={{ color: BLUE }}
+              style={{ color: ACCENT }}
             >
               Our Work
             </span>
@@ -432,7 +432,7 @@ export default function MacBookReveal() {
                     style={{
                       opacity: bloom,
                       background:
-                        "radial-gradient(ellipse at center, rgba(175,200,255,0.26), transparent 66%)",
+                        "radial-gradient(ellipse at center, rgba(138,154,134,0.18), transparent 66%)",
                     }}
                     className="pointer-events-none absolute -inset-[7%] -z-10 rounded-[1.8rem] blur-[44px]"
                   />
@@ -565,7 +565,7 @@ export default function MacBookReveal() {
               className="pointer-events-none absolute inset-x-[8%] top-full h-[18%] opacity-[0.13]"
               style={{
                 background:
-                  "linear-gradient(180deg, rgba(180,196,232,0.32), transparent 56%)",
+                  "linear-gradient(180deg, rgba(200,200,200,0.15), transparent 56%)",
                 maskImage: "linear-gradient(180deg, #000, transparent 68%)",
                 WebkitMaskImage: "linear-gradient(180deg, #000, transparent 68%)",
                 filter: "blur(9px)",
@@ -587,8 +587,8 @@ export default function MacBookReveal() {
                       style={{
                         width: on ? 7 : 5,
                         height: on ? 7 : 5,
-                        background: on ? BLUE : "rgba(255,255,255,0.18)",
-                        boxShadow: on ? `0 0 9px ${BLUE}` : "none",
+                        background: on ? ACCENT : "rgba(255,255,255,0.18)",
+                        boxShadow: on ? "0 0 9px rgba(138,154,134,0.6)" : "none",
                       }}
                     />
                   );
