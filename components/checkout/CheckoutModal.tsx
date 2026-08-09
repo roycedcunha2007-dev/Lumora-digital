@@ -388,7 +388,7 @@ export default function CheckoutModal() {
   return (
     <AnimatePresence>
       {isOpen && (
-        <div className="checkout-modal fixed inset-0 z-[99999] flex items-center justify-center p-3 sm:p-5 md:p-8 overflow-y-auto pointer-events-auto">
+        <div className="checkout-modal fixed inset-0 z-[99999] flex items-center justify-center p-2 sm:p-4 md:p-6 lg:p-8 overflow-y-auto pointer-events-auto">
           {/* Subtle Backdrop Blur Overlay */}
           <motion.div
             initial={{ opacity: 0 }}
@@ -405,36 +405,40 @@ export default function CheckoutModal() {
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.96, y: 16 }}
             transition={{ type: "spring", stiffness: 320, damping: 28 }}
-            className="relative my-auto w-full max-w-5xl overflow-hidden rounded-[2.5rem] border border-white/[0.12] bg-[#07080c]/95 shadow-[0_30px_100px_rgba(0,0,0,0.9)] backdrop-blur-2xl z-20 pointer-events-auto"
+            style={{
+              width: "min(100%, 1100px)",
+              maxHeight: "min(calc(100dvh - 24px), 920px)",
+            }}
+            className="relative my-auto w-full max-w-[1100px] max-h-[calc(100dvh-24px)] sm:max-h-[calc(100dvh-32px)] flex flex-col overflow-hidden rounded-2xl sm:rounded-[2.5rem] border border-white/[0.12] bg-[#07080c]/95 shadow-[0_30px_100px_rgba(0,0,0,0.9)] backdrop-blur-2xl z-20 pointer-events-auto"
           >
             {/* Subtle Liquid Glass Ambient Glow */}
-            <div className="pointer-events-none absolute -top-32 left-1/2 h-72 w-[32rem] -translate-x-1/2 rounded-full bg-blue-500/12 blur-[100px]" />
+            <div className="pointer-events-none absolute -top-32 left-1/2 h-72 w-full max-w-[32rem] -translate-x-1/2 rounded-full bg-blue-500/12 blur-[100px]" />
             <div className="pointer-events-none absolute inset-0 rounded-[inherit] shadow-[inset_0_1px_0_0_rgba(255,255,255,0.22),inset_0_-1px_0_0_rgba(255,255,255,0.02)]" />
 
             {/* ========================================================================= */}
-            {/* PROGRESS INDICATOR HEADER                                                 */}
+            {/* PROGRESS INDICATOR HEADER (Sticky at top, close button always accessible)   */}
             {/* ========================================================================= */}
-            <div className="relative z-10 flex flex-wrap items-center justify-between gap-3 border-b border-white/[0.08] px-6 py-4 sm:px-8">
-              <div className="flex items-center gap-3">
+            <div className="relative z-20 flex shrink-0 items-center justify-between gap-2 sm:gap-3 border-b border-white/[0.08] bg-[#07080c]/90 px-4 py-3 sm:px-6 sm:py-4 md:px-8 backdrop-blur-md">
+              <div className="flex items-center gap-2 sm:gap-3 min-w-0">
                 {step === "payment" && (
                   <button
                     type="button"
                     onClick={() => setStep("review")}
-                    className="flex items-center gap-1.5 rounded-full border border-white/10 bg-white/[0.03] px-3 py-1.5 text-xs font-medium text-white/70 backdrop-blur-md transition-all hover:border-white/20 hover:text-white cursor-pointer pointer-events-auto"
+                    className="flex shrink-0 items-center gap-1 sm:gap-1.5 rounded-full border border-white/10 bg-white/[0.03] px-2.5 py-1 sm:px-3 sm:py-1.5 text-[11px] sm:text-xs font-medium text-white/70 backdrop-blur-md transition-all hover:border-white/20 hover:text-white cursor-pointer pointer-events-auto"
                   >
-                    <ArrowLeft className="h-3.5 w-3.5" />
+                    <ArrowLeft className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
                     <span>01 Details</span>
                   </button>
                 )}
 
-                <span className="inline-flex items-center gap-1.5 rounded-full border border-blue-400/30 bg-blue-500/10 px-3 py-1 text-[11px] font-semibold text-blue-300 shadow-[0_0_15px_rgba(59,130,246,0.15)]">
+                <span className="inline-flex shrink-0 items-center gap-1.5 rounded-full border border-blue-400/30 bg-blue-500/10 px-2.5 py-1 sm:px-3 text-[10px] sm:text-[11px] font-semibold text-blue-300 shadow-[0_0_15px_rgba(59,130,246,0.15)]">
                   <span className="h-1.5 w-1.5 rounded-full bg-blue-400 animate-pulse" />
                   DEMO CHECKOUT
                 </span>
               </div>
 
               {/* 01 Details → 02 Payment → 03 Confirmation */}
-              <div className="hidden sm:flex items-center gap-3 text-xs font-mono">
+              <div className="hidden md:flex items-center gap-3 text-xs font-mono">
                 <div className="flex items-center gap-1.5">
                   <span
                     className={cn(
@@ -510,7 +514,7 @@ export default function CheckoutModal() {
               <button
                 type="button"
                 onClick={closeCheckout}
-                className="flex h-9 w-9 items-center justify-center rounded-full border border-white/10 bg-white/[0.04] text-white/60 transition-all duration-300 hover:border-white/20 hover:bg-white/10 hover:text-white cursor-pointer pointer-events-auto"
+                className="flex h-8 w-8 sm:h-9 sm:w-9 shrink-0 items-center justify-center rounded-full border border-white/10 bg-white/[0.04] text-white/60 transition-all duration-300 hover:border-white/20 hover:bg-white/10 hover:text-white cursor-pointer pointer-events-auto"
                 aria-label="Close checkout"
               >
                 <X className="h-4 w-4" />
@@ -518,1058 +522,1064 @@ export default function CheckoutModal() {
             </div>
 
             {/* ========================================================================= */}
-            {/* MAIN TWO-COLUMN CHECKOUT LAYOUT (Desktop: Left Form / Right Receipt)        */}
+            {/* SCROLLABLE MODAL CONTENT BODY                                            */}
             {/* ========================================================================= */}
-            {(step === "review" || step === "payment") && (
-              <div className="grid gap-0 lg:grid-cols-[1.1fr_0.9fr]">
-                {/* ----------------------------------------------------------------------- */}
-                {/* LEFT COLUMN: PAYMENT FORM & 3D VIRTUAL CARD PREVIEW                    */}
-                {/* ----------------------------------------------------------------------- */}
-                <div className="p-6 sm:p-8 lg:border-r border-white/[0.08]">
-                  {/* STEP 1: CUSTOMER DETAILS FORM */}
-                  {step === "review" && (
-                    <div>
-                      <div className="flex items-center justify-between">
-                        <span className="text-xs font-mono uppercase tracking-widest text-white/45">
-                          Customer Information
-                        </span>
-                        <span className="text-[11px] text-blue-400">Step 01 of 02</span>
-                      </div>
+            <div className="relative z-10 flex-1 overflow-y-auto overflow-x-hidden">
+              {/* ========================================================================= */}
+              {/* MAIN TWO-COLUMN CHECKOUT LAYOUT (Desktop: Left Form / Right Receipt)        */}
+              {/* ========================================================================= */}
+              {(step === "review" || step === "payment") && (
+                <div className="grid gap-0 lg:grid-cols-[1.15fr_0.85fr] w-full min-w-0">
+                  {/* ----------------------------------------------------------------------- */}
+                  {/* LEFT COLUMN: PAYMENT FORM & 3D VIRTUAL CARD PREVIEW                    */}
+                  {/* ----------------------------------------------------------------------- */}
+                  <div className="p-4 sm:p-6 md:p-8 lg:border-r border-white/[0.08] w-full min-w-0">
+                    {/* STEP 1: CUSTOMER DETAILS FORM */}
+                    {step === "review" && (
+                      <div className="w-full min-w-0">
+                        <div className="flex items-center justify-between">
+                          <span className="text-xs font-mono uppercase tracking-widest text-white/45">
+                            Customer Information
+                          </span>
+                          <span className="text-[11px] text-blue-400 font-medium">Step 01 of 02</span>
+                        </div>
 
-                      <form onSubmit={handleProceedToPayment} className="mt-6 space-y-4">
-                        {/* Full Name */}
-                        <div className="space-y-1">
-                          <div className="flex justify-between items-center">
-                            <label className="text-xs font-medium text-white/70">
-                              Full Name <span className="text-blue-400">*</span>
-                            </label>
-                            {touched.fullName && (
-                              customerErrors.fullName ? (
-                                <span className="text-[11px] text-red-400 flex items-center gap-1">
-                                  <AlertCircle className="h-3 w-3" /> {customerErrors.fullName}
-                                </span>
-                              ) : (
-                                <span className="text-[11px] text-emerald-400 flex items-center gap-1">
-                                  <CheckCircle2 className="h-3 w-3" /> Valid
-                                </span>
-                              )
-                            )}
-                          </div>
-                          <div className="relative">
-                            <input
-                              type="text"
-                              autoComplete="name"
-                              inputMode="text"
-                              value={customer.fullName}
-                              onChange={(e) => handleFullNameInput(e.target.value)}
-                              placeholder="Alex Rivera"
-                              className={cn(
-                                "checkout-input w-full rounded-xl border bg-white/[0.025] px-4 py-3 text-sm text-white placeholder-white/25 outline-none transition-all duration-200 cursor-text select-text pointer-events-auto",
-                                touched.fullName && customerErrors.fullName
-                                  ? "border-red-500/80 bg-red-500/5 ring-1 ring-red-500/30"
-                                  : touched.fullName && !customerErrors.fullName
-                                  ? "border-emerald-500/60 focus:border-emerald-400"
-                                  : "border-white/[0.08] focus:border-blue-400 focus:bg-white/[0.04] focus:ring-2 focus:ring-blue-500/20"
+                        <form onSubmit={handleProceedToPayment} className="mt-5 sm:mt-6 space-y-4 w-full min-w-0">
+                          {/* Full Name */}
+                          <div className="space-y-1.5 w-full min-w-0">
+                            <div className="flex flex-wrap justify-between items-center gap-1">
+                              <label className="text-xs font-medium text-white/70">
+                                Full Name <span className="text-blue-400">*</span>
+                              </label>
+                              {touched.fullName && (
+                                customerErrors.fullName ? (
+                                  <span className="text-[11px] text-red-400 flex items-center gap-1 break-words">
+                                    <AlertCircle className="h-3 w-3 shrink-0" /> <span>{customerErrors.fullName}</span>
+                                  </span>
+                                ) : (
+                                  <span className="text-[11px] text-emerald-400 flex items-center gap-1 shrink-0">
+                                    <CheckCircle2 className="h-3 w-3" /> Valid
+                                  </span>
+                                )
                               )}
-                            />
-                          </div>
-                        </div>
-
-                        {/* Email Address */}
-                        <div className="space-y-1">
-                          <div className="flex justify-between items-center">
-                            <label className="text-xs font-medium text-white/70">
-                              Email Address <span className="text-blue-400">*</span>
-                            </label>
-                            {touched.email && (
-                              customerErrors.email ? (
-                                <span className="text-[11px] text-red-400 flex items-center gap-1">
-                                  <AlertCircle className="h-3 w-3" /> {customerErrors.email}
-                                </span>
-                              ) : (
-                                <span className="text-[11px] text-emerald-400 flex items-center gap-1">
-                                  <CheckCircle2 className="h-3 w-3" /> Valid format
-                                </span>
-                              )
-                            )}
-                          </div>
-                          <div className="relative">
-                            <input
-                              type="email"
-                              autoComplete="email"
-                              inputMode="email"
-                              value={customer.email}
-                              onChange={(e) => handleEmailInput(e.target.value)}
-                              placeholder="customer@gmail.com"
-                              className={cn(
-                                "checkout-input w-full rounded-xl border bg-white/[0.025] px-4 py-3 text-sm text-white placeholder-white/25 outline-none transition-all duration-200 cursor-text select-text pointer-events-auto",
-                                touched.email && customerErrors.email
-                                  ? "border-red-500/80 bg-red-500/5 ring-1 ring-red-500/30"
-                                  : touched.email && !customerErrors.email
-                                  ? "border-emerald-500/60 focus:border-emerald-400"
-                                  : "border-white/[0.08] focus:border-blue-400 focus:bg-white/[0.04] focus:ring-2 focus:ring-blue-500/20"
-                              )}
-                            />
-                          </div>
-                        </div>
-
-                        {/* Phone Number Field with Country Code */}
-                        <div className="space-y-1">
-                          <div className="flex justify-between items-center">
-                            <label className="text-xs font-medium text-white/70">
-                              Phone Number <span className="text-blue-400">*</span>
-                            </label>
-                            {touched.phone && (
-                              customerErrors.phone ? (
-                                <span className="text-[11px] text-red-400 flex items-center gap-1">
-                                  <AlertCircle className="h-3 w-3" /> {customerErrors.phone}
-                                </span>
-                              ) : (
-                                <span className="text-[11px] text-emerald-400 flex items-center gap-1">
-                                  <CheckCircle2 className="h-3 w-3" /> Valid (10 digits)
-                                </span>
-                              )
-                            )}
-                          </div>
-                          <div className="flex gap-2">
-                            <select
-                              value={customer.countryCode}
-                              onChange={(e) =>
-                                setCustomer((p) => ({ ...p, countryCode: e.target.value }))
-                              }
-                              className="rounded-xl border border-white/[0.08] bg-[#07080c] px-3 py-3 text-xs text-white outline-none focus:border-blue-400 cursor-pointer pointer-events-auto"
-                            >
-                              {COUNTRY_CODES.map((c) => (
-                                <option key={c.code} value={c.code} className="bg-[#08080c] text-white">
-                                  {c.label}
-                                </option>
-                              ))}
-                            </select>
-                            <input
-                              type="tel"
-                              autoComplete="tel"
-                              inputMode="tel"
-                              value={customer.phone}
-                              onChange={(e) => handlePhoneInput(e.target.value)}
-                              placeholder="9876543210"
-                              maxLength={10}
-                              className={cn(
-                                "checkout-input flex-1 rounded-xl border bg-white/[0.025] px-4 py-3 text-sm text-white placeholder-white/25 outline-none transition-all duration-200 cursor-text select-text pointer-events-auto",
-                                touched.phone && customerErrors.phone
-                                  ? "border-red-500/80 bg-red-500/5 ring-1 ring-red-500/30"
-                                  : touched.phone && !customerErrors.phone
-                                  ? "border-emerald-500/60 focus:border-emerald-400"
-                                  : "border-white/[0.08] focus:border-blue-400 focus:bg-white/[0.04] focus:ring-2 focus:ring-blue-500/20"
-                              )}
-                            />
-                          </div>
-                        </div>
-
-                        {/* Company Name Field (Optional) */}
-                        <div className="space-y-1">
-                          <label className="text-xs font-medium text-white/70">
-                            Company / Organization (Optional)
-                          </label>
-                          <input
-                            type="text"
-                            autoComplete="organization"
-                            inputMode="text"
-                            value={customer.company || ""}
-                            onChange={(e) => setCustomer((p) => ({ ...p, company: e.target.value }))}
-                            placeholder="Rivera Studio"
-                            className="checkout-input w-full rounded-xl border border-white/[0.08] bg-white/[0.025] px-4 py-3 text-sm text-white placeholder-white/25 outline-none focus:border-blue-400 focus:bg-white/[0.04] cursor-text select-text pointer-events-auto"
-                          />
-                        </div>
-
-                        {/* Continue to Payment Button */}
-                        <motion.button
-                          type="submit"
-                          disabled={!isCustomerValid}
-                          animate={buttonShake ? { x: [0, -8, 8, -6, 6, -3, 3, 0] } : {}}
-                          transition={{ duration: 0.4 }}
-                          className={cn(
-                            "group mt-6 flex w-full items-center justify-center gap-2 rounded-full py-4 text-sm font-bold text-white shadow-lg transition-all duration-300 pointer-events-auto",
-                            isCustomerValid
-                              ? "bg-blue-600 shadow-blue-500/30 hover:bg-blue-500 hover:shadow-blue-500/50 cursor-pointer"
-                              : "bg-white/10 opacity-50 cursor-not-allowed text-white/40"
-                          )}
-                        >
-                          <span>Proceed to Payment</span>
-                          <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
-                        </motion.button>
-                      </form>
-                    </div>
-                  )}
-
-                  {/* STEP 2: PAYMENT METHOD & 3D VIRTUAL CARD PREVIEW */}
-                  {step === "payment" && (
-                    <div className="space-y-6">
-                      {/* ================================================================= */}
-                      {/* PAYMENT METHOD SELECTOR CARDS: [ GPay ] [ PayPal ] [ Card ] [ UPI ]*/}
-                      {/* ================================================================= */}
-                      <div>
-                        <span className="text-xs font-mono uppercase tracking-widest text-white/45">
-                          Payment Method
-                        </span>
-
-                        <div className="mt-3 grid grid-cols-2 gap-2.5 sm:grid-cols-4">
-                          {[
-                            { id: "gpay", label: "Google Pay", icon: Smartphone },
-                            { id: "paypal", label: "PayPal", icon: Lock },
-                            { id: "card", label: "Card", icon: CreditCard },
-                            { id: "upi", label: "UPI", icon: QrCode },
-                          ].map((m) => {
-                            const Icon = m.icon;
-                            const isSelected = method === m.id;
-                            return (
-                              <button
-                                key={m.id}
-                                type="button"
-                                onClick={() => setMethod(m.id as PaymentMethod)}
-                                className={cn(
-                                  "group relative flex flex-col items-center justify-center gap-2 rounded-2xl border p-3.5 text-center transition-all duration-300 cursor-pointer pointer-events-auto",
-                                  isSelected
-                                    ? "border-blue-500/60 bg-blue-500/15 text-blue-300 shadow-[0_0_25px_rgba(59,130,246,0.22)] scale-[1.02]"
-                                    : "border-white/[0.08] bg-white/[0.02] text-white/60 hover:border-white/20 hover:bg-white/[0.04] hover:text-white"
-                                )}
-                              >
-                                {isSelected && (
-                                  <motion.div
-                                    layoutId="methodCheck"
-                                    className="absolute right-2 top-2 flex h-4 w-4 items-center justify-center rounded-full bg-blue-500 text-white shadow-sm"
-                                  >
-                                    <Check className="h-2.5 w-2.5" />
-                                  </motion.div>
-                                )}
-                                <Icon className={cn("h-5 w-5 transition-transform duration-300", isSelected && "scale-110 text-blue-400")} />
-                                <span className="text-xs font-medium">{m.label}</span>
-                              </button>
-                            );
-                          })}
-                        </div>
-                      </div>
-
-                      {/* ================================================================= */}
-                      {/* 3D VIRTUAL CARD PREVIEW (Credit/Debit Card selected)               */}
-                      {/* ================================================================= */}
-                      {method === "card" && (
-                        <div
-                          ref={cardRef}
-                          onMouseMove={handleCardMouseMove}
-                          onMouseLeave={resetCardTilt}
-                          style={{ perspective: 1000 }}
-                          className="relative select-none pointer-events-auto"
-                        >
-                          <motion.div
-                            animate={{
-                              rotateX: cardTilt.rx,
-                              rotateY: cardTilt.ry,
-                            }}
-                            transition={{ type: "spring", stiffness: 350, damping: 25 }}
-                            className="relative h-48 sm:h-52 w-full overflow-hidden rounded-3xl border border-white/20 bg-gradient-to-br from-[#121420] via-[#090b14] to-[#04060c] p-6 shadow-[0_20px_60px_rgba(0,0,0,0.85),0_0_30px_rgba(59,130,246,0.15)]"
-                          >
-                            {/* Micro-dot grid background */}
-                            <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(#ffffff0a_1px,transparent_1px)] [background-size:12px_12px]" />
-
-                            {/* Dynamic Holographic Specular Glare Reflection */}
-                            <div
-                              style={{
-                                background: `radial-gradient(circle at ${cardTilt.glareX}% ${cardTilt.glareY}%, rgba(255,255,255,0.22) 0%, rgba(59,130,246,0.12) 40%, transparent 70%)`,
-                              }}
-                              className="pointer-events-none absolute inset-0 rounded-[inherit] transition-opacity duration-300"
-                            />
-
-                            {/* EMV Gold Chip Illustration & Contactless Wave */}
-                            <div className="relative z-10 flex items-center justify-between">
-                              <div className="flex items-center gap-3">
-                                {/* Gold Chip */}
-                                <div className="h-8 w-11 rounded-lg border border-amber-300/40 bg-gradient-to-br from-amber-200 via-amber-400 to-amber-600 shadow-md flex items-center justify-center">
-                                  <div className="h-6 w-9 rounded border border-amber-700/40 bg-amber-300/30 grid grid-cols-3 gap-0.5 p-0.5">
-                                    <div className="border-r border-amber-800/30" />
-                                    <div className="border-r border-amber-800/30" />
-                                    <div />
-                                  </div>
-                                </div>
-
-                                {/* Contactless Wave Icon */}
-                                <svg className="h-5 w-5 text-white/60" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                                  <path d="M8.5 14.5A2.5 2.5 0 0 0 11 12a2.5 2.5 0 0 0-2.5-2.5" />
-                                  <path d="M5.5 17.5A6.5 6.5 0 0 0 12 11a6.5 6.5 0 0 0-6.5-6.5" />
-                                  <path d="M2.5 20.5A10.5 10.5 0 0 0 13 10a10.5 10.5 0 0 0-10.5-10.5" />
-                                </svg>
-                              </div>
-
-                              {/* Card Brand Badge */}
-                              <div className="rounded-md border border-white/20 bg-white/10 px-2.5 py-1 text-xs font-black tracking-wider text-white">
-                                {getCardBrand()}
-                              </div>
                             </div>
-
-                            {/* Masked Card Number: •••• •••• •••• 3456 */}
-                            <div className="relative z-10 mt-6 font-mono text-lg sm:text-xl font-medium tracking-[0.22em] text-white/90 drop-shadow">
-                              •••• •••• •••• {cardLast4}
-                            </div>
-
-                            {/* Cardholder & Expiry */}
-                            <div className="relative z-10 mt-4 flex items-end justify-between text-xs font-mono">
-                              <div>
-                                <span className="block text-[9px] uppercase tracking-widest text-white/40">
-                                  Cardholder Name
-                                </span>
-                                <span className="block font-semibold uppercase text-white/90 truncate max-w-[180px]">
-                                  {cardData.cardholderName || "ALEX RIVERA"}
-                                </span>
-                              </div>
-
-                              <div className="text-right">
-                                <span className="block text-[9px] uppercase tracking-widest text-white/40">
-                                  Expires
-                                </span>
-                                <span className="block font-semibold text-white/90">
-                                  {cardData.expiry || "MM/YY"}
-                                </span>
-                              </div>
-                            </div>
-                          </motion.div>
-                        </div>
-                      )}
-
-                      {/* Dynamic Payment Forms */}
-                      <form onSubmit={handlePaymentSubmit} className="space-y-4">
-                        {/* METHOD: CARD */}
-                        {method === "card" && (
-                          <div className="space-y-4 rounded-2xl border border-white/[0.08] bg-[#07080c]/60 p-5">
-                            {/* Test Card Quick Fill Helpers */}
-                            <div className="flex flex-wrap items-center justify-between gap-2 text-xs">
-                              <span className="text-white/40">Demo Quick Autofill:</span>
-                              <div className="flex gap-2">
-                                <button
-                                  type="button"
-                                  onClick={() => fillTestCard("visa")}
-                                  className="rounded-md border border-white/10 bg-white/[0.04] px-2.5 py-1 text-[11px] text-white/70 hover:border-blue-400/40 hover:bg-blue-500/10 hover:text-blue-300 cursor-pointer pointer-events-auto"
-                                >
-                                  Test Visa (16 Digits)
-                                </button>
-                                <button
-                                  type="button"
-                                  onClick={() => fillTestCard("mastercard")}
-                                  className="rounded-md border border-white/10 bg-white/[0.04] px-2.5 py-1 text-[11px] text-white/70 hover:border-blue-400/40 hover:bg-blue-500/10 hover:text-blue-300 cursor-pointer pointer-events-auto"
-                                >
-                                  Test Mastercard
-                                </button>
-                                <button
-                                  type="button"
-                                  onClick={() => fillTestCard("decline")}
-                                  className="rounded-md border border-red-500/20 bg-red-500/10 px-2.5 py-1 text-[11px] text-red-300 hover:border-red-400 cursor-pointer pointer-events-auto"
-                                >
-                                  Test Decline
-                                </button>
-                              </div>
-                            </div>
-
-                            {/* Cardholder Name */}
-                            <div className="space-y-1">
-                              <div className="flex justify-between items-center">
-                                <label className="text-xs font-medium text-white/70">
-                                  Cardholder Name <span className="text-blue-400">*</span>
-                                </label>
-                                {touched.cardholderName && (
-                                  cardErrors.cardholderName ? (
-                                    <span className="text-[11px] text-red-400 flex items-center gap-1">
-                                      <AlertCircle className="h-3 w-3" /> {cardErrors.cardholderName}
-                                    </span>
-                                  ) : (
-                                    <span className="text-[11px] text-emerald-400 flex items-center gap-1">
-                                      <CheckCircle2 className="h-3 w-3" /> Valid
-                                    </span>
-                                  )
-                                )}
-                              </div>
+                            <div className="relative w-full">
                               <input
                                 type="text"
-                                autoComplete="cc-name"
+                                autoComplete="name"
                                 inputMode="text"
-                                value={cardData.cardholderName}
-                                onChange={(e) => handleCardholderInput(e.target.value)}
+                                value={customer.fullName}
+                                onChange={(e) => handleFullNameInput(e.target.value)}
                                 placeholder="Alex Rivera"
                                 className={cn(
-                                  "checkout-input w-full rounded-xl border bg-white/[0.025] px-4 py-2.5 text-sm text-white placeholder-white/25 outline-none transition-all duration-200 cursor-text select-text pointer-events-auto",
-                                  touched.cardholderName && cardErrors.cardholderName
+                                  "checkout-input w-full max-w-full rounded-xl border bg-white/[0.025] px-4 py-3 text-sm text-white placeholder-white/25 outline-none transition-all duration-200 cursor-text select-text pointer-events-auto box-border",
+                                  touched.fullName && customerErrors.fullName
                                     ? "border-red-500/80 bg-red-500/5 ring-1 ring-red-500/30"
-                                    : touched.cardholderName && !cardErrors.cardholderName
+                                    : touched.fullName && !customerErrors.fullName
                                     ? "border-emerald-500/60 focus:border-emerald-400"
-                                    : "border-white/[0.08] focus:border-blue-400 focus:bg-white/[0.04]"
+                                    : "border-white/[0.08] focus:border-blue-400 focus:bg-white/[0.04] focus:ring-2 focus:ring-blue-500/20"
                                 )}
                               />
                             </div>
+                          </div>
 
-                            {/* Card Number */}
-                            <div className="space-y-1">
-                              <div className="flex justify-between items-center">
-                                <label className="text-xs font-medium text-white/70">
-                                  Card Number (16 Digits) <span className="text-blue-400">*</span>
-                                </label>
-                                {touched.cardNumber && (
-                                  cardErrors.cardNumber ? (
-                                    <span className="text-[11px] text-red-400 flex items-center gap-1">
-                                      <AlertCircle className="h-3 w-3" /> {cardErrors.cardNumber}
-                                    </span>
-                                  ) : (
-                                    <span className="text-[11px] text-emerald-400 flex items-center gap-1">
-                                      <CheckCircle2 className="h-3 w-3" /> Valid 16 digits
-                                    </span>
-                                  )
-                                )}
-                              </div>
-                              <div className="relative">
-                                <input
-                                  type="text"
-                                  autoComplete="cc-number"
-                                  inputMode="numeric"
-                                  value={cardData.cardNumber}
-                                  onChange={(e) => handleCardNumberInput(e.target.value)}
-                                  placeholder="1234 5678 9012 3456"
-                                  maxLength={19}
-                                  className={cn(
-                                    "checkout-input w-full rounded-xl border bg-white/[0.025] px-4 py-2.5 pr-20 text-sm font-mono text-white placeholder-white/25 outline-none transition-all duration-200 cursor-text select-text pointer-events-auto",
-                                    touched.cardNumber && cardErrors.cardNumber
-                                      ? "border-red-500/80 bg-red-500/5 ring-1 ring-red-500/30"
-                                      : touched.cardNumber && !cardErrors.cardNumber
-                                      ? "border-emerald-500/60 focus:border-emerald-400"
-                                      : "border-white/[0.08] focus:border-blue-400 focus:bg-white/[0.04]"
-                                  )}
-                                />
-                                <div className="absolute right-3 top-2.5 flex items-center gap-1.5 pointer-events-none">
-                                  {touched.cardNumber && !cardErrors.cardNumber && (
-                                    <CheckCircle2 className="h-4 w-4 text-emerald-400" />
-                                  )}
-                                  <span className="rounded-md border border-white/10 bg-white/5 px-2 py-0.5 text-[10px] font-bold text-blue-400">
-                                    {getCardBrand()}
+                          {/* Email Address */}
+                          <div className="space-y-1.5 w-full min-w-0">
+                            <div className="flex flex-wrap justify-between items-center gap-1">
+                              <label className="text-xs font-medium text-white/70">
+                                Email Address <span className="text-blue-400">*</span>
+                              </label>
+                              {touched.email && (
+                                customerErrors.email ? (
+                                  <span className="text-[11px] text-red-400 flex items-center gap-1 break-words">
+                                    <AlertCircle className="h-3 w-3 shrink-0" /> <span>{customerErrors.email}</span>
                                   </span>
-                                </div>
-                              </div>
+                                ) : (
+                                  <span className="text-[11px] text-emerald-400 flex items-center gap-1 shrink-0">
+                                    <CheckCircle2 className="h-3 w-3" /> Valid format
+                                  </span>
+                                )
+                              )}
                             </div>
+                            <div className="relative w-full">
+                              <input
+                                type="email"
+                                autoComplete="email"
+                                inputMode="email"
+                                value={customer.email}
+                                onChange={(e) => handleEmailInput(e.target.value)}
+                                placeholder="customer@gmail.com"
+                                className={cn(
+                                  "checkout-input w-full max-w-full rounded-xl border bg-white/[0.025] px-4 py-3 text-sm text-white placeholder-white/25 outline-none transition-all duration-200 cursor-text select-text pointer-events-auto box-border",
+                                  touched.email && customerErrors.email
+                                    ? "border-red-500/80 bg-red-500/5 ring-1 ring-red-500/30"
+                                    : touched.email && !customerErrors.email
+                                    ? "border-emerald-500/60 focus:border-emerald-400"
+                                    : "border-white/[0.08] focus:border-blue-400 focus:bg-white/[0.04] focus:ring-2 focus:ring-blue-500/20"
+                                )}
+                              />
+                            </div>
+                          </div>
 
-                            {/* Expiry & CVV */}
-                            <div className="grid grid-cols-2 gap-3">
-                              {/* Expiry MM/YY */}
-                              <div className="space-y-1">
-                                <div className="flex justify-between items-center">
-                                  <label className="text-xs font-medium text-white/70">
-                                    Expiry (MM/YY) <span className="text-blue-400">*</span>
-                                  </label>
-                                  {touched.expiry && (
-                                    cardErrors.expiry ? (
-                                      <span className="text-[10px] text-red-400 flex items-center gap-1">
-                                        <AlertCircle className="h-2.5 w-2.5" /> {cardErrors.expiry}
-                                      </span>
-                                    ) : (
-                                      <span className="text-[10px] text-emerald-400 flex items-center gap-1">
-                                        <CheckCircle2 className="h-2.5 w-2.5" /> Valid
-                                      </span>
-                                    )
-                                  )}
-                                </div>
-                                <input
-                                  type="text"
-                                  autoComplete="cc-exp"
-                                  inputMode="numeric"
-                                  value={cardData.expiry}
-                                  onChange={(e) => handleExpiryInput(e.target.value)}
-                                  placeholder="08/29"
-                                  maxLength={5}
+                          {/* Phone Number Field with Country Code */}
+                          <div className="space-y-1.5 w-full min-w-0">
+                            <div className="flex flex-wrap justify-between items-center gap-1">
+                              <label className="text-xs font-medium text-white/70">
+                                Phone Number <span className="text-blue-400">*</span>
+                              </label>
+                              {touched.phone && (
+                                customerErrors.phone ? (
+                                  <span className="text-[11px] text-red-400 flex items-center gap-1 break-words">
+                                    <AlertCircle className="h-3 w-3 shrink-0" /> <span>{customerErrors.phone}</span>
+                                  </span>
+                                ) : (
+                                  <span className="text-[11px] text-emerald-400 flex items-center gap-1 shrink-0">
+                                    <CheckCircle2 className="h-3 w-3" /> Valid (10 digits)
+                                  </span>
+                                )
+                              )}
+                            </div>
+                            <div className="flex gap-2 w-full min-w-0">
+                              <select
+                                value={customer.countryCode}
+                                onChange={(e) =>
+                                  setCustomer((p) => ({ ...p, countryCode: e.target.value }))
+                                }
+                                className="w-[105px] xs:w-[125px] sm:w-[145px] shrink-0 rounded-xl border border-white/[0.08] bg-[#07080c] px-2.5 py-3 text-xs text-white outline-none focus:border-blue-400 cursor-pointer pointer-events-auto truncate"
+                              >
+                                {COUNTRY_CODES.map((c) => (
+                                  <option key={c.code} value={c.code} className="bg-[#08080c] text-white">
+                                    {c.label}
+                                  </option>
+                                ))}
+                              </select>
+                              <input
+                                type="tel"
+                                autoComplete="tel"
+                                inputMode="tel"
+                                value={customer.phone}
+                                onChange={(e) => handlePhoneInput(e.target.value)}
+                                placeholder="9876543210"
+                                maxLength={10}
+                                className={cn(
+                                  "checkout-input flex-1 min-w-0 w-full rounded-xl border bg-white/[0.025] px-4 py-3 text-sm text-white placeholder-white/25 outline-none transition-all duration-200 cursor-text select-text pointer-events-auto box-border",
+                                  touched.phone && customerErrors.phone
+                                    ? "border-red-500/80 bg-red-500/5 ring-1 ring-red-500/30"
+                                    : touched.phone && !customerErrors.phone
+                                    ? "border-emerald-500/60 focus:border-emerald-400"
+                                    : "border-white/[0.08] focus:border-blue-400 focus:bg-white/[0.04] focus:ring-2 focus:ring-blue-500/20"
+                                )}
+                              />
+                            </div>
+                          </div>
+
+                          {/* Company Name Field (Optional) */}
+                          <div className="space-y-1.5 w-full min-w-0">
+                            <label className="text-xs font-medium text-white/70 block">
+                              Company / Organization (Optional)
+                            </label>
+                            <input
+                              type="text"
+                              autoComplete="organization"
+                              inputMode="text"
+                              value={customer.company || ""}
+                              onChange={(e) => setCustomer((p) => ({ ...p, company: e.target.value }))}
+                              placeholder="Rivera Studio"
+                              className="checkout-input w-full max-w-full rounded-xl border border-white/[0.08] bg-white/[0.025] px-4 py-3 text-sm text-white placeholder-white/25 outline-none focus:border-blue-400 focus:bg-white/[0.04] cursor-text select-text pointer-events-auto box-border"
+                            />
+                          </div>
+
+                          {/* Continue to Payment Button */}
+                          <motion.button
+                            type="submit"
+                            disabled={!isCustomerValid}
+                            animate={buttonShake ? { x: [0, -8, 8, -6, 6, -3, 3, 0] } : {}}
+                            transition={{ duration: 0.4 }}
+                            className={cn(
+                              "group mt-6 flex w-full max-w-full items-center justify-center gap-2 rounded-full py-3.5 sm:py-4 text-sm font-bold text-white shadow-lg transition-all duration-300 pointer-events-auto box-border",
+                              isCustomerValid
+                                ? "bg-blue-600 shadow-blue-500/30 hover:bg-blue-500 hover:shadow-blue-500/50 cursor-pointer"
+                                : "bg-white/10 opacity-50 cursor-not-allowed text-white/40"
+                            )}
+                          >
+                            <span>Proceed to Payment</span>
+                            <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+                          </motion.button>
+                        </form>
+                      </div>
+                    )}
+
+                    {/* STEP 2: PAYMENT METHOD & 3D VIRTUAL CARD PREVIEW */}
+                    {step === "payment" && (
+                      <div className="space-y-5 sm:space-y-6 w-full min-w-0">
+                        {/* ================================================================= */}
+                        {/* PAYMENT METHOD SELECTOR CARDS: [ GPay ] [ PayPal ] [ Card ] [ UPI ]*/}
+                        {/* ================================================================= */}
+                        <div className="w-full min-w-0">
+                          <span className="text-xs font-mono uppercase tracking-widest text-white/45">
+                            Payment Method
+                          </span>
+
+                          <div className="mt-3 grid grid-cols-2 gap-2 sm:gap-2.5 sm:grid-cols-4 w-full min-w-0">
+                            {[
+                              { id: "gpay", label: "Google Pay", icon: Smartphone },
+                              { id: "paypal", label: "PayPal", icon: Lock },
+                              { id: "card", label: "Card", icon: CreditCard },
+                              { id: "upi", label: "UPI", icon: QrCode },
+                            ].map((m) => {
+                              const Icon = m.icon;
+                              const isSelected = method === m.id;
+                              return (
+                                <button
+                                  key={m.id}
+                                  type="button"
+                                  onClick={() => setMethod(m.id as PaymentMethod)}
                                   className={cn(
-                                    "checkout-input w-full rounded-xl border bg-white/[0.025] px-4 py-2.5 text-sm font-mono text-white placeholder-white/25 outline-none transition-all duration-200 cursor-text select-text pointer-events-auto",
-                                    touched.expiry && cardErrors.expiry
-                                      ? "border-red-500/80 bg-red-500/5 ring-1 ring-red-500/30"
-                                      : touched.expiry && !cardErrors.expiry
-                                      ? "border-emerald-500/60 focus:border-emerald-400"
-                                      : "border-white/[0.08] focus:border-blue-400 focus:bg-white/[0.04]"
+                                    "group relative flex flex-col items-center justify-center gap-1.5 sm:gap-2 rounded-2xl border p-2.5 sm:p-3.5 text-center transition-all duration-300 cursor-pointer pointer-events-auto min-w-0 w-full",
+                                    isSelected
+                                      ? "border-blue-500/60 bg-blue-500/15 text-blue-300 shadow-[0_0_25px_rgba(59,130,246,0.22)] scale-[1.02]"
+                                      : "border-white/[0.08] bg-white/[0.02] text-white/60 hover:border-white/20 hover:bg-white/[0.04] hover:text-white"
                                   )}
-                                />
-                              </div>
-
-                              {/* CVV (Strictly 3 digits, masked) */}
-                              <div className="space-y-1">
-                                <div className="flex justify-between items-center">
-                                  <div className="flex items-center gap-1">
-                                    <label className="text-xs font-medium text-white/70">
-                                      CVV <span className="text-blue-400">*</span>
-                                    </label>
-                                    <div
-                                      className="relative pointer-events-auto"
-                                      onMouseEnter={() => setShowCvvTooltip(true)}
-                                      onMouseLeave={() => setShowCvvTooltip(false)}
+                                >
+                                  {isSelected && (
+                                    <motion.div
+                                      layoutId="methodCheck"
+                                      className="absolute right-1.5 top-1.5 sm:right-2 sm:top-2 flex h-3.5 w-3.5 sm:h-4 sm:w-4 items-center justify-center rounded-full bg-blue-500 text-white shadow-sm"
                                     >
-                                      <HelpCircle className="h-3 w-3 text-white/40 hover:text-white cursor-pointer" />
-                                      {showCvvTooltip && (
-                                        <div className="absolute -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-md bg-black/90 px-2 py-1 text-[10px] text-white border border-white/10 shadow-lg z-50 pointer-events-none">
-                                          3-digit security code
-                                        </div>
-                                      )}
+                                      <Check className="h-2 w-2 sm:h-2.5 sm:w-2.5" />
+                                    </motion.div>
+                                  )}
+                                  <Icon className={cn("h-4 w-4 sm:h-5 sm:w-5 transition-transform duration-300", isSelected && "scale-110 text-blue-400")} />
+                                  <span className="text-[11px] sm:text-xs font-medium truncate max-w-full">{m.label}</span>
+                                </button>
+                              );
+                            })}
+                          </div>
+                        </div>
+
+                        {/* ================================================================= */}
+                        {/* 3D VIRTUAL CARD PREVIEW (Credit/Debit Card selected)               */}
+                        {/* ================================================================= */}
+                        {method === "card" && (
+                          <div
+                            ref={cardRef}
+                            onMouseMove={handleCardMouseMove}
+                            onMouseLeave={resetCardTilt}
+                            style={{ perspective: 1000 }}
+                            className="relative select-none pointer-events-auto w-full max-w-full"
+                          >
+                            <motion.div
+                              animate={{
+                                rotateX: cardTilt.rx,
+                                rotateY: cardTilt.ry,
+                              }}
+                              transition={{ type: "spring", stiffness: 350, damping: 25 }}
+                              className="relative w-full max-w-full aspect-[1.586/1] min-h-[175px] max-h-[220px] overflow-hidden rounded-2xl sm:rounded-3xl border border-white/20 bg-gradient-to-br from-[#121420] via-[#090b14] to-[#04060c] p-4 sm:p-5 md:p-6 shadow-[0_20px_60px_rgba(0,0,0,0.85),0_0_30px_rgba(59,130,246,0.15)] flex flex-col justify-between"
+                            >
+                              {/* Micro-dot grid background */}
+                              <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(#ffffff0a_1px,transparent_1px)] [background-size:12px_12px]" />
+
+                              {/* Dynamic Holographic Specular Glare Reflection */}
+                              <div
+                                style={{
+                                  background: `radial-gradient(circle at ${cardTilt.glareX}% ${cardTilt.glareY}%, rgba(255,255,255,0.22) 0%, rgba(59,130,246,0.12) 40%, transparent 70%)`,
+                                }}
+                                className="pointer-events-none absolute inset-0 rounded-[inherit] transition-opacity duration-300"
+                              />
+
+                              {/* EMV Gold Chip Illustration & Contactless Wave */}
+                              <div className="relative z-10 flex items-center justify-between">
+                                <div className="flex items-center gap-2 sm:gap-3">
+                                  {/* Gold Chip */}
+                                  <div className="h-6 w-9 sm:h-8 sm:w-11 rounded-md sm:rounded-lg border border-amber-300/40 bg-gradient-to-br from-amber-200 via-amber-400 to-amber-600 shadow-md flex items-center justify-center">
+                                    <div className="h-4.5 w-7 sm:h-6 sm:w-9 rounded border border-amber-700/40 bg-amber-300/30 grid grid-cols-3 gap-0.5 p-0.5">
+                                      <div className="border-r border-amber-800/30" />
+                                      <div className="border-r border-amber-800/30" />
+                                      <div />
                                     </div>
                                   </div>
 
-                                  {touched.cvv && (
-                                    cardErrors.cvv ? (
-                                      <span className="text-[10px] text-red-400 flex items-center gap-1">
-                                        <AlertCircle className="h-2.5 w-2.5" /> {cardErrors.cvv}
+                                  {/* Contactless Wave Icon */}
+                                  <svg className="h-4 w-4 sm:h-5 sm:w-5 text-white/60" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                    <path d="M8.5 14.5A2.5 2.5 0 0 0 11 12a2.5 2.5 0 0 0-2.5-2.5" />
+                                    <path d="M5.5 17.5A6.5 6.5 0 0 0 12 11a6.5 6.5 0 0 0-6.5-6.5" />
+                                    <path d="M2.5 20.5A10.5 10.5 0 0 0 13 10a10.5 10.5 0 0 0-10.5-10.5" />
+                                  </svg>
+                                </div>
+
+                                {/* Card Brand Badge */}
+                                <div className="rounded-md border border-white/20 bg-white/10 px-2 py-0.5 sm:px-2.5 sm:py-1 text-[10px] sm:text-xs font-black tracking-wider text-white">
+                                  {getCardBrand()}
+                                </div>
+                              </div>
+
+                              {/* Masked Card Number: •••• •••• •••• 3456 */}
+                              <div className="relative z-10 my-auto font-mono text-sm xs:text-base sm:text-lg md:text-xl font-medium tracking-[0.14em] xs:tracking-[0.18em] sm:tracking-[0.22em] text-white/90 drop-shadow whitespace-nowrap">
+                                •••• •••• •••• {cardLast4}
+                              </div>
+
+                              {/* Cardholder & Expiry */}
+                              <div className="relative z-10 flex items-end justify-between text-[11px] sm:text-xs font-mono">
+                                <div className="min-w-0 pr-2">
+                                  <span className="block text-[8px] sm:text-[9px] uppercase tracking-widest text-white/40">
+                                    Cardholder Name
+                                  </span>
+                                  <span className="block font-semibold uppercase text-white/90 truncate max-w-[130px] xs:max-w-[160px] sm:max-w-[200px]">
+                                    {cardData.cardholderName || "ALEX RIVERA"}
+                                  </span>
+                                </div>
+
+                                <div className="text-right shrink-0">
+                                  <span className="block text-[8px] sm:text-[9px] uppercase tracking-widest text-white/40">
+                                    Expires
+                                  </span>
+                                  <span className="block font-semibold text-white/90">
+                                    {cardData.expiry || "MM/YY"}
+                                  </span>
+                                </div>
+                              </div>
+                            </motion.div>
+                          </div>
+                        )}
+
+                        {/* Dynamic Payment Forms */}
+                        <form onSubmit={handlePaymentSubmit} className="space-y-4 w-full min-w-0">
+                          {/* METHOD: CARD */}
+                          {method === "card" && (
+                            <div className="space-y-4 rounded-2xl border border-white/[0.08] bg-[#07080c]/60 p-4 sm:p-5 w-full min-w-0">
+                              {/* Test Card Quick Fill Helpers */}
+                              <div className="flex flex-wrap items-center justify-between gap-2 text-xs w-full min-w-0">
+                                <span className="text-white/40 text-[11px] sm:text-xs shrink-0">Demo Autofill:</span>
+                                <div className="flex flex-wrap gap-1.5 sm:gap-2">
+                                  <button
+                                    type="button"
+                                    onClick={() => fillTestCard("visa")}
+                                    className="rounded-md border border-white/10 bg-white/[0.04] px-2 py-1 text-[10px] sm:text-[11px] text-white/70 hover:border-blue-400/40 hover:bg-blue-500/10 hover:text-blue-300 cursor-pointer pointer-events-auto"
+                                  >
+                                    Visa
+                                  </button>
+                                  <button
+                                    type="button"
+                                    onClick={() => fillTestCard("mastercard")}
+                                    className="rounded-md border border-white/10 bg-white/[0.04] px-2 py-1 text-[10px] sm:text-[11px] text-white/70 hover:border-blue-400/40 hover:bg-blue-500/10 hover:text-blue-300 cursor-pointer pointer-events-auto"
+                                  >
+                                    Mastercard
+                                  </button>
+                                  <button
+                                    type="button"
+                                    onClick={() => fillTestCard("decline")}
+                                    className="rounded-md border border-red-500/20 bg-red-500/10 px-2 py-1 text-[10px] sm:text-[11px] text-red-300 hover:border-red-400 cursor-pointer pointer-events-auto"
+                                  >
+                                    Decline
+                                  </button>
+                                </div>
+                              </div>
+
+                              {/* Cardholder Name */}
+                              <div className="space-y-1.5 w-full min-w-0">
+                                <div className="flex flex-wrap justify-between items-center gap-1">
+                                  <label className="text-xs font-medium text-white/70">
+                                    Cardholder Name <span className="text-blue-400">*</span>
+                                  </label>
+                                  {touched.cardholderName && (
+                                    cardErrors.cardholderName ? (
+                                      <span className="text-[11px] text-red-400 flex items-center gap-1 break-words">
+                                        <AlertCircle className="h-3 w-3 shrink-0" /> <span>{cardErrors.cardholderName}</span>
                                       </span>
                                     ) : (
-                                      <span className="text-[10px] text-emerald-400 flex items-center gap-1">
-                                        <CheckCircle2 className="h-2.5 w-2.5" /> 3 digits
+                                      <span className="text-[11px] text-emerald-400 flex items-center gap-1 shrink-0">
+                                        <CheckCircle2 className="h-3 w-3" /> Valid
                                       </span>
                                     )
                                   )}
                                 </div>
-                                <div className="relative">
+                                <input
+                                  type="text"
+                                  autoComplete="cc-name"
+                                  inputMode="text"
+                                  value={cardData.cardholderName}
+                                  onChange={(e) => handleCardholderInput(e.target.value)}
+                                  placeholder="Alex Rivera"
+                                  className={cn(
+                                    "checkout-input w-full max-w-full rounded-xl border bg-white/[0.025] px-4 py-2.5 text-sm text-white placeholder-white/25 outline-none transition-all duration-200 cursor-text select-text pointer-events-auto box-border",
+                                    touched.cardholderName && cardErrors.cardholderName
+                                      ? "border-red-500/80 bg-red-500/5 ring-1 ring-red-500/30"
+                                      : touched.cardholderName && !cardErrors.cardholderName
+                                      ? "border-emerald-500/60 focus:border-emerald-400"
+                                      : "border-white/[0.08] focus:border-blue-400 focus:bg-white/[0.04]"
+                                  )}
+                                />
+                              </div>
+
+                              {/* Card Number */}
+                              <div className="space-y-1.5 w-full min-w-0">
+                                <div className="flex flex-wrap justify-between items-center gap-1">
+                                  <label className="text-xs font-medium text-white/70">
+                                    Card Number (16 Digits) <span className="text-blue-400">*</span>
+                                  </label>
+                                  {touched.cardNumber && (
+                                    cardErrors.cardNumber ? (
+                                      <span className="text-[11px] text-red-400 flex items-center gap-1 break-words">
+                                        <AlertCircle className="h-3 w-3 shrink-0" /> <span>{cardErrors.cardNumber}</span>
+                                      </span>
+                                    ) : (
+                                      <span className="text-[11px] text-emerald-400 flex items-center gap-1 shrink-0">
+                                        <CheckCircle2 className="h-3 w-3" /> Valid 16 digits
+                                      </span>
+                                    )
+                                  )}
+                                </div>
+                                <div className="relative w-full">
                                   <input
-                                    type={showCvv ? "text" : "password"}
-                                    autoComplete="cc-csc"
+                                    type="text"
+                                    autoComplete="cc-number"
                                     inputMode="numeric"
-                                    value={cardData.cvv}
-                                    onChange={(e) => handleCvvInput(e.target.value)}
-                                    placeholder="•••"
-                                    maxLength={3}
+                                    value={cardData.cardNumber}
+                                    onChange={(e) => handleCardNumberInput(e.target.value)}
+                                    placeholder="1234 5678 9012 3456"
+                                    maxLength={19}
                                     className={cn(
-                                      "checkout-input w-full rounded-xl border bg-white/[0.025] px-4 py-2.5 pr-12 text-sm font-mono text-white placeholder-white/25 outline-none transition-all duration-200 tracking-widest cursor-text select-text pointer-events-auto",
-                                      touched.cvv && cardErrors.cvv
+                                      "checkout-input w-full max-w-full rounded-xl border bg-white/[0.025] px-4 py-2.5 pr-20 text-sm font-mono text-white placeholder-white/25 outline-none transition-all duration-200 cursor-text select-text pointer-events-auto box-border",
+                                      touched.cardNumber && cardErrors.cardNumber
                                         ? "border-red-500/80 bg-red-500/5 ring-1 ring-red-500/30"
-                                        : touched.cvv && !cardErrors.cvv
+                                        : touched.cardNumber && !cardErrors.cardNumber
                                         ? "border-emerald-500/60 focus:border-emerald-400"
                                         : "border-white/[0.08] focus:border-blue-400 focus:bg-white/[0.04]"
                                     )}
                                   />
+                                  <div className="absolute right-3 top-2.5 flex items-center gap-1.5 pointer-events-none">
+                                    {touched.cardNumber && !cardErrors.cardNumber && (
+                                      <CheckCircle2 className="h-4 w-4 text-emerald-400" />
+                                    )}
+                                    <span className="rounded-md border border-white/10 bg-white/5 px-2 py-0.5 text-[10px] font-bold text-blue-400">
+                                      {getCardBrand()}
+                                    </span>
+                                  </div>
+                                </div>
+                              </div>
+
+                              {/* Expiry & CVV */}
+                              <div className="grid grid-cols-2 gap-3 w-full min-w-0">
+                                {/* Expiry MM/YY */}
+                                <div className="space-y-1.5 min-w-0">
+                                  <div className="flex flex-wrap justify-between items-center gap-1">
+                                    <label className="text-xs font-medium text-white/70">
+                                      Expiry <span className="text-blue-400">*</span>
+                                    </label>
+                                    {touched.expiry && (
+                                      cardErrors.expiry ? (
+                                        <span className="text-[10px] text-red-400 flex items-center gap-1 break-words">
+                                          <AlertCircle className="h-2.5 w-2.5 shrink-0" /> <span>{cardErrors.expiry}</span>
+                                        </span>
+                                      ) : (
+                                        <span className="text-[10px] text-emerald-400 flex items-center gap-1 shrink-0">
+                                          <CheckCircle2 className="h-2.5 w-2.5" /> Valid
+                                        </span>
+                                      )
+                                    )}
+                                  </div>
+                                  <input
+                                    type="text"
+                                    autoComplete="cc-exp"
+                                    inputMode="numeric"
+                                    value={cardData.expiry}
+                                    onChange={(e) => handleExpiryInput(e.target.value)}
+                                    placeholder="08/29"
+                                    maxLength={5}
+                                    className={cn(
+                                      "checkout-input w-full max-w-full rounded-xl border bg-white/[0.025] px-3.5 sm:px-4 py-2.5 text-sm font-mono text-white placeholder-white/25 outline-none transition-all duration-200 cursor-text select-text pointer-events-auto box-border",
+                                      touched.expiry && cardErrors.expiry
+                                        ? "border-red-500/80 bg-red-500/5 ring-1 ring-red-500/30"
+                                        : touched.expiry && !cardErrors.expiry
+                                        ? "border-emerald-500/60 focus:border-emerald-400"
+                                        : "border-white/[0.08] focus:border-blue-400 focus:bg-white/[0.04]"
+                                    )}
+                                  />
+                                </div>
+
+                                {/* CVV (Strictly 3 digits, masked) */}
+                                <div className="space-y-1.5 min-w-0">
+                                  <div className="flex flex-wrap justify-between items-center gap-1">
+                                    <div className="flex items-center gap-1">
+                                      <label className="text-xs font-medium text-white/70">
+                                        CVV <span className="text-blue-400">*</span>
+                                      </label>
+                                      <div
+                                        className="relative pointer-events-auto"
+                                        onMouseEnter={() => setShowCvvTooltip(true)}
+                                        onMouseLeave={() => setShowCvvTooltip(false)}
+                                      >
+                                        <HelpCircle className="h-3 w-3 text-white/40 hover:text-white cursor-pointer" />
+                                        {showCvvTooltip && (
+                                          <div className="absolute -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-md bg-black/90 px-2 py-1 text-[10px] text-white border border-white/10 shadow-lg z-50 pointer-events-none">
+                                            3-digit security code
+                                          </div>
+                                        )}
+                                      </div>
+                                    </div>
+
+                                    {touched.cvv && (
+                                      cardErrors.cvv ? (
+                                        <span className="text-[10px] text-red-400 flex items-center gap-1 break-words">
+                                          <AlertCircle className="h-2.5 w-2.5 shrink-0" /> <span>{cardErrors.cvv}</span>
+                                        </span>
+                                      ) : (
+                                        <span className="text-[10px] text-emerald-400 flex items-center gap-1 shrink-0">
+                                          <CheckCircle2 className="h-2.5 w-2.5" /> 3 digits
+                                        </span>
+                                      )
+                                    )}
+                                  </div>
+                                  <div className="relative w-full">
+                                    <input
+                                      type={showCvv ? "text" : "password"}
+                                      autoComplete="cc-csc"
+                                      inputMode="numeric"
+                                      value={cardData.cvv}
+                                      onChange={(e) => handleCvvInput(e.target.value)}
+                                      placeholder="•••"
+                                      maxLength={3}
+                                      className={cn(
+                                        "checkout-input w-full max-w-full rounded-xl border bg-white/[0.025] px-3.5 sm:px-4 py-2.5 pr-10 text-sm font-mono text-white placeholder-white/25 outline-none transition-all duration-200 tracking-widest cursor-text select-text pointer-events-auto box-border",
+                                        touched.cvv && cardErrors.cvv
+                                          ? "border-red-500/80 bg-red-500/5 ring-1 ring-red-500/30"
+                                          : touched.cvv && !cardErrors.cvv
+                                          ? "border-emerald-500/60 focus:border-emerald-400"
+                                          : "border-white/[0.08] focus:border-blue-400 focus:bg-white/[0.04]"
+                                      )}
+                                    />
+                                    <button
+                                      type="button"
+                                      onClick={() => setShowCvv((v) => !v)}
+                                      className="absolute right-3 top-2.5 text-white/40 hover:text-white/80 cursor-pointer pointer-events-auto"
+                                      aria-label={showCvv ? "Hide CVV" : "Show CVV"}
+                                    >
+                                      {showCvv ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                                    </button>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          )}
+
+                          {/* METHOD: UPI */}
+                          {method === "upi" && (
+                            <div className="space-y-4 rounded-2xl border border-white/[0.08] bg-[#07080c]/60 p-4 sm:p-5 text-center w-full min-w-0">
+                              <div className="flex flex-col items-center justify-center">
+                                <div className="relative flex h-32 w-32 sm:h-36 sm:w-36 items-center justify-center rounded-xl border border-white/15 bg-white p-2.5 shadow-xl">
+                                  <svg className="h-full w-full" viewBox="0 0 100 100" fill="none">
+                                    <rect width="100" height="100" fill="white" />
+                                    <rect x="6" y="6" width="26" height="26" rx="4" fill="black" />
+                                    <rect x="10" y="10" width="18" height="18" rx="2" fill="white" />
+                                    <rect x="14" y="14" width="10" height="10" fill="#2563eb" />
+
+                                    <rect x="68" y="6" width="26" height="26" rx="4" fill="black" />
+                                    <rect x="72" y="10" width="18" height="18" rx="2" fill="white" />
+                                    <rect x="76" y="14" width="10" height="10" fill="#2563eb" />
+
+                                    <rect x="6" y="68" width="26" height="26" rx="4" fill="black" />
+                                    <rect x="10" y="72" width="18" height="18" rx="2" fill="white" />
+                                    <rect x="14" y="76" width="10" height="10" fill="#2563eb" />
+
+                                    <circle cx="48" cy="48" r="4" fill="black" />
+                                    <circle cx="48" cy="30" r="3" fill="#2563eb" />
+                                    <circle cx="64" cy="48" r="3" fill="#2563eb" />
+                                    <circle cx="42" cy="82" r="3" fill="#2563eb" />
+                                  </svg>
+                                  <div className="absolute flex h-7 w-7 items-center justify-center rounded-lg bg-blue-600 font-display text-xs font-bold text-white shadow-md">
+                                    L
+                                  </div>
+                                  <motion.div
+                                    animate={{ y: [-40, 40, -40] }}
+                                    transition={{ repeat: Infinity, duration: 2.2, ease: "linear" }}
+                                    className="pointer-events-none absolute inset-x-2 h-0.5 bg-blue-500 shadow-[0_0_8px_#3b82f6]"
+                                  />
+                                </div>
+
+                                <div className="mt-3 flex items-center gap-2 text-xs font-mono text-white/70">
+                                  <span>Scan via GPay / PhonePe</span>
+                                  <span className="rounded-full bg-blue-500/20 px-2 py-0.5 text-[10px] font-bold text-blue-300">
+                                    {Math.floor(qrCountdown / 60)}:
+                                    {(qrCountdown % 60).toString().padStart(2, "0")}
+                                  </span>
+                                </div>
+                              </div>
+
+                              {/* UPI ID Field */}
+                              <div className="space-y-1.5 text-left w-full min-w-0">
+                                <label className="text-xs font-medium text-white/70">
+                                  Or Enter UPI ID <span className="text-blue-400">*</span>
+                                </label>
+                                <div className="relative w-full">
+                                  <input
+                                    type="text"
+                                    inputMode="text"
+                                    autoComplete="off"
+                                    value={upiData.upiId}
+                                    onChange={(e) => {
+                                      setUpiData({ upiId: e.target.value.trim() });
+                                      setTouched((p) => ({ ...p, upiId: true }));
+                                    }}
+                                    placeholder="yourname@okaxis"
+                                    className="checkout-input w-full max-w-full rounded-xl border border-white/[0.08] bg-white/[0.025] px-4 py-2.5 pr-24 text-sm text-white placeholder-white/25 outline-none focus:border-blue-400 cursor-text select-text pointer-events-auto box-border"
+                                  />
                                   <button
                                     type="button"
-                                    onClick={() => setShowCvv((v) => !v)}
-                                    className="absolute right-3 top-2.5 text-white/40 hover:text-white/80 cursor-pointer pointer-events-auto"
-                                    aria-label={showCvv ? "Hide CVV" : "Show CVV"}
+                                    onClick={() => {
+                                      setUpiData({ upiId: "lumoraclient@okaxis" });
+                                      setCopiedUpi(true);
+                                      setTouched((p) => ({ ...p, upiId: true }));
+                                      setTimeout(() => setCopiedUpi(false), 2000);
+                                    }}
+                                    className="absolute right-2 top-2 rounded-lg border border-white/10 bg-white/5 px-2.5 py-1 text-[11px] text-white/70 hover:bg-white/10 hover:text-white cursor-pointer pointer-events-auto"
                                   >
-                                    {showCvv ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                                    {copiedUpi ? "Filled!" : "Demo ID"}
                                   </button>
                                 </div>
                               </div>
                             </div>
-                          </div>
-                        )}
+                          )}
 
-                        {/* METHOD: UPI */}
-                        {method === "upi" && (
-                          <div className="space-y-4 rounded-2xl border border-white/[0.08] bg-[#07080c]/60 p-5 text-center">
-                            <div className="flex flex-col items-center justify-center">
-                              <div className="relative flex h-36 w-36 items-center justify-center rounded-xl border border-white/15 bg-white p-2.5 shadow-xl">
-                                <svg className="h-full w-full" viewBox="0 0 100 100" fill="none">
-                                  <rect width="100" height="100" fill="white" />
-                                  <rect x="6" y="6" width="26" height="26" rx="4" fill="black" />
-                                  <rect x="10" y="10" width="18" height="18" rx="2" fill="white" />
-                                  <rect x="14" y="14" width="10" height="10" fill="#2563eb" />
-
-                                  <rect x="68" y="6" width="26" height="26" rx="4" fill="black" />
-                                  <rect x="72" y="10" width="18" height="18" rx="2" fill="white" />
-                                  <rect x="76" y="14" width="10" height="10" fill="#2563eb" />
-
-                                  <rect x="6" y="68" width="26" height="26" rx="4" fill="black" />
-                                  <rect x="10" y="72" width="18" height="18" rx="2" fill="white" />
-                                  <rect x="14" y="76" width="10" height="10" fill="#2563eb" />
-
-                                  <circle cx="48" cy="48" r="4" fill="black" />
-                                  <circle cx="48" cy="30" r="3" fill="#2563eb" />
-                                  <circle cx="64" cy="48" r="3" fill="#2563eb" />
-                                  <circle cx="42" cy="82" r="3" fill="#2563eb" />
-                                </svg>
-                                <div className="absolute flex h-7 w-7 items-center justify-center rounded-lg bg-blue-600 font-display text-xs font-bold text-white shadow-md">
-                                  L
+                          {/* METHOD: GOOGLE PAY */}
+                          {method === "gpay" && (
+                            <div className="rounded-2xl border border-white/[0.08] bg-[#07080c]/60 p-4 sm:p-5 w-full min-w-0">
+                              <div className="flex items-center justify-between gap-3">
+                                <div className="flex items-center gap-3 min-w-0">
+                                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white text-navy-950 font-bold text-xs shadow-md">
+                                    GPay
+                                  </div>
+                                  <div className="min-w-0">
+                                    <span className="block text-sm font-semibold text-white truncate">
+                                      Google Pay Sandbox
+                                    </span>
+                                    <span className="block text-xs text-white/50 truncate">{customer.email}</span>
+                                  </div>
                                 </div>
-                                <motion.div
-                                  animate={{ y: [-45, 45, -45] }}
-                                  transition={{ repeat: Infinity, duration: 2.2, ease: "linear" }}
-                                  className="pointer-events-none absolute inset-x-2 h-0.5 bg-blue-500 shadow-[0_0_8px_#3b82f6]"
-                                />
-                              </div>
-
-                              <div className="mt-3 flex items-center gap-2 text-xs font-mono text-white/70">
-                                <span>Scan via GPay / PhonePe</span>
-                                <span className="rounded-full bg-blue-500/20 px-2 py-0.5 text-[10px] font-bold text-blue-300">
-                                  {Math.floor(qrCountdown / 60)}:
-                                  {(qrCountdown % 60).toString().padStart(2, "0")}
+                                <span className="shrink-0 rounded-full border border-emerald-400/30 bg-emerald-500/10 px-2.5 py-0.5 text-[10px] font-semibold text-emerald-400">
+                                  Ready
                                 </span>
                               </div>
                             </div>
+                          )}
 
-                            {/* UPI ID Field */}
-                            <div className="space-y-1 text-left">
-                              <label className="text-xs font-medium text-white/70">
-                                Or Enter UPI ID <span className="text-blue-400">*</span>
-                              </label>
-                              <div className="relative">
-                                <input
-                                  type="text"
-                                  inputMode="text"
-                                  autoComplete="off"
-                                  value={upiData.upiId}
-                                  onChange={(e) => {
-                                    setUpiData({ upiId: e.target.value.trim() });
-                                    setTouched((p) => ({ ...p, upiId: true }));
-                                  }}
-                                  placeholder="yourname@okaxis"
-                                  className="checkout-input w-full rounded-xl border border-white/[0.08] bg-white/[0.025] px-4 py-2.5 pr-24 text-sm text-white placeholder-white/25 outline-none focus:border-blue-400 cursor-text select-text pointer-events-auto"
-                                />
-                                <button
-                                  type="button"
-                                  onClick={() => {
-                                    setUpiData({ upiId: "lumoraclient@okaxis" });
-                                    setCopiedUpi(true);
-                                    setTouched((p) => ({ ...p, upiId: true }));
-                                    setTimeout(() => setCopiedUpi(false), 2000);
-                                  }}
-                                  className="absolute right-2 top-2 rounded-lg border border-white/10 bg-white/5 px-2.5 py-1 text-[11px] text-white/70 hover:bg-white/10 hover:text-white cursor-pointer pointer-events-auto"
-                                >
-                                  {copiedUpi ? "Filled!" : "Demo ID"}
-                                </button>
+                          {/* METHOD: PAYPAL */}
+                          {method === "paypal" && (
+                            <div className="rounded-2xl border border-white/[0.08] bg-[#07080c]/60 p-4 sm:p-5 w-full min-w-0">
+                              <div className="flex items-center justify-between gap-3">
+                                <div className="flex items-center gap-3 min-w-0">
+                                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#0070BA] font-display text-sm font-bold text-white shadow-md">
+                                    P
+                                  </div>
+                                  <div className="min-w-0">
+                                    <span className="block text-sm font-semibold text-white truncate">
+                                      PayPal Express Sandbox
+                                    </span>
+                                    <span className="block text-xs text-white/50 truncate">alex.rivera@paypal-demo.com</span>
+                                  </div>
+                                </div>
+                                <span className="shrink-0 rounded-full border border-blue-400/30 bg-blue-500/10 px-2.5 py-0.5 text-[10px] font-semibold text-blue-400">
+                                  Verified
+                                </span>
                               </div>
                             </div>
-                          </div>
-                        )}
+                          )}
 
-                        {/* METHOD: GOOGLE PAY */}
-                        {method === "gpay" && (
-                          <div className="rounded-2xl border border-white/[0.08] bg-[#07080c]/60 p-5">
-                            <div className="flex items-center justify-between">
-                              <div className="flex items-center gap-3">
-                                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white text-navy-950 font-bold text-xs shadow-md">
-                                  GPay
-                                </div>
-                                <div>
-                                  <span className="block text-sm font-semibold text-white">
-                                    Google Pay Sandbox Account
-                                  </span>
-                                  <span className="block text-xs text-white/50">{customer.email}</span>
-                                </div>
-                              </div>
-                              <span className="rounded-full border border-emerald-400/30 bg-emerald-500/10 px-2.5 py-0.5 text-[10px] font-semibold text-emerald-400">
-                                Ready
-                              </span>
+                          {/* Error Simulation Toggle */}
+                          <div className="flex items-center justify-between gap-3 rounded-xl border border-white/[0.06] bg-black/30 px-3.5 py-2.5 text-xs text-white/60 w-full min-w-0">
+                            <div className="flex items-center gap-2 min-w-0">
+                              <Info className="h-3.5 w-3.5 shrink-0 text-blue-400" />
+                              <span className="truncate">Simulate Card Decline for Testing</span>
                             </div>
+                            <button
+                              type="button"
+                              onClick={() => setSimulateDecline((v) => !v)}
+                              className={cn(
+                                "relative inline-flex h-5 w-9 shrink-0 items-center rounded-full transition-colors cursor-pointer pointer-events-auto",
+                                simulateDecline ? "bg-red-500" : "bg-white/20"
+                              )}
+                            >
+                              <span
+                                className={cn(
+                                  "inline-block h-3.5 w-3.5 transform rounded-full bg-white transition-transform",
+                                  simulateDecline ? "translate-x-4.5" : "translate-x-1"
+                                )}
+                              />
+                            </button>
                           </div>
-                        )}
 
-                        {/* METHOD: PAYPAL */}
-                        {method === "paypal" && (
-                          <div className="rounded-2xl border border-white/[0.08] bg-[#07080c]/60 p-5">
-                            <div className="flex items-center justify-between">
-                              <div className="flex items-center gap-3">
-                                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#0070BA] font-display text-sm font-bold text-white shadow-md">
-                                  P
-                                </div>
-                                <div>
-                                  <span className="block text-sm font-semibold text-white">
-                                    PayPal Express Sandbox
-                                  </span>
-                                  <span className="block text-xs text-white/50">alex.rivera@paypal-demo.com</span>
-                                </div>
-                              </div>
-                              <span className="rounded-full border border-blue-400/30 bg-blue-500/10 px-2.5 py-0.5 text-[10px] font-semibold text-blue-400">
-                                Verified
-                              </span>
-                            </div>
-                          </div>
-                        )}
-
-                        {/* Error Simulation Toggle */}
-                        <div className="flex items-center justify-between rounded-xl border border-white/[0.06] bg-black/30 px-3.5 py-2.5 text-xs text-white/60">
-                          <div className="flex items-center gap-2">
-                            <Info className="h-3.5 w-3.5 text-blue-400" />
-                            <span>Simulate Card Decline for Testing</span>
-                          </div>
-                          <button
-                            type="button"
-                            onClick={() => setSimulateDecline((v) => !v)}
+                          {/* Final Pay Button with Exact Amount and Disabled State */}
+                          <motion.button
+                            ref={payBtnRef}
+                            type="submit"
+                            disabled={!isPayButtonEnabled}
+                            onMouseMove={handleButtonMove}
+                            onMouseLeave={resetBtnPos}
+                            animate={
+                              buttonShake
+                                ? { x: [0, -8, 8, -6, 6, -3, 3, 0] }
+                                : { x: btnPos.x, y: btnPos.y }
+                            }
+                            transition={{ type: "spring", stiffness: 280, damping: 18 }}
                             className={cn(
-                              "relative inline-flex h-5 w-9 shrink-0 items-center rounded-full transition-colors cursor-pointer pointer-events-auto",
-                              simulateDecline ? "bg-red-500" : "bg-white/20"
+                              "group relative mt-5 flex w-full max-w-full items-center justify-center gap-2 overflow-hidden rounded-full py-3.5 sm:py-4 text-sm font-bold text-white shadow-lg transition-all duration-300 pointer-events-auto box-border",
+                              isPayButtonEnabled
+                                ? "bg-blue-600 shadow-[0_8px_32px_rgba(59,130,246,0.35)] hover:bg-blue-500 hover:shadow-[0_12px_45px_rgba(59,130,246,0.5)] cursor-pointer"
+                                : "bg-white/10 opacity-50 cursor-not-allowed text-white/40"
                             )}
                           >
-                            <span
-                              className={cn(
-                                "inline-block h-3.5 w-3.5 transform rounded-full bg-white transition-transform",
-                                simulateDecline ? "translate-x-4.5" : "translate-x-1"
+                            <span className="pointer-events-none absolute -inset-full top-0 block h-full w-1/2 -skew-x-12 bg-gradient-to-r from-transparent via-white/25 to-transparent opacity-0 transition-all duration-1000 group-hover:left-full group-hover:opacity-100" />
+                            <span className="relative z-10 flex items-center gap-2 truncate px-2">
+                              {isProcessing ? (
+                                <>
+                                  <span className="h-4 w-4 shrink-0 animate-spin rounded-full border-2 border-white/30 border-t-white" />
+                                  <span>Processing...</span>
+                                </>
+                              ) : (
+                                <>
+                                  <span className="truncate">PAY {order.currency}{order.total.toLocaleString("en-IN")}</span>
+                                  <ArrowRight className="h-4 w-4 shrink-0 transition-transform group-hover:translate-x-1" />
+                                </>
                               )}
-                            />
-                          </button>
-                        </div>
+                            </span>
+                          </motion.button>
 
-                        {/* Final Pay Button with Exact Amount and Disabled State */}
-                        <motion.button
-                          ref={payBtnRef}
-                          type="submit"
-                          disabled={!isPayButtonEnabled}
-                          onMouseMove={handleButtonMove}
-                          onMouseLeave={resetBtnPos}
-                          animate={
-                            buttonShake
-                              ? { x: [0, -8, 8, -6, 6, -3, 3, 0] }
-                              : { x: btnPos.x, y: btnPos.y }
-                          }
-                          transition={{ type: "spring", stiffness: 280, damping: 18 }}
-                          className={cn(
-                            "group relative mt-5 flex w-full items-center justify-center gap-2 overflow-hidden rounded-full py-4 text-sm font-bold text-white shadow-lg transition-all duration-300 pointer-events-auto",
-                            isPayButtonEnabled
-                              ? "bg-blue-600 shadow-[0_8px_32px_rgba(59,130,246,0.35)] hover:bg-blue-500 hover:shadow-[0_12px_45px_rgba(59,130,246,0.5)] cursor-pointer"
-                              : "bg-white/10 opacity-50 cursor-not-allowed text-white/40"
-                          )}
-                        >
-                          <span className="pointer-events-none absolute -inset-full top-0 block h-full w-1/2 -skew-x-12 bg-gradient-to-r from-transparent via-white/25 to-transparent opacity-0 transition-all duration-1000 group-hover:left-full group-hover:opacity-100" />
-                          <span className="relative z-10 flex items-center gap-2">
-                            {isProcessing ? (
-                              <>
-                                <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />
-                                <span>Processing...</span>
-                              </>
-                            ) : (
-                              <>
-                                <span>PAY {order.currency}{order.total.toLocaleString("en-IN")}</span>
-                                <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
-                              </>
-                            )}
-                          </span>
-                        </motion.button>
+                          {/* Subtle Trust Area */}
+                          <div className="mt-3 flex items-center justify-center gap-1.5 text-[11px] text-white/45 text-center">
+                            <Lock className="h-3 w-3 shrink-0 text-blue-400" />
+                            <span>Secure checkout — Your payment details are handled securely.</span>
+                          </div>
+                        </form>
+                      </div>
+                    )}
+                  </div>
 
-                        {/* Subtle Trust Area */}
-                        <div className="mt-3 flex items-center justify-center gap-1.5 text-[11px] text-white/45">
-                          <Lock className="h-3 w-3 text-blue-400" />
-                          <span>Secure checkout — Your payment details are handled securely.</span>
-                        </div>
-                      </form>
-                    </div>
-                  )}
-                </div>
-
-                {/* ----------------------------------------------------------------------- */}
-                {/* RIGHT COLUMN: DIGITAL GLASS RECEIPT / ORDER SUMMARY                     */}
-                {/* ----------------------------------------------------------------------- */}
-                <div className="border-t border-white/[0.08] bg-white/[0.015] p-6 sm:p-8 lg:border-t-0 flex flex-col justify-between">
-                  <div>
-                    <div className="flex items-center justify-between">
-                      <span className="text-xs font-mono uppercase tracking-widest text-white/45">
-                        Order Summary
-                      </span>
-                      <span className="text-xs font-mono text-blue-400">{order.orderId}</span>
-                    </div>
-
-                    {/* Plan Switcher Tabs */}
-                    <div className="mt-4 flex rounded-xl border border-white/10 bg-black/40 p-1">
-                      {plans.map((p) => (
-                        <button
-                          key={p.id}
-                          type="button"
-                          onClick={() => selectPlan(p.id)}
-                          className={cn(
-                            "flex-1 rounded-lg py-1.5 text-xs font-medium transition-all cursor-pointer pointer-events-auto",
-                            selectedPlan.id === p.id
-                              ? "bg-blue-600 text-white shadow-md shadow-blue-500/20"
-                              : "text-white/50 hover:text-white"
-                          )}
-                        >
-                          {p.name}
-                        </button>
-                      ))}
-                    </div>
-
-                    {/* Selected Package Details */}
-                    <div className="mt-5 rounded-2xl border border-white/[0.08] bg-[#07080c]/60 p-5">
-                      <div className="flex items-start justify-between">
-                        <div>
-                          <h3 className="font-display text-xl font-bold text-white">
-                            {order.planName} Package
-                          </h3>
-                          <p className="mt-1 text-xs text-white/55">{selectedPlan.tagline}</p>
-                        </div>
-                        <div className="text-right">
-                          <span className="font-display text-2xl font-bold text-white">
-                            {order.price}
-                          </span>
-                          <span className="block text-[10px] text-white/40">{order.cadence}</span>
-                        </div>
+                  {/* ----------------------------------------------------------------------- */}
+                  {/* RIGHT COLUMN: DIGITAL GLASS RECEIPT / ORDER SUMMARY                     */}
+                  {/* ----------------------------------------------------------------------- */}
+                  <div className="border-t border-white/[0.08] bg-white/[0.015] p-4 sm:p-6 md:p-8 lg:border-t-0 flex flex-col justify-between w-full min-w-0">
+                    <div className="w-full min-w-0">
+                      <div className="flex items-center justify-between gap-2">
+                        <span className="text-xs font-mono uppercase tracking-widest text-white/45">
+                          Order Summary
+                        </span>
+                        <span className="text-xs font-mono text-blue-400 truncate">{order.orderId}</span>
                       </div>
 
-                      {/* Subtle Animated Divider */}
-                      <div className="my-4 h-px w-full bg-gradient-to-r from-transparent via-white/15 to-transparent" />
+                      {/* Plan Switcher Tabs */}
+                      <div className="mt-4 flex rounded-xl border border-white/10 bg-black/40 p-1 w-full min-w-0">
+                        {plans.map((p) => (
+                          <button
+                            key={p.id}
+                            type="button"
+                            onClick={() => selectPlan(p.id)}
+                            className={cn(
+                              "flex-1 min-w-0 rounded-lg py-1.5 px-1.5 sm:px-2 text-[11px] sm:text-xs font-medium transition-all cursor-pointer pointer-events-auto truncate text-center",
+                              selectedPlan.id === p.id
+                                ? "bg-blue-600 text-white shadow-md shadow-blue-500/20"
+                                : "text-white/50 hover:text-white"
+                            )}
+                          >
+                            {p.name}
+                          </button>
+                        ))}
+                      </div>
 
-                      {/* Features List */}
-                      <ul className="space-y-2">
-                        {order.features.slice(0, 5).map((f) => (
-                          <li key={f} className="flex items-center gap-2 text-xs text-white/70">
-                            <span className="flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-blue-500/15 text-blue-400">
-                              <Check className="h-2.5 w-2.5" />
+                      {/* Selected Package Details */}
+                      <div className="mt-4 sm:mt-5 rounded-2xl border border-white/[0.08] bg-[#07080c]/60 p-4 sm:p-5 w-full min-w-0">
+                        <div className="flex items-start justify-between gap-2">
+                          <div className="min-w-0">
+                            <h3 className="font-display text-lg sm:text-xl font-bold text-white truncate">
+                              {order.planName} Package
+                            </h3>
+                            <p className="mt-1 text-xs text-white/55 line-clamp-2">{selectedPlan.tagline}</p>
+                          </div>
+                          <div className="text-right shrink-0">
+                            <span className="font-display text-xl sm:text-2xl font-bold text-white">
+                              {order.price}
                             </span>
-                            <span>{f}</span>
+                            <span className="block text-[10px] text-white/40">{order.cadence}</span>
+                          </div>
+                        </div>
+
+                        {/* Subtle Animated Divider */}
+                        <div className="my-3 sm:my-4 h-px w-full bg-gradient-to-r from-transparent via-white/15 to-transparent" />
+
+                        {/* Features List */}
+                        <ul className="space-y-2 w-full min-w-0">
+                          {order.features.slice(0, 5).map((f) => (
+                            <li key={f} className="flex items-start gap-2 text-xs text-white/70">
+                              <span className="flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-blue-500/15 text-blue-400 mt-0.5">
+                                <Check className="h-2.5 w-2.5" />
+                              </span>
+                              <span className="break-words min-w-0 flex-1">{f}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+
+                      {/* Price Breakdown */}
+                      <div className="mt-4 sm:mt-5 space-y-2.5 rounded-2xl border border-white/[0.06] bg-black/25 p-3.5 sm:p-4 text-xs w-full min-w-0">
+                        <div className="flex justify-between items-center gap-2 text-white/60">
+                          <span className="shrink-0">Product / Plan</span>
+                          <span className="text-white/90 text-right truncate">{order.planName} Architecture</span>
+                        </div>
+                        <div className="flex justify-between items-center gap-2 text-white/60">
+                          <span className="shrink-0">Quantity</span>
+                          <span className="text-white/90">{order.quantity}</span>
+                        </div>
+                        <div className="flex justify-between items-center gap-2 text-white/60">
+                          <span className="shrink-0">Subtotal</span>
+                          <span className="text-white/90 font-mono">
+                            {order.currency}
+                            {order.subtotal.toLocaleString("en-IN")}
+                          </span>
+                        </div>
+                        <div className="flex justify-between items-center gap-2 text-white/60">
+                          <span className="shrink-0">GST (18% Demo)</span>
+                          <span className="text-emerald-400 text-right truncate">₹0.00 (Demo Waived)</span>
+                        </div>
+
+                        <div className="h-px w-full bg-white/[0.08]" />
+
+                        {/* Visually Dominant Total */}
+                        <div className="flex items-center justify-between gap-2 text-sm font-bold text-white pt-1">
+                          <span>Total Due</span>
+                          <span className="font-display text-base sm:text-lg text-blue-400 font-mono">
+                            {order.currency}
+                            {order.total.toLocaleString("en-IN")}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="mt-5 sm:mt-6 flex items-center gap-2.5 rounded-xl border border-white/[0.06] bg-white/[0.02] p-3 sm:p-3.5 text-[11px] text-white/50 w-full min-w-0">
+                      <ShieldCheck className="h-4 w-4 shrink-0 text-blue-400" />
+                      <span className="leading-tight">Transparent pricing · Direct developer onboarding · Sub-second delivery guarantee.</span>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* ========================================================================= */}
+              {/* STEP 3: PROCESSING STATE                                                  */}
+              {/* ========================================================================= */}
+              {step === "processing" && (
+                <div className="flex flex-col items-center justify-center p-8 sm:p-12 md:p-16 text-center w-full min-w-0">
+                  <div className="relative flex h-16 w-16 sm:h-20 sm:w-20 items-center justify-center">
+                    <div className="h-14 w-14 sm:h-16 sm:w-16 animate-spin rounded-full border-3 border-blue-500/20 border-t-blue-400" />
+                    <Lock className="absolute h-5 w-5 sm:h-6 sm:w-6 text-blue-400" />
+                  </div>
+
+                  <h3 className="mt-5 sm:mt-6 font-display text-lg sm:text-xl font-bold text-white">
+                    Processing payment...
+                  </h3>
+                  <p className="mt-2 text-xs sm:text-sm text-white/60 max-w-sm">{processingStatus}</p>
+
+                  <div className="mt-5 sm:mt-6 w-40 sm:w-48 h-1.5 overflow-hidden rounded-full bg-white/10">
+                    <motion.div
+                      className="h-full bg-gradient-to-r from-blue-600 to-blue-400"
+                      animate={{ x: ["-100%", "100%"] }}
+                      transition={{ repeat: Infinity, duration: 1.2, ease: "easeInOut" }}
+                    />
+                  </div>
+
+                  <span className="mt-5 sm:mt-6 text-[10px] sm:text-[11px] text-white/40 font-mono">
+                    Simulating verified sandbox execution
+                  </span>
+                </div>
+              )}
+
+              {/* ========================================================================= */}
+              {/* STEP 4A: SUCCESS STATE                                                    */}
+              {/* ========================================================================= */}
+              {step === "success" && paymentResult && (
+                <div className="relative p-6 sm:p-8 md:p-12 text-center w-full min-w-0">
+                  {/* Minimal Elegant SVG Checkmark Drawing */}
+                  <div className="relative mx-auto flex h-16 w-16 sm:h-20 sm:w-20 items-center justify-center">
+                    <motion.div
+                      initial={{ scale: 0, opacity: 0 }}
+                      animate={{ scale: 1, opacity: 1 }}
+                      transition={{ delay: 0.1, duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
+                      className="absolute inset-0 rounded-full bg-gradient-to-br from-blue-500 via-blue-600 to-blue-700 shadow-[0_0_35px_rgba(59,130,246,0.5)]"
+                    />
+                    <svg className="relative z-10 h-8 w-8 sm:h-10 sm:w-10 text-white" viewBox="0 0 24 24" fill="none">
+                      <motion.path
+                        d="M5 13l4 4L19 7"
+                        stroke="currentColor"
+                        strokeWidth="3"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        initial={{ pathLength: 0 }}
+                        animate={{ pathLength: 1 }}
+                        transition={{ delay: 0.25, duration: 0.45, ease: "easeOut" }}
+                      />
+                    </svg>
+                    <Sparkles className="absolute -right-1 -top-1 h-5 w-5 text-blue-200 fill-blue-200" />
+                  </div>
+
+                  <motion.h3
+                    initial={{ opacity: 0, y: 12 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.3, duration: 0.45 }}
+                    className="mt-5 sm:mt-6 font-display text-xl sm:text-2xl md:text-3xl font-bold tracking-tight text-white"
+                  >
+                    ✓ Payment Complete
+                  </motion.h3>
+
+                  <motion.div
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.35, duration: 0.45 }}
+                    className="mt-2 font-display text-2xl sm:text-3xl font-bold text-blue-400 font-mono"
+                  >
+                    {order.currency}{order.total.toLocaleString("en-IN")}
+                  </motion.div>
+
+                  <p className="mt-1 text-xs font-mono text-white/50">
+                    Order #{paymentResult.orderId}
+                  </p>
+
+                  {/* Digital Receipt Snapshot */}
+                  <motion.div
+                    initial={{ opacity: 0, scale: 0.96 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ delay: 0.45, duration: 0.45 }}
+                    className="mx-auto mt-5 sm:mt-6 w-full max-w-lg rounded-2xl border border-white/[0.08] bg-[#07080c]/80 p-4 sm:p-5 text-left text-xs text-white/70"
+                  >
+                    <div className="space-y-2">
+                      <div className="flex justify-between items-center gap-2">
+                        <span className="text-white/50 shrink-0">Plan Purchased</span>
+                        <span className="font-medium text-white truncate text-right">{order.planName} Package</span>
+                      </div>
+                      <div className="flex justify-between items-center gap-2">
+                        <span className="text-white/50 shrink-0">Customer Email</span>
+                        <span className="font-medium text-white truncate text-right">{customer.email}</span>
+                      </div>
+                      <div className="flex justify-between items-center gap-2">
+                        <span className="text-white/50 shrink-0">Payment Channel</span>
+                        <span className="font-medium uppercase text-blue-300">{method}</span>
+                      </div>
+                      <div className="flex justify-between items-center gap-2">
+                        <span className="text-white/50 shrink-0">Sandbox Status</span>
+                        <span className="font-semibold text-emerald-400">VERIFIED DEMO</span>
+                      </div>
+                    </div>
+                  </motion.div>
+
+                  {/* Action Buttons */}
+                  <motion.div
+                    initial={{ opacity: 0, y: 12 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.55, duration: 0.45 }}
+                    className="mt-6 sm:mt-8 flex flex-wrap items-center justify-center gap-2.5 sm:gap-3 w-full"
+                  >
+                    <button
+                      type="button"
+                      onClick={() => setShowOrderSummaryModal((v) => !v)}
+                      className="flex items-center justify-center gap-2 rounded-full border border-white/15 bg-white/[0.04] px-4 sm:px-5 py-2.5 text-xs font-semibold text-white transition-all hover:border-blue-400/40 hover:bg-white/[0.08] cursor-pointer pointer-events-auto w-full xs:w-auto"
+                    >
+                      <FileText className="h-3.5 w-3.5 text-blue-400" />
+                      <span>{showOrderSummaryModal ? "Hide Summary" : "View Order"}</span>
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={handleDownloadReceipt}
+                      className="flex items-center justify-center gap-2 rounded-full border border-white/15 bg-white/[0.04] px-4 sm:px-5 py-2.5 text-xs font-semibold text-white transition-all hover:border-blue-400/40 hover:bg-white/[0.08] cursor-pointer pointer-events-auto w-full xs:w-auto"
+                    >
+                      <Download className="h-3.5 w-3.5 text-blue-400" />
+                      <span>Download Receipt</span>
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={closeCheckout}
+                      className="flex items-center justify-center gap-2 rounded-full bg-blue-600 px-5 sm:px-6 py-2.5 text-xs font-bold text-white shadow-lg shadow-blue-500/25 transition-all hover:bg-blue-500 cursor-pointer pointer-events-auto w-full xs:w-auto"
+                    >
+                      <span>Return Home</span>
+                      <ArrowRight className="h-3.5 w-3.5" />
+                    </button>
+                  </motion.div>
+
+                  {/* Collapsible Order Summary View */}
+                  {showOrderSummaryModal && (
+                    <motion.div
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{ opacity: 1, height: "auto" }}
+                      className="mx-auto mt-5 sm:mt-6 w-full max-w-lg overflow-hidden rounded-2xl border border-white/10 bg-black/40 p-4 text-left text-xs text-white/70"
+                    >
+                      <span className="block font-semibold text-white mb-2">Included Deliverables:</span>
+                      <ul className="space-y-1.5 text-white/60">
+                        {order.features.map((f, i) => (
+                          <li key={i} className="flex items-start gap-2">
+                            <Check className="h-3 w-3 shrink-0 text-emerald-400 mt-0.5" />
+                            <span className="break-words flex-1">{f}</span>
                           </li>
                         ))}
                       </ul>
-                    </div>
+                    </motion.div>
+                  )}
 
-                    {/* Price Breakdown */}
-                    <div className="mt-5 space-y-2.5 rounded-2xl border border-white/[0.06] bg-black/25 p-4 text-xs">
-                      <div className="flex justify-between text-white/60">
-                        <span>Product / Plan</span>
-                        <span className="text-white/90">{order.planName} Architecture</span>
-                      </div>
-                      <div className="flex justify-between text-white/60">
-                        <span>Quantity</span>
-                        <span className="text-white/90">{order.quantity}</span>
-                      </div>
-                      <div className="flex justify-between text-white/60">
-                        <span>Subtotal</span>
-                        <span className="text-white/90">
-                          {order.currency}
-                          {order.subtotal.toLocaleString("en-IN")}
-                        </span>
-                      </div>
-                      <div className="flex justify-between text-white/60">
-                        <span>GST (18% Applicable)</span>
-                        <span className="text-emerald-400">₹0.00 (Demo Waived)</span>
-                      </div>
-
-                      <div className="h-px w-full bg-white/[0.08]" />
-
-                      {/* Visually Dominant Total */}
-                      <div className="flex items-center justify-between text-sm font-bold text-white pt-1">
-                        <span>Total Due</span>
-                        <span className="font-display text-lg text-blue-400">
-                          {order.currency}
-                          {order.total.toLocaleString("en-IN")}
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="mt-6 flex items-center gap-2.5 rounded-xl border border-white/[0.06] bg-white/[0.02] p-3.5 text-[11px] text-white/50">
-                    <ShieldCheck className="h-4 w-4 shrink-0 text-blue-400" />
-                    <span>Transparent pricing · Direct developer onboarding · Sub-second delivery guarantee.</span>
+                  <div className="mt-5 rounded-xl border border-blue-500/20 bg-blue-500/5 p-2.5 text-[11px] text-blue-300 max-w-lg mx-auto">
+                    Test checkout — no real payment was processed.
                   </div>
                 </div>
-              </div>
-            )}
+              )}
 
-            {/* ========================================================================= */}
-            {/* STEP 3: PROCESSING STATE                                                  */}
-            {/* ========================================================================= */}
-            {step === "processing" && (
-              <div className="flex flex-col items-center justify-center p-12 sm:p-16 text-center">
-                <div className="relative flex h-20 w-20 items-center justify-center">
-                  <div className="h-16 w-16 animate-spin rounded-full border-3 border-blue-500/20 border-t-blue-400" />
-                  <Lock className="absolute h-6 w-6 text-blue-400" />
-                </div>
-
-                <h3 className="mt-6 font-display text-xl font-bold text-white">
-                  Processing payment...
-                </h3>
-                <p className="mt-2 text-sm text-white/60">{processingStatus}</p>
-
-                <div className="mt-6 w-48 h-1.5 overflow-hidden rounded-full bg-white/10">
-                  <motion.div
-                    className="h-full bg-gradient-to-r from-blue-600 to-blue-400"
-                    animate={{ x: ["-100%", "100%"] }}
-                    transition={{ repeat: Infinity, duration: 1.2, ease: "easeInOut" }}
-                  />
-                </div>
-
-                <span className="mt-6 text-[11px] text-white/40 font-mono">
-                  Simulating verified sandbox execution
-                </span>
-              </div>
-            )}
-
-            {/* ========================================================================= */}
-            {/* STEP 4A: SUCCESS STATE                                                    */}
-            {/* ========================================================================= */}
-            {step === "success" && paymentResult && (
-              <div className="relative p-8 text-center sm:p-12">
-                {/* Minimal Elegant SVG Checkmark Drawing */}
-                <div className="relative mx-auto flex h-20 w-20 items-center justify-center">
-                  <motion.div
-                    initial={{ scale: 0, opacity: 0 }}
-                    animate={{ scale: 1, opacity: 1 }}
-                    transition={{ delay: 0.1, duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
-                    className="absolute inset-0 rounded-full bg-gradient-to-br from-blue-500 via-blue-600 to-blue-700 shadow-[0_0_35px_rgba(59,130,246,0.5)]"
-                  />
-                  <svg className="relative z-10 h-10 w-10 text-white" viewBox="0 0 24 24" fill="none">
-                    <motion.path
-                      d="M5 13l4 4L19 7"
-                      stroke="currentColor"
-                      strokeWidth="3"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      initial={{ pathLength: 0 }}
-                      animate={{ pathLength: 1 }}
-                      transition={{ delay: 0.25, duration: 0.45, ease: "easeOut" }}
-                    />
-                  </svg>
-                  <Sparkles className="absolute -right-1 -top-1 h-5 w-5 text-blue-200 fill-blue-200" />
-                </div>
-
-                <motion.h3
-                  initial={{ opacity: 0, y: 12 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.3, duration: 0.45 }}
-                  className="mt-6 font-display text-2xl font-bold tracking-tight text-white sm:text-3xl"
-                >
-                  ✓ Payment Complete
-                </motion.h3>
-
-                <motion.div
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.35, duration: 0.45 }}
-                  className="mt-2 font-display text-3xl font-bold text-blue-400"
-                >
-                  {order.currency}{order.total.toLocaleString("en-IN")}
-                </motion.div>
-
-                <p className="mt-1 text-xs font-mono text-white/50">
-                  Order #{paymentResult.orderId}
-                </p>
-
-                {/* Digital Receipt Snapshot */}
-                <motion.div
-                  initial={{ opacity: 0, scale: 0.96 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ delay: 0.45, duration: 0.45 }}
-                  className="mx-auto mt-6 max-w-lg rounded-2xl border border-white/[0.08] bg-[#07080c]/80 p-5 text-left text-xs text-white/70"
-                >
-                  <div className="space-y-2">
-                    <div className="flex justify-between">
-                      <span className="text-white/50">Plan Purchased</span>
-                      <span className="font-medium text-white">{order.planName} Package</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-white/50">Customer Email</span>
-                      <span className="font-medium text-white">{customer.email}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-white/50">Payment Channel</span>
-                      <span className="font-medium uppercase text-blue-300">{method}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-white/50">Sandbox Status</span>
-                      <span className="font-semibold text-emerald-400">VERIFIED DEMO</span>
-                    </div>
+              {/* ========================================================================= */}
+              {/* STEP 4B: FAILURE STATE                                                    */}
+              {/* ========================================================================= */}
+              {step === "failure" && paymentResult && (
+                <div className="p-6 sm:p-8 md:p-12 text-center w-full min-w-0">
+                  <div className="mx-auto flex h-16 w-16 sm:h-20 sm:w-20 items-center justify-center rounded-full border border-red-500/30 bg-red-500/10 shadow-[0_0_35px_rgba(239,68,68,0.25)]">
+                    <XCircle className="h-8 w-8 sm:h-10 sm:w-10 text-red-400" />
                   </div>
-                </motion.div>
 
-                {/* Action Buttons */}
-                <motion.div
-                  initial={{ opacity: 0, y: 12 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.55, duration: 0.45 }}
-                  className="mt-8 flex flex-wrap items-center justify-center gap-3"
-                >
-                  <button
-                    type="button"
-                    onClick={() => setShowOrderSummaryModal((v) => !v)}
-                    className="flex items-center gap-2 rounded-full border border-white/15 bg-white/[0.04] px-5 py-2.5 text-xs font-semibold text-white transition-all hover:border-blue-400/40 hover:bg-white/[0.08] cursor-pointer pointer-events-auto"
-                  >
-                    <FileText className="h-3.5 w-3.5 text-blue-400" />
-                    <span>{showOrderSummaryModal ? "Hide Summary" : "View Order"}</span>
-                  </button>
+                  <h3 className="mt-5 sm:mt-6 font-display text-xl sm:text-2xl md:text-3xl font-bold tracking-tight text-white">
+                    Payment could not be completed.
+                  </h3>
 
-                  <button
-                    type="button"
-                    onClick={handleDownloadReceipt}
-                    className="flex items-center gap-2 rounded-full border border-white/15 bg-white/[0.04] px-5 py-2.5 text-xs font-semibold text-white transition-all hover:border-blue-400/40 hover:bg-white/[0.08] cursor-pointer pointer-events-auto"
-                  >
-                    <Download className="h-3.5 w-3.5 text-blue-400" />
-                    <span>Download Receipt</span>
-                  </button>
+                  <div className="mx-auto mt-4 w-full max-w-md rounded-2xl border border-red-500/20 bg-red-500/5 p-4 text-left text-xs">
+                    <span className="font-semibold text-red-300">Failure Reason:</span>
+                    <p className="mt-1 text-white/80 leading-relaxed break-words">
+                      {paymentResult.failureReason ||
+                        "The transaction could not be authorized by the test sandbox simulator."}
+                    </p>
+                  </div>
 
-                  <button
-                    type="button"
-                    onClick={closeCheckout}
-                    className="flex items-center gap-2 rounded-full bg-blue-600 px-6 py-2.5 text-xs font-bold text-white shadow-lg shadow-blue-500/25 transition-all hover:bg-blue-500 cursor-pointer pointer-events-auto"
-                  >
-                    <span>Return Home</span>
-                    <ArrowRight className="h-3.5 w-3.5" />
-                  </button>
-                </motion.div>
+                  {/* Action Buttons for Failure State */}
+                  <div className="mt-6 sm:mt-8 flex flex-wrap items-center justify-center gap-2.5 sm:gap-3 w-full">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setSimulateDecline(false);
+                        setStep("payment");
+                      }}
+                      className="flex items-center justify-center gap-2 rounded-full bg-blue-600 px-5 sm:px-6 py-2.5 text-xs font-bold text-white shadow-lg shadow-blue-500/25 transition-all hover:bg-blue-500 cursor-pointer pointer-events-auto w-full xs:w-auto"
+                    >
+                      <RotateCcw className="h-3.5 w-3.5" />
+                      <span>Try Again</span>
+                    </button>
 
-                {/* Collapsible Order Summary View */}
-                {showOrderSummaryModal && (
-                  <motion.div
-                    initial={{ opacity: 0, height: 0 }}
-                    animate={{ opacity: 1, height: "auto" }}
-                    className="mx-auto mt-6 max-w-lg overflow-hidden rounded-2xl border border-white/10 bg-black/40 p-4 text-left text-xs text-white/70"
-                  >
-                    <span className="block font-semibold text-white mb-2">Included Deliverables:</span>
-                    <ul className="space-y-1 text-white/60">
-                      {order.features.map((f, i) => (
-                        <li key={i} className="flex items-center gap-2">
-                          <Check className="h-3 w-3 text-emerald-400" /> {f}
-                        </li>
-                      ))}
-                    </ul>
-                  </motion.div>
-                )}
+                    <button
+                      type="button"
+                      onClick={() => setStep("payment")}
+                      className="flex items-center justify-center gap-2 rounded-full border border-white/15 bg-white/[0.04] px-4 sm:px-5 py-2.5 text-xs font-semibold text-white transition-all hover:border-white/25 cursor-pointer pointer-events-auto w-full xs:w-auto"
+                    >
+                      <span>Change Method</span>
+                    </button>
 
-                <div className="mt-5 rounded-xl border border-blue-500/20 bg-blue-500/5 p-2.5 text-[11px] text-blue-300 max-w-lg mx-auto">
-                  Test checkout — no real payment was processed.
+                    <button
+                      type="button"
+                      onClick={() => setStep("review")}
+                      className="flex items-center justify-center gap-2 rounded-full border border-white/15 bg-white/[0.04] px-4 sm:px-5 py-2.5 text-xs font-semibold text-white/70 transition-all hover:text-white cursor-pointer pointer-events-auto w-full xs:w-auto"
+                    >
+                      <span>Edit Details</span>
+                    </button>
+                  </div>
                 </div>
-              </div>
-            )}
-
-            {/* ========================================================================= */}
-            {/* STEP 4B: FAILURE STATE                                                    */}
-            {/* ========================================================================= */}
-            {step === "failure" && paymentResult && (
-              <div className="p-8 text-center sm:p-12">
-                <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full border border-red-500/30 bg-red-500/10 shadow-[0_0_35px_rgba(239,68,68,0.25)]">
-                  <XCircle className="h-10 w-10 text-red-400" />
-                </div>
-
-                <h3 className="mt-6 font-display text-2xl font-bold tracking-tight text-white sm:text-3xl">
-                  Payment could not be completed.
-                </h3>
-
-                <div className="mx-auto mt-4 max-w-md rounded-2xl border border-red-500/20 bg-red-500/5 p-4 text-left text-xs">
-                  <span className="font-semibold text-red-300">Failure Reason:</span>
-                  <p className="mt-1 text-white/80 leading-relaxed">
-                    {paymentResult.failureReason ||
-                      "The transaction could not be authorized by the test sandbox simulator."}
-                  </p>
-                </div>
-
-                {/* Action Buttons for Failure State */}
-                <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setSimulateDecline(false);
-                      setStep("payment");
-                    }}
-                    className="flex items-center gap-2 rounded-full bg-blue-600 px-6 py-2.5 text-xs font-bold text-white shadow-lg shadow-blue-500/25 transition-all hover:bg-blue-500 cursor-pointer pointer-events-auto"
-                  >
-                    <RotateCcw className="h-3.5 w-3.5" />
-                    <span>Try Again</span>
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={() => setStep("payment")}
-                    className="flex items-center gap-2 rounded-full border border-white/15 bg-white/[0.04] px-5 py-2.5 text-xs font-semibold text-white transition-all hover:border-white/25 cursor-pointer pointer-events-auto"
-                  >
-                    <span>Change Payment Method</span>
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={() => setStep("review")}
-                    className="flex items-center gap-2 rounded-full border border-white/15 bg-white/[0.04] px-5 py-2.5 text-xs font-semibold text-white/70 transition-all hover:text-white cursor-pointer pointer-events-auto"
-                  >
-                    <span>Edit Details</span>
-                  </button>
-                </div>
-              </div>
-            )}
+              )}
+            </div>
           </motion.div>
         </div>
       )}

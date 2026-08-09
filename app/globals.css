@@ -100,6 +100,22 @@ body {
   border: 2px solid var(--bg);
 }
 
+.checkout-modal *::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+.checkout-modal *::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 999px;
+}
+.checkout-modal *::-webkit-scrollbar-thumb {
+  background: rgba(59, 130, 246, 0.4);
+  border-radius: 999px;
+}
+.checkout-modal *::-webkit-scrollbar-thumb:hover {
+  background: rgba(59, 130, 246, 0.7);
+}
+
 /* ----- Lenis ----- */
 html.lenis,
 html.lenis body {
