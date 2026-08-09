@@ -29,46 +29,140 @@ export default function Hero() {
   const yText = useTransform(scrollYProgress, [0, 1], [0, 60]);
   const opacity = useTransform(scrollYProgress, [0, 0.75], [1, 0]);
 
-  // Cursor Tracking when Idle
+  const mouseTarget = useRef({ x: 0, y: 0 });
+  const currentMouse = useRef({ x: 0, y: 0 });
+  const isSpeakingRef = useRef(false);
+  const rafIdRef = useRef<number | null>(null);
+  const blinkTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  // Keep isSpeakingRef in sync
+  useEffect(() => {
+    isSpeakingRef.current = isSpeaking;
+  }, [isSpeaking]);
+
+  // Smooth 60fps Lerp Cursor & Eye Tracking Physics Loop
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
-      if (isSpeaking || !splineAppRef.current) return;
-      try {
-        const app = splineAppRef.current;
-        const rect = robotContainerRef.current?.getBoundingClientRect();
-        if (!rect) return;
+      const rect = robotContainerRef.current?.getBoundingClientRect();
+      if (!rect) return;
 
-        // Normalized coordinates relative to the 3D robot container
-        const nx = (e.clientX - (rect.left + rect.width / 2)) / (window.innerWidth / 2);
-        const ny = (e.clientY - (rect.top + rect.height / 2)) / (window.innerHeight / 2);
+      const centerX = rect.left + rect.width / 2;
+      const centerY = rect.top + rect.height / 2;
+      const nx = (e.clientX - centerX) / (window.innerWidth * 0.45);
+      const ny = (e.clientY - centerY) / (window.innerHeight * 0.45);
 
-        // Update Spline variables if defined in scene
+      // Natural clamped range (-1 to 1)
+      mouseTarget.current.x = Math.max(-1, Math.min(1, nx));
+      mouseTarget.current.y = Math.max(-1, Math.min(1, ny));
+    };
+
+    const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
+
+    const updateTracking = () => {
+      const app = splineAppRef.current;
+      if (app) {
+        // Smooth lerp interpolation with 0.08 damping
+        currentMouse.current.x = lerp(currentMouse.current.x, mouseTarget.current.x, 0.08);
+        currentMouse.current.y = lerp(currentMouse.current.y, mouseTarget.current.y, 0.08);
+
+        const cx = currentMouse.current.x;
+        const cy = currentMouse.current.y;
+        // When speaking, maintain 50% tracking weight to preserve eye contact
+        const speakingWeight = isSpeakingRef.current ? 0.5 : 1.0;
+
+        // Update Spline variables if scene uses them
         if (typeof app.setVariable === "function") {
-          app.setVariable("mouseX", nx);
-          app.setVariable("mouseY", -ny);
+          app.setVariable("mouseX", cx * speakingWeight);
+          app.setVariable("mouseY", -cy * speakingWeight);
         }
 
-        // Direct object tracking if available
+        // 1. Eyes Tracking (strongest, most responsive)
+        const eyesObj =
+          app.findObjectByName?.("Eyes") ||
+          app.findObjectByName?.("eyes") ||
+          app.findObjectByName?.("Eye") ||
+          app.findObjectByName?.("eye");
+        if (eyesObj && eyesObj.rotation) {
+          eyesObj.rotation.y = cx * 0.28 * speakingWeight;
+          eyesObj.rotation.x = -cy * 0.18 * speakingWeight;
+        }
+
+        // 2. Head Tracking (refined, small rotation max ~10-12°)
         const headObj =
           app.findObjectByName?.("Head") ||
           app.findObjectByName?.("head") ||
+          app.findObjectByName?.("Face") ||
+          app.findObjectByName?.("face") ||
           app.findObjectByName?.("Robot") ||
           app.findObjectByName?.("robot");
-
-        if (headObj && headObj.rotation && !isSpeaking) {
-          headObj.rotation.y = nx * 0.35;
-          headObj.rotation.x = -ny * 0.25;
+        if (headObj && headObj.rotation) {
+          headObj.rotation.y = cx * 0.18 * speakingWeight;
+          headObj.rotation.x = -cy * 0.12 * speakingWeight;
         }
-      } catch (err) {
-        // Fallback gracefully
+
+        // 3. Neck Tracking (very subtle movement)
+        const neckObj =
+          app.findObjectByName?.("Neck") ||
+          app.findObjectByName?.("neck");
+        if (neckObj && neckObj.rotation) {
+          neckObj.rotation.y = cx * 0.04 * speakingWeight;
+          neckObj.rotation.x = -cy * 0.03 * speakingWeight;
+        }
+
+        // 4. Body Tracking (almost stationary)
+        const bodyObj =
+          app.findObjectByName?.("Body") ||
+          app.findObjectByName?.("body") ||
+          app.findObjectByName?.("Torso") ||
+          app.findObjectByName?.("torso");
+        if (bodyObj && bodyObj.rotation) {
+          bodyObj.rotation.y = cx * 0.012 * speakingWeight;
+        }
       }
+
+      rafIdRef.current = requestAnimationFrame(updateTracking);
     };
 
     window.addEventListener("mousemove", handleMouseMove, { passive: true });
+    rafIdRef.current = requestAnimationFrame(updateTracking);
+
     return () => {
       window.removeEventListener("mousemove", handleMouseMove);
+      if (rafIdRef.current) cancelAnimationFrame(rafIdRef.current);
     };
-  }, [isSpeaking]);
+  }, []);
+
+  // Periodic Natural Blinking Loop (every 3.5s - 6s)
+  useEffect(() => {
+    let isMounted = true;
+    const scheduleBlink = () => {
+      const nextBlinkDelay = 3500 + Math.random() * 2500;
+      blinkTimeoutRef.current = setTimeout(() => {
+        if (!isMounted) return;
+        const app = splineAppRef.current;
+        if (app) {
+          const eyesObj =
+            app.findObjectByName?.("Eyes") ||
+            app.findObjectByName?.("eyes") ||
+            app.findObjectByName?.("Eye") ||
+            app.findObjectByName?.("eye");
+          if (eyesObj && eyesObj.scale) {
+            eyesObj.scale.y = 0.05;
+            setTimeout(() => {
+              if (eyesObj.scale) eyesObj.scale.y = 1.0;
+            }, 130);
+          }
+        }
+        scheduleBlink();
+      }, nextBlinkDelay);
+    };
+
+    scheduleBlink();
+    return () => {
+      isMounted = false;
+      if (blinkTimeoutRef.current) clearTimeout(blinkTimeoutRef.current);
+    };
+  }, []);
 
   // Handle Robot Animation Actions during speech sequence
   const handleRobotAnimation = useCallback(
@@ -85,7 +179,6 @@ export default function Hero() {
             app.findObjectByName?.("Robot") ||
             app.findObjectByName?.("robot");
           if (headObj && headObj.rotation) {
-            // Smoothly look directly toward visitor
             headObj.rotation.x = 0;
             headObj.rotation.y = 0;
           }
@@ -99,7 +192,7 @@ export default function Hero() {
             app.findObjectByName?.("Eye") ||
             app.findObjectByName?.("eye");
           if (eyesObj && eyesObj.scale) {
-            eyesObj.scale.y = 0.1;
+            eyesObj.scale.y = 0.05;
             setTimeout(() => {
               if (eyesObj.scale) eyesObj.scale.y = 1.0;
             }, 140);

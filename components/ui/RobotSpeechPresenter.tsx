@@ -247,20 +247,31 @@ export default function RobotSpeechPresenter({
   const words = SCRIPT_PARTS[currentPartIdx]?.split(" ") || [];
 
   return (
-    <div className={cn("relative z-20 h-full w-full", className)}>
+    <div className={cn("pointer-events-none absolute inset-0 z-20 h-full w-full", className)}>
       {/* 
         ========================================================================
-        INTERACTIVE ROBOT CLICK DETECTION HITBOX
-        Covers the entire visible robot (head, face, eyes, body, arms, hands).
-        Clicking anywhere on the robot starts speech immediately!
+        PRECISE ROBOT HEAD HITBOX
+        Accurately positioned over the 3D robot's head and face.
+        Only triggers hover cue ("Click to speak") and speech when the cursor
+        or tap is directly over the visible head.
         ========================================================================
       */}
       <div
+        data-cursor="Click to speak"
         onClick={triggerSpeechSequence}
+        onTouchEnd={(e) => {
+          e.preventDefault();
+          triggerSpeechSequence();
+        }}
         onMouseEnter={() => setIsHoveringRobot(true)}
         onMouseLeave={() => setIsHoveringRobot(false)}
-        className="absolute inset-0 z-30 cursor-pointer select-none"
-        aria-label="Click anywhere on the robot to speak"
+        className={cn(
+          "pointer-events-auto absolute top-[12%] sm:top-[14%] left-[34%] sm:left-[36%] w-[32%] sm:w-[28%] h-[32%] sm:h-[30%] rounded-full cursor-pointer select-none z-30 transition-all duration-300",
+          !isPlaying && isHoveringRobot
+            ? "ring-1 ring-[#8a9a86]/40 shadow-[0_0_30px_rgba(138,154,134,0.3)] bg-[#8a9a86]/[0.03]"
+            : "bg-transparent"
+        )}
+        aria-label="Click robot head to speak"
         role="button"
         tabIndex={0}
         onKeyDown={(e) => {
@@ -270,43 +281,43 @@ export default function RobotSpeechPresenter({
           }
         }}
       >
-        {/* Subtle hover tooltip cue when hovering over the robot */}
+        {/* Subtle "Click to speak" hint directly above the robot's head */}
         {!isPlaying && isHoveringRobot && (
           <motion.div
-            initial={{ opacity: 0, y: 10, scale: 0.95 }}
+            initial={{ opacity: 0, y: 6, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 5 }}
-            className="pointer-events-none absolute -top-12 left-1/2 -translate-x-1/2 z-40 flex items-center gap-1.5 rounded-full border border-blue-400/40 bg-[#08080c]/90 px-3.5 py-1.5 text-xs font-semibold text-white shadow-[0_10px_30px_rgba(0,0,0,0.6),0_0_20px_rgba(59,130,246,0.25)] backdrop-blur-xl"
+            exit={{ opacity: 0, y: 4 }}
+            transition={{ duration: 0.2 }}
+            className="pointer-events-none absolute -top-9 left-1/2 -translate-x-1/2 whitespace-nowrap z-40 flex items-center gap-1.5 rounded-full border border-[#8a9a86]/35 bg-[#08080c]/95 px-3 py-1 text-[11px] font-medium text-[#f4f1ea] shadow-[0_8px_24px_rgba(0,0,0,0.7)] backdrop-blur-md"
           >
-            <Sparkles className="h-3.5 w-3.5 text-blue-400 animate-pulse" />
-            <span>Click robot to speak</span>
+            <Sparkles className="h-3 w-3 text-[#9ab096]" />
+            <span>Click to speak</span>
           </motion.div>
         )}
       </div>
 
       {/* 
         ========================================================================
-        SUBTLE SPEAKING STATE UI & SOUND-WAVE EQUALIZER
-        While speaking: Soft Electric Blue glow + Live animated equalizer bars
-        + Small "Speaking..." indicator + Typewriter subtitle with active word glow
+        SPEAKING STATE UI & SOUND-WAVE EQUALIZER
+        While speaking: Refined Quiet Luxury equalizer bars + live subtitles
         ========================================================================
       */}
       <AnimatePresence>
         {isPlaying && (
           <motion.div
-            initial={{ opacity: 0, scale: 0.92, y: 20 }}
+            initial={{ opacity: 0, scale: 0.94, y: 16 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.92, y: 15 }}
+            exit={{ opacity: 0, scale: 0.94, y: 12 }}
             transition={{ type: "spring", stiffness: 280, damping: 24 }}
-            className="pointer-events-auto absolute -top-24 left-1/2 -translate-x-1/2 sm:-top-28 sm:left-auto sm:right-4 sm:translate-x-0 z-40 w-[92%] max-w-sm rounded-3xl border border-white/[0.12] bg-[#08080c]/92 p-5 shadow-[0_24px_70px_rgba(0,0,0,0.85),0_0_30px_rgba(59,130,246,0.18)] backdrop-blur-2xl"
+            className="pointer-events-auto absolute -top-24 left-1/2 -translate-x-1/2 sm:-top-28 sm:left-auto sm:right-4 sm:translate-x-0 z-40 w-[92%] max-w-sm rounded-3xl border border-white/[0.12] bg-[#0c0e12]/95 p-5 shadow-[0_24px_70px_rgba(0,0,0,0.9)] backdrop-blur-2xl"
           >
             {/* Specular inner rim highlight */}
-            <div className="pointer-events-none absolute inset-0 rounded-[inherit] shadow-[inset_0_1px_0_0_rgba(255,255,255,0.20)]" />
+            <div className="pointer-events-none absolute inset-0 rounded-[inherit] shadow-[inset_0_1px_0_0_rgba(255,255,255,0.15)]" />
 
             {/* Header with sound-wave visualizer and audio controls */}
             <div className="flex items-center justify-between border-b border-white/10 pb-2.5">
               <div className="flex items-center gap-2.5">
-                {/* 4 Animated Sound-Wave Equalizer Bars */}
+                {/* 4 Animated Sound-Wave Equalizer Bars in Muted Sage */}
                 <div className="flex items-center gap-0.5 h-3.5">
                   <motion.span
                     animate={
@@ -315,7 +326,7 @@ export default function RobotSpeechPresenter({
                         : { height: "4px" }
                     }
                     transition={{ repeat: Infinity, duration: 0.8, ease: "easeInOut" }}
-                    className="w-1 rounded-full bg-blue-400"
+                    className="w-1 rounded-full bg-[#8a9a86]"
                   />
                   <motion.span
                     animate={
@@ -324,7 +335,7 @@ export default function RobotSpeechPresenter({
                         : { height: "6px" }
                     }
                     transition={{ repeat: Infinity, duration: 0.7, delay: 0.15, ease: "easeInOut" }}
-                    className="w-1 rounded-full bg-blue-300"
+                    className="w-1 rounded-full bg-[#9ab096]"
                   />
                   <motion.span
                     animate={
@@ -333,7 +344,7 @@ export default function RobotSpeechPresenter({
                         : { height: "4px" }
                     }
                     transition={{ repeat: Infinity, duration: 0.75, delay: 0.3, ease: "easeInOut" }}
-                    className="w-1 rounded-full bg-blue-400"
+                    className="w-1 rounded-full bg-[#8a9a86]"
                   />
                   <motion.span
                     animate={
@@ -342,15 +353,15 @@ export default function RobotSpeechPresenter({
                         : { height: "5px" }
                     }
                     transition={{ repeat: Infinity, duration: 0.85, delay: 0.2, ease: "easeInOut" }}
-                    className="w-1 rounded-full bg-blue-200"
+                    className="w-1 rounded-full bg-[#c5a880]"
                   />
                 </div>
 
                 <div className="flex flex-col">
-                  <span className="font-mono text-[10px] font-bold uppercase tracking-widest text-blue-400">
+                  <span className="font-mono text-[10px] font-bold uppercase tracking-widest text-[#9ab096]">
                     Lumora AI Presenter
                   </span>
-                  <span className="text-[9px] text-white/45">
+                  <span className="text-[9px] text-[#a3a19b]">
                     {speechPhase === "speaking" ? "Speaking..." : "Focusing..."}
                   </span>
                 </div>
@@ -375,7 +386,7 @@ export default function RobotSpeechPresenter({
                   {isMuted ? (
                     <VolumeX className="h-3 w-3 text-red-400" />
                   ) : (
-                    <Volume2 className="h-3 w-3 text-blue-400" />
+                    <Volume2 className="h-3 w-3 text-[#9ab096]" />
                   )}
                 </button>
                 <button
@@ -391,7 +402,7 @@ export default function RobotSpeechPresenter({
 
             {/* Typewriter Subtitle Text with Active Word Glow */}
             <div className="mt-3.5 min-h-[50px]">
-              <p className="font-display text-sm font-medium leading-relaxed text-white/90">
+              <p className="font-display text-sm font-medium leading-relaxed text-[#f4f1ea]">
                 {words.map((w, idx) => {
                   const isActive = idx === currentWordIdx;
                   return (
@@ -400,8 +411,8 @@ export default function RobotSpeechPresenter({
                       className={cn(
                         "inline-block transition-all duration-200 mr-1.5",
                         isActive
-                          ? "scale-105 font-bold text-blue-400 drop-shadow-[0_0_10px_rgba(59,130,246,0.6)]"
-                          : "opacity-80"
+                          ? "scale-105 font-bold text-[#9ab096] drop-shadow-[0_0_10px_rgba(138,154,134,0.6)]"
+                          : "opacity-75 text-[#d1cfc7]"
                       )}
                     >
                       {w}
