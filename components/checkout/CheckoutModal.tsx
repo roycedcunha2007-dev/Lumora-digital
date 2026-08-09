@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect, MouseEvent, useMemo } from "react";
+import { useState, useRef, useEffect, MouseEvent, useMemo, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   X,
@@ -373,6 +373,30 @@ export default function CheckoutModal() {
     URL.revokeObjectURL(url);
   };
 
+  const contentRef = useRef<HTMLDivElement>(null);
+  const [canScrollDown, setCanScrollDown] = useState(false);
+
+  const checkScroll = useCallback(() => {
+    const el = contentRef.current;
+    if (!el) return;
+    const hasMore = el.scrollHeight - el.scrollTop - el.clientHeight > 28;
+    setCanScrollDown(hasMore);
+  }, []);
+
+  useEffect(() => {
+    if (!isOpen) return;
+    const el = contentRef.current;
+    if (!el) return;
+    checkScroll();
+    const timer = setTimeout(checkScroll, 120);
+    const ro = new ResizeObserver(checkScroll);
+    ro.observe(el);
+    return () => {
+      clearTimeout(timer);
+      ro.disconnect();
+    };
+  }, [isOpen, step, method, checkScroll]);
+
   // Magnetic Button Hover Physics
   const handleButtonMove = (e: MouseEvent<HTMLButtonElement>) => {
     if (!isPayButtonEnabled) return;
@@ -388,7 +412,7 @@ export default function CheckoutModal() {
   return (
     <AnimatePresence>
       {isOpen && (
-        <div className="checkout-modal fixed inset-0 z-[99999] flex items-center justify-center p-2 sm:p-4 md:p-6 lg:p-8 overflow-y-auto pointer-events-auto">
+        <div className="checkout-modal fixed inset-0 z-[99999] flex items-center justify-center p-3 sm:p-4 md:p-6 overflow-hidden pointer-events-auto box-border">
           {/* Subtle Backdrop Blur Overlay */}
           <motion.div
             initial={{ opacity: 0 }}
@@ -406,10 +430,13 @@ export default function CheckoutModal() {
             exit={{ opacity: 0, scale: 0.96, y: 16 }}
             transition={{ type: "spring", stiffness: 320, damping: 28 }}
             style={{
-              width: "min(100%, 1100px)",
-              maxHeight: "min(calc(100dvh - 24px), 920px)",
+              width: "min(100% - 24px, 1100px)",
+              maxWidth: "1100px",
+              maxHeight: "calc(100dvh - 24px)",
+              margin: "auto",
+              boxSizing: "border-box",
             }}
-            className="relative my-auto w-full max-w-[1100px] max-h-[calc(100dvh-24px)] sm:max-h-[calc(100dvh-32px)] flex flex-col overflow-hidden rounded-2xl sm:rounded-[2.5rem] border border-white/[0.12] bg-[#07080c]/95 shadow-[0_30px_100px_rgba(0,0,0,0.9)] backdrop-blur-2xl z-20 pointer-events-auto"
+            className="relative my-auto w-full max-w-[1100px] max-h-[calc(100dvh-24px)] flex flex-col min-h-0 overflow-hidden rounded-2xl sm:rounded-[2.5rem] border border-white/[0.12] bg-[#07080c]/98 shadow-[0_30px_100px_rgba(0,0,0,0.95)] backdrop-blur-2xl z-20 pointer-events-auto"
           >
             {/* Subtle Liquid Glass Ambient Glow */}
             <div className="pointer-events-none absolute -top-32 left-1/2 h-72 w-full max-w-[32rem] -translate-x-1/2 rounded-full bg-blue-500/12 blur-[100px]" />
@@ -418,7 +445,7 @@ export default function CheckoutModal() {
             {/* ========================================================================= */}
             {/* PROGRESS INDICATOR HEADER (Sticky at top, close button always accessible)   */}
             {/* ========================================================================= */}
-            <div className="relative z-20 flex shrink-0 items-center justify-between gap-2 sm:gap-3 border-b border-white/[0.08] bg-[#07080c]/90 px-4 py-3 sm:px-6 sm:py-4 md:px-8 backdrop-blur-md">
+            <div className="relative z-20 flex shrink-0 items-center justify-between gap-2 sm:gap-3 border-b border-white/[0.08] bg-[#07080c]/95 px-4 py-3 sm:px-6 sm:py-3.5 backdrop-blur-md">
               <div className="flex items-center gap-2 sm:gap-3 min-w-0">
                 {step === "payment" && (
                   <button
@@ -524,7 +551,11 @@ export default function CheckoutModal() {
             {/* ========================================================================= */}
             {/* SCROLLABLE MODAL CONTENT BODY                                            */}
             {/* ========================================================================= */}
-            <div className="relative z-10 flex-1 overflow-y-auto overflow-x-hidden">
+            <div
+              ref={contentRef}
+              onScroll={checkScroll}
+              className="relative z-10 flex-1 min-h-0 overflow-y-auto overflow-x-hidden w-full checkout-scroll"
+            >
               {/* ========================================================================= */}
               {/* MAIN TWO-COLUMN CHECKOUT LAYOUT (Desktop: Left Form / Right Receipt)        */}
               {/* ========================================================================= */}
@@ -1580,6 +1611,25 @@ export default function CheckoutModal() {
                 </div>
               )}
             </div>
+
+            {/* Subtle Floating Bottom Scroll Affordance */}
+            <AnimatePresence>
+              {canScrollDown && (
+                <motion.button
+                  type="button"
+                  initial={{ opacity: 0, y: 8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: 8 }}
+                  transition={{ duration: 0.2 }}
+                  onClick={() => {
+                    contentRef.current?.scrollBy({ top: 220, behavior: "smooth" });
+                  }}
+                  className="pointer-events-auto absolute bottom-3 left-1/2 -translate-x-1/2 z-30 flex items-center gap-1.5 rounded-full border border-white/15 bg-[#0e1014]/92 px-3.5 py-1.5 text-[11px] font-medium text-white/80 shadow-[0_8px_20px_rgba(0,0,0,0.75)] backdrop-blur-md transition-all hover:bg-[#14161c] hover:text-white cursor-pointer"
+                >
+                  <span>↓ Scroll to continue</span>
+                </motion.button>
+              )}
+            </AnimatePresence>
           </motion.div>
         </div>
       )}
