@@ -16,8 +16,10 @@ import { QuickActionsHUD } from './QuickActionsHUD';
 import { CanvasMinimap } from './CanvasMinimap';
 import { BlueprintOverlay } from './BlueprintOverlay';
 import { ResponsiveSimulatorOverlay } from './ResponsiveSimulatorOverlay';
+import { EmptyCanvasGuide } from './EmptyCanvasGuide';
 
 export function Canvas() {
+
   const {
     elements,
     selectedIds,
@@ -614,8 +616,10 @@ export function Canvas() {
         </g>
       </svg>
       <Breadcrumbs />
+      <EmptyCanvasGuide />
       <QuickActionsHUD pan={pan} zoom={zoom} containerRect={containerRect} />
       <CanvasMinimap containerRect={containerRect} />
+
       <InlineTextEditor pan={pan} zoom={zoom} containerRect={containerRect} />
       {showRulers && (
         <Rulers pan={pan} zoom={zoom} containerRect={containerRect} mousePos={mousePos} />
