@@ -18,7 +18,8 @@ import {
   Moon,
   Clock,
   Trash2,
-  FolderOpen
+  FolderOpen,
+  Presentation
 } from 'lucide-react';
 
 export function HomeDashboard() {
@@ -31,7 +32,8 @@ export function HomeDashboard() {
     showToast,
     addElement,
     setZoom,
-    setPan
+    setPan,
+    setPresentationModalOpen,
   } = useEditor();
 
   const [searchQuery, setSearchQuery] = useState('');
@@ -54,8 +56,8 @@ export function HomeDashboard() {
   }, []);
 
   const formatPresets = [
+    { id: 'pres', name: 'Presentation & Slides', width: 1920, height: 1080, icon: <Presentation className="w-5 h-5 text-indigo-400" />, desc: '1920 × 1080 (16:9)', action: 'presentation' },
     { id: 'ig', name: 'Instagram Post', width: 1080, height: 1080, icon: <span className="text-pink-400 font-bold">IG</span>, desc: '1080 × 1080 px' },
-    { id: 'pres', name: 'Presentation', width: 1920, height: 1080, icon: <Monitor className="w-5 h-5 text-indigo-400" />, desc: '1920 × 1080 px' },
     { id: 'yt', name: 'YouTube Thumbnail', width: 1280, height: 720, icon: <Tv className="w-5 h-5 text-rose-400" />, desc: '1280 × 720 px' },
     { id: 'poster', name: 'Marketing Poster', width: 1200, height: 1600, icon: <FileText className="w-5 h-5 text-amber-400" />, desc: '1200 × 1600 px' },
     { id: 'web', name: 'Website Landing', width: 1440, height: 1024, icon: <Layout className="w-5 h-5 text-sky-400" />, desc: '1440 × 1024 px' },
@@ -63,6 +65,11 @@ export function HomeDashboard() {
   ];
 
   const handleStartPreset = (preset) => {
+    if (preset.action === 'presentation') {
+      setPresentationModalOpen(true);
+      return;
+    }
+
     createNewProject();
     const frame = {
       id: `frame_${Date.now()}`,
@@ -146,12 +153,19 @@ export function HomeDashboard() {
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search templates, formats, graphics..."
+            placeholder="Search templates, presentations, formats..."
             className="w-full bg-neutral-900/80 border border-neutral-800 rounded-xl pl-9 pr-4 py-1.5 text-xs text-neutral-200 placeholder-neutral-500 outline-none focus:border-indigo-500 transition-colors"
           />
         </div>
 
         <div className="flex items-center gap-2">
+          <button
+            onClick={() => setPresentationModalOpen(true)}
+            className="px-3.5 py-1.5 bg-indigo-600/20 hover:bg-indigo-600/30 text-indigo-300 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition-colors border border-indigo-500/30"
+          >
+            <Presentation className="w-3.5 h-3.5" />
+            <span>Create Presentation</span>
+          </button>
           <button
             onClick={toggleTheme}
             className="p-2 text-neutral-400 hover:text-amber-300 hover:bg-neutral-800/60 rounded-xl transition-colors"
@@ -181,13 +195,13 @@ export function HomeDashboard() {
           <div className="relative z-10 max-w-2xl space-y-2">
             <span className="px-3 py-1 bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 rounded-full text-xs font-semibold inline-flex items-center gap-1.5">
               <Sparkles className="w-3 h-3 text-indigo-400" />
-              <span>Visual Design Studio</span>
+              <span>Visual Design & Presentation Studio</span>
             </span>
             <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight text-white">
               What will you design today?
             </h1>
             <p className="text-sm text-neutral-400">
-              Pick a canvas format, browse curated editable templates, or jump straight into the studio.
+              Create AI slide presentations, pick a custom canvas format, or browse editable templates.
             </p>
           </div>
 
@@ -217,7 +231,7 @@ export function HomeDashboard() {
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <FolderOpen className="w-4 h-4 text-indigo-400" />
-                <h2 className="text-base font-bold text-neutral-100">Recent Designs</h2>
+                <h2 className="text-base font-bold text-neutral-100">Recent Designs & Presentations</h2>
               </div>
               <span className="text-xs text-neutral-500">{savedProjects.length} saved</span>
             </div>
@@ -231,8 +245,8 @@ export function HomeDashboard() {
                 >
                   <div className="h-32 bg-neutral-900 flex items-center justify-center p-3 relative overflow-hidden border-b border-neutral-800/80">
                     <div className="w-full h-full bg-neutral-950 rounded-lg border border-neutral-800 flex flex-col items-center justify-center text-xs text-neutral-500 gap-1 group-hover:border-indigo-500/50 transition-colors">
-                      <Layout className="w-6 h-6 text-indigo-400/60 group-hover:text-indigo-400 transition-colors" />
-                      <span className="text-[10px] font-mono">{proj.pages ? proj.pages[0]?.elements?.length || 0 : 0} objects</span>
+                      <Presentation className="w-6 h-6 text-indigo-400/60 group-hover:text-indigo-400 transition-colors" />
+                      <span className="text-[10px] font-mono">{proj.pages ? `${proj.pages.length} slides` : '1 slide'}</span>
                     </div>
                   </div>
                   <div className="p-3">

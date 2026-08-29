@@ -8,6 +8,8 @@ import { Canvas } from './components/Canvas/Canvas';
 import { RightInspector } from './components/RightInspector/RightInspector';
 import { BottomBar } from './components/BottomBar/BottomBar';
 import { HomeDashboard } from './components/HomeDashboard/HomeDashboard';
+import { PresenterNotesDrawer } from './components/Presentation/PresenterNotesDrawer';
+import { PresentationCreatorModal } from './components/Modals/PresentationCreatorModal';
 import { CommandPalette } from './components/Modals/CommandPalette';
 import { ExportModal } from './components/Modals/ExportModal';
 import { ProjectManagerModal } from './components/Modals/ProjectManagerModal';
@@ -35,7 +37,14 @@ function MainWorkspace() {
   useKeyboardShortcuts();
 
   if (currentView === 'home') {
-    return <HomeDashboard />;
+    return (
+      <>
+        <HomeDashboard />
+        <PresentationCreatorModal />
+        <TemplateLibraryModal />
+        <ToastSystem />
+      </>
+    );
   }
 
   return (
@@ -44,7 +53,6 @@ function MainWorkspace() {
         theme === 'light' ? 'light bg-slate-100 text-slate-900' : 'dark bg-neutral-950 text-neutral-100'
       } antialiased select-none font-sans`}
     >
-
       <TopBar />
       <ContextualTopBar />
 
@@ -54,8 +62,10 @@ function MainWorkspace() {
         <RightInspector />
       </div>
 
+      <PresenterNotesDrawer />
       <BottomBar />
 
+      <PresentationCreatorModal />
       <CommandPalette />
       <ExportModal />
       <ProjectManagerModal />

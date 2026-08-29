@@ -59,7 +59,10 @@ export function EditorProvider({ children }) {
   const [exportModalOpen, setExportModalOpen] = useState(false);
   const [shortcutsModalOpen, setShortcutsModalOpen] = useState(false);
   const [presentModeOpen, setPresentModeOpen] = useState(false);
+  const [presentationModalOpen, setPresentationModalOpen] = useState(false);
+  const [speakerNotesOpen, setSpeakerNotesOpen] = useState(false);
   const [projectManagerOpen, setProjectManagerOpen] = useState(false);
+
   const [contextMenu, setContextMenu] = useState({ visible: false, x: 0, y: 0, targetId: null });
   const [designDoctorOpen, setDesignDoctorOpen] = useState(false);
   const [componentLabOpen, setComponentLabOpen] = useState(false);
@@ -778,7 +781,12 @@ export function EditorProvider({ children }) {
     setShortcutsModalOpen,
     presentModeOpen,
     setPresentModeOpen,
+    presentationModalOpen,
+    setPresentationModalOpen,
+    speakerNotesOpen,
+    setSpeakerNotesOpen,
     projectManagerOpen,
+
     setProjectManagerOpen,
     contextMenu,
     setContextMenu,

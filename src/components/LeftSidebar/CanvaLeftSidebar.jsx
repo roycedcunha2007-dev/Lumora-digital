@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useEditor } from '../../context/EditorContext';
 import { TemplatesPanel } from './TemplatesPanel';
+import { SlidesPanel } from './SlidesPanel';
 import { ElementsTab } from './ElementsTab';
 import { UploadsPanel } from './UploadsPanel';
 import { TextPanel } from './TextPanel';
@@ -9,6 +10,7 @@ import { AppsPanel } from './AppsPanel';
 
 import {
   Layout,
+  Presentation,
   Shapes,
   UploadCloud,
   Type,
@@ -31,11 +33,12 @@ export function CanvaLeftSidebar() {
 
   const navItems = [
     { id: 'templates', label: 'Design', icon: <Layout className="w-4 h-4" /> },
+    { id: 'slides', label: 'Slides', icon: <Presentation className="w-4 h-4 text-indigo-400" /> },
     { id: 'elements', label: 'Elements', icon: <Shapes className="w-4 h-4" /> },
     { id: 'text', label: 'Text', icon: <Type className="w-4 h-4" /> },
     { id: 'uploads', label: 'Uploads', icon: <UploadCloud className="w-4 h-4" /> },
     { id: 'layers', label: 'Layers', icon: <Layers className="w-4 h-4" /> },
-    { id: 'apps', label: 'Apps', icon: <Sparkles className="w-4 h-4 text-indigo-400" /> },
+    { id: 'apps', label: 'Apps', icon: <Sparkles className="w-4 h-4 text-amber-400" /> },
   ];
 
   const handleTabClick = (tabId) => {
@@ -51,6 +54,7 @@ export function CanvaLeftSidebar() {
   const getTitle = () => {
     switch (activeSidebarTab) {
       case 'templates': return 'Design Templates';
+      case 'slides': return 'Presentation Slides';
       case 'elements': return 'Elements Library';
       case 'text': return 'Text';
       case 'uploads': return 'Uploads';
@@ -92,7 +96,7 @@ export function CanvaLeftSidebar() {
             </button>
           </div>
 
-          {activeSidebarTab !== 'layers' && (
+          {activeSidebarTab !== 'layers' && activeSidebarTab !== 'slides' && (
             <div className="p-2.5 border-b border-neutral-800/60">
               <div className="relative flex items-center">
                 <Search className="w-3.5 h-3.5 text-neutral-500 absolute left-3 pointer-events-none" />
@@ -117,6 +121,7 @@ export function CanvaLeftSidebar() {
 
           <div className="flex-1 overflow-hidden flex flex-col">
             {activeSidebarTab === 'templates' && <TemplatesPanel searchQuery={searchQuery} />}
+            {activeSidebarTab === 'slides' && <SlidesPanel searchQuery={searchQuery} />}
             {activeSidebarTab === 'elements' && <ElementsTab searchQuery={searchQuery} />}
             {activeSidebarTab === 'text' && <TextPanel searchQuery={searchQuery} />}
             {activeSidebarTab === 'uploads' && <UploadsPanel searchQuery={searchQuery} />}
