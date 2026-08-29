@@ -11,6 +11,7 @@ import { HomeDashboard } from './components/HomeDashboard/HomeDashboard';
 import { PresenterNotesDrawer } from './components/Presentation/PresenterNotesDrawer';
 import { PresentationCreatorModal } from './components/Modals/PresentationCreatorModal';
 import { OnboardingModal } from './components/Modals/OnboardingModal';
+import { ResetProjectModal } from './components/Modals/ResetProjectModal';
 import { CommandPalette } from './components/Modals/CommandPalette';
 import { ExportModal } from './components/Modals/ExportModal';
 import { ProjectManagerModal } from './components/Modals/ProjectManagerModal';
@@ -43,6 +44,7 @@ function MainWorkspace() {
         <HomeDashboard />
         <PresentationCreatorModal />
         <TemplateLibraryModal />
+        <ResetProjectModal />
         <OnboardingModal />
         <ToastSystem />
       </>
@@ -68,6 +70,7 @@ function MainWorkspace() {
       <BottomBar />
 
       <OnboardingModal />
+      <ResetProjectModal />
       <PresentationCreatorModal />
       <CommandPalette />
       <ExportModal />

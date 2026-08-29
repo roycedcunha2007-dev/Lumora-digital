@@ -12,7 +12,8 @@ import {
   Gauge,
   Package,
   Trophy,
-  Sparkles
+  Sparkles,
+  RotateCcw
 } from 'lucide-react';
 
 export function AppsPanel({ searchQuery = '' }) {
@@ -28,6 +29,7 @@ export function AppsPanel({ searchQuery = '' }) {
     setPerformanceModalOpen,
     setDesignPackageOpen,
     setMissionsOpen,
+    setResetModalOpen,
   } = useEditor();
 
   const apps = [
@@ -107,6 +109,13 @@ export function AppsPanel({ searchQuery = '' }) {
       desc: 'Interactive UI design challenge quests',
       icon: <Trophy className="w-5 h-5 text-amber-400" />,
       action: () => setMissionsOpen(true),
+    },
+    {
+      id: 'reset',
+      name: 'Reset Project & Data',
+      desc: 'Safe two-step reset with confirmation',
+      icon: <RotateCcw className="w-5 h-5 text-rose-400" />,
+      action: () => setResetModalOpen(true),
     },
   ];
 

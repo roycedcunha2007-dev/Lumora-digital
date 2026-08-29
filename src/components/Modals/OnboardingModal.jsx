@@ -5,11 +5,11 @@ import {
   Type,
   Image as ImageIcon,
   Play,
-  Download,
   ArrowRight,
   Check,
   X
 } from 'lucide-react';
+
 
 export function OnboardingModal() {
   const [isOpen, setIsOpen] = useState(false);

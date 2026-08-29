@@ -55,7 +55,9 @@ export function CommandPalette() {
     setPerformanceModalOpen,
     setDesignPackageOpen,
     setOfflineDashboardOpen,
+    setResetModalOpen,
     zoomToFit,
+
     zoomToSelection,
     zoomTo100,
     showGrid,
@@ -125,7 +127,9 @@ export function CommandPalette() {
     { id: 'win_present', name: 'Launch Presentation Mode', category: 'Presentation', shortcut: 'Present', icon: <Zap className="w-4 h-4" />, action: () => setPresentModeOpen(true) },
     { id: 'win_export', name: 'Export Design (PNG / SVG / JSON)', category: 'Export', shortcut: 'Ctrl+E', icon: <Download className="w-4 h-4" />, action: () => setExportModalOpen(true) },
     { id: 'win_shortcuts', name: 'Keyboard Shortcuts Cheatsheet', category: 'Help', shortcut: 'Ctrl+/', icon: <HelpCircle className="w-4 h-4" />, action: () => setShortcutsModalOpen(true) },
+    { id: 'win_reset', name: 'Reset Project & Application Data', category: 'Settings', shortcut: 'Reset', icon: <Trash2 className="w-4 h-4 text-rose-400" />, action: () => setResetModalOpen(true) },
   ];
+
 
   elements.forEach((el) => {
     commands.push({

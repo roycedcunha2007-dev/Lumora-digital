@@ -227,3 +227,39 @@ export async function clearRecoveryCheckpoint() {
     return false;
   }
 }
+
+export async function clearAllFigmaLiteData() {
+  try {
+    const db = await openDB();
+    const stores = [STORE_PROJECTS, STORE_ASSETS, STORE_SNAPSHOTS, STORE_RECOVERY];
+    await new Promise((resolve, reject) => {
+      const tx = db.transaction(stores, 'readwrite');
+      stores.forEach((s) => {
+        if (db.objectStoreNames.contains(s)) {
+          tx.objectStore(s).clear();
+        }
+      });
+      tx.oncomplete = () => resolve(true);
+      tx.onerror = (e) => reject(e.target.error);
+    });
+  } catch (err) {}
+
+  try {
+    const keysToRemove = [];
+    for (let i = 0; i < localStorage.length; i++) {
+      const k = localStorage.key(i);
+      if (
+        k &&
+        (k.startsWith('figmalite_') ||
+          k.startsWith('pixelcraft_') ||
+          k === 'theme' ||
+          k === 'editor_preferences')
+      ) {
+        keysToRemove.push(k);
+      }
+    }
+    keysToRemove.forEach((k) => localStorage.removeItem(k));
+  } catch (err) {}
+
+  return true;
+}

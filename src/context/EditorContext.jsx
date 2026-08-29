@@ -62,6 +62,8 @@ export function EditorProvider({ children }) {
   const [presentationModalOpen, setPresentationModalOpen] = useState(false);
   const [speakerNotesOpen, setSpeakerNotesOpen] = useState(false);
   const [projectManagerOpen, setProjectManagerOpen] = useState(false);
+  const [resetModalOpen, setResetModalOpen] = useState(false);
+
 
   const [contextMenu, setContextMenu] = useState({ visible: false, x: 0, y: 0, targetId: null });
   const [designDoctorOpen, setDesignDoctorOpen] = useState(false);
@@ -786,8 +788,10 @@ export function EditorProvider({ children }) {
     speakerNotesOpen,
     setSpeakerNotesOpen,
     projectManagerOpen,
-
     setProjectManagerOpen,
+    resetModalOpen,
+    setResetModalOpen,
+
     contextMenu,
     setContextMenu,
     designDoctorOpen,
